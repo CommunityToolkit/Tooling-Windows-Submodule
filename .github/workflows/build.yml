@@ -121,6 +121,16 @@ jobs:
         working-directory: ./
         run: copy ./tooling/.github/workflows/Directory.Build.* ./
 
+      - name: Make .config directory
+        shell: pwsh
+        working-directory: ./
+        run: mkdir ./.config
+
+      - name: Copy tooling config to root
+        shell: pwsh
+        working-directory: ./
+        run: copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
+
       - name: Make empty component directory
         shell: pwsh
         working-directory: ./
@@ -131,7 +141,7 @@ jobs:
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
-        working-directory: ./tooling
+        working-directory: ./
         run: dotnet tool restore
 
       # Create a new experiment from the template and test using that
@@ -206,6 +216,16 @@ jobs:
         working-directory: ./
         run: copy ./tooling/.github/workflows/Directory.Build.* ./
 
+      - name: Make .config directory
+        shell: pwsh
+        working-directory: ./
+        run: mkdir ./.config
+
+      - name: Copy tooling config to root
+        shell: pwsh
+        working-directory: ./
+        run: copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
+
       - name: Make empty component directory
         shell: pwsh
         working-directory: ./
@@ -213,7 +233,7 @@ jobs:
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
-        working-directory: ./tooling
+        working-directory: ./
         run: dotnet tool restore
 
       - name: Generate solution
