@@ -1,7 +1,7 @@
 
 # Community Toolkit Tooling
 
-![Windows Community Toolkit Labs Social Image](tooling/ToolkitLabsSocial.png)
+![Windows Community Toolkit Labs Social Image](ToolkitLabsSocial.png)
 
 This repository contains the tooling infrastructure for other Community Toolkit projects, like the [Windows Community Toolkit](https://aka.ms/toolkit/windows) and the [Windows Community Toolkit Labs](https://aka.ms/toolkit/labs/windows).
 
@@ -24,6 +24,6 @@ This project is supported by the [.NET Foundation](http://dotnetfoundation.org).
 
 ## 🏆 Contributors
 
-[![Toolkit Contributors](https://contrib.rocks/image?repo=CommunityToolkit/Tooling-Submodule)](https://github.com/CommunityToolkit/Tooling-Submodule/graphs/contributors)
+[![Toolkit Contributors](https://contrib.rocks/image?repo=CommunityToolkit/Tooling-Windows-Submodule)](https://github.com/CommunityToolkit/Tooling-Windows-Submodule/graphs/contributors)
 
 Made with [contrib.rocks](https://contrib.rocks).

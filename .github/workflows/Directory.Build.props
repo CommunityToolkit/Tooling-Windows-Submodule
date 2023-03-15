@@ -12,8 +12,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>(c) .NET Foundation and Contributors.  All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/CommunityToolkit/Tooling-Submodule</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/CommunityToolkit/Tooling-Submodule/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/CommunityToolkit/Tooling-Windows-Submodule</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/CommunityToolkit/Tooling-Windows-Submodule/releases</PackageReleaseNotes>
     <!-- TODO: Remove when closing https://github.com/CommunityToolkit/Labs-Windows/issues/256 -->
     <NoWarn>$(NoWarn);NU1505;NU1504</NoWarn>
   </PropertyGroup>
