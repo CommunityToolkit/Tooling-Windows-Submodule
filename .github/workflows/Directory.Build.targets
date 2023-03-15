@@ -1,0 +1,8 @@
+<Project>
+  <ItemGroup>
+    <SlnGenSolutionItem Include="$(MSBuildThisFileDirectory).editorconfig" />
+    <SlnGenSolutionItem Include="$(MSBuildThisFileDirectory)settings.xamlstyler" />
+    <SlnGenSolutionItem Include="$(MSBuildThisFileDirectory)*.md" />
+    <SlnGenSolutionItem Include="$(MSBuildThisFileDirectory)GlobalUsings*.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,39 @@
+<Project>
+  <PropertyGroup>
+    <RepositoryDirectory>$(MSBuildThisFileDirectory)</RepositoryDirectory>
+    <ToolingDirectory>$(RepositoryDirectory)\tooling</ToolingDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>.NET Foundation</Company>
+    <Authors>Microsoft.Toolkit</Authors>
+    <Product>Community Toolkit Tooling</Product>
+    <CommonTags>Community;Toolkit;Tooling</CommonTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Copyright>(c) .NET Foundation and Contributors.  All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/CommunityToolkit/Tooling-Windows-Submodule</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/CommunityToolkit/Tooling-Windows-Submodule/releases</PackageReleaseNotes>
+    <!-- TODO: Remove when closing https://github.com/CommunityToolkit/Labs-Windows/issues/256 -->
+    <NoWarn>$(NoWarn);NU1505;NU1504</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Features>Strict</Features>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(RepositoryDirectory)tooling\GlobalUsings.cs" />
+  </ItemGroup>
+</Project>
