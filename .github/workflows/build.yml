@@ -126,6 +126,14 @@ jobs:
         working-directory: ./
         run: mkdir ./components
 
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.3.1
+
+      # Restore Tools from Manifest list in the Repository
+      - name: Restore dotnet tools
+        working-directory: ./tooling
+        run: dotnet tool restore
+
       # Create a new experiment from the template and test using that
       - name: Install template
         working-directory: ${{ env.PROJECT_DIRECTORY }}
@@ -205,6 +213,7 @@ jobs:
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
+        working-directory: ./tooling
         run: dotnet tool restore
 
       - name: Generate solution
