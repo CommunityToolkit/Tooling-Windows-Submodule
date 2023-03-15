@@ -74,6 +74,11 @@ jobs:
         with:
           path: 'tooling'
 
+      - name: Copy props files to root
+        shell: pwsh
+        working-directory: ./
+        run: copy ./tooling/.github/workflows/Directory.Build.* ./
+
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.3.1
 
@@ -157,6 +162,11 @@ jobs:
         with:
           path: 'tooling'
 
+      - name: Copy props files to root
+        shell: pwsh
+        working-directory: ./
+        run: copy ./tooling/.github/workflows/Directory.Build.* ./
+
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
         run: dotnet tool restore
@@ -165,9 +175,6 @@ jobs:
         shell: pwsh
         working-directory: ./
         run: ./tooling/GenerateAllSolution.ps1${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}
-
-      - name: Install ninja for WASM native dependencies
-        run: sudo apt-get install ninja-build
 
       # Issue with Comment Links currently, see: https://github.com/mrlacey/CommentLinks/issues/38
       # See launch.json configuration file for analogous command we're emulating here to build LINK: ../../.vscode/launch.json:CommunityToolkit.App.Wasm.csproj
