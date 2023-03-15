@@ -11,7 +11,7 @@ dotnet new --install .\tooling\ProjectTemplate\
 
 cd components
 
-dotnet new labexp -n MyExperimentNameHere
+dotnet new ctk-component -n MyExperimentNameHere
 ```
 
 This creates a new experiment called "MyExperimentNameHere".

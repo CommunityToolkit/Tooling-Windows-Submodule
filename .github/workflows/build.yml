@@ -140,7 +140,7 @@ jobs:
 
       - name: Create new experiment
         working-directory: ./components
-        run: dotnet new labexp -n ${{ env.TEST_PROJECT_NAME }}
+        run: dotnet new ctk-component -n ${{ env.TEST_PROJECT_NAME }}
 
       - name: Add project heads to ${{ env.TEST_PROJECT_NAME }}
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
@@ -183,6 +183,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
+      TEST_PROJECT_NAME: CiTestExp
 
     steps:
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
@@ -221,7 +222,7 @@ jobs:
 
       - name: Create new experiment
         working-directory: ./components
-        run: dotnet new labexp -n ${{ env.TEST_PROJECT_NAME }}
+        run: dotnet new ctk-component -n ${{ env.TEST_PROJECT_NAME }}
 
       - name: Generate solution
         shell: pwsh

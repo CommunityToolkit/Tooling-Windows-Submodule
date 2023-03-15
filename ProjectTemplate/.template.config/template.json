@@ -7,9 +7,9 @@
     "Toolkit",
     "Labs"
   ],
-  "name": "Community Toolkit Labs Experiment",
-  "identity": "CommunityToolkit.Labs.ProjectTemplate",
-  "shortName": "labexp",
+  "name": "Community Toolkit Component",
+  "identity": "CommunityToolkit.Tooling.Components.ProjectTemplate",
+  "shortName": "ctk-component",
   "tags": {
     "language": "C#",
     "type": "solution"
