@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Issue with Labs Component/Experiment
+    url: https://github.com/CommunityToolkit/Labs-Windows
+    about: Please go to the Windows Community Toolkit Labs repo instead
+  - name: Issue with MVVM Toolkit
+    url: https://github.com/CommunityToolkit/dotnet
+    about: Please go to the .NET Community Toolkit repo instead
+  - name: Issue with Windows Community Toolkit
+    url: https://github.com/CommunityToolkit/WindowsCommunityToolkit
+    about: Please go to the Windows Community Toolkit repo instead
+  - name: Discord
+    url: https://aka.ms/wct/discord
+    about: "Join the UWP Discord Server and talk to us in the #community-toolkit channel."
