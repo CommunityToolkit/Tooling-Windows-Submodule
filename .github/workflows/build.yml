@@ -116,25 +116,14 @@ jobs:
         with:
           path: 'tooling'
 
-      - name: Copy props files to root
+      - name: Copy props and config files to root and setup structure
         shell: pwsh
         working-directory: ./
-        run: copy ./tooling/.github/workflows/Directory.Build.* ./
-
-      - name: Make .config directory
-        shell: pwsh
-        working-directory: ./
-        run: mkdir ./.config
-
-      - name: Copy tooling config to root
-        shell: pwsh
-        working-directory: ./
-        run: copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
-
-      - name: Make empty component directory
-        shell: pwsh
-        working-directory: ./
-        run: mkdir ./components
+        run: |
+          copy ./tooling/.github/workflows/Directory.Build.* ./
+          mkdir ./.config
+          copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
+          mkdir ./components
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.3.1
@@ -211,30 +200,28 @@ jobs:
         with:
           path: 'tooling'
 
-      - name: Copy props files to root
+      - name: Copy props and config files to root and setup structure
         shell: pwsh
         working-directory: ./
-        run: copy ./tooling/.github/workflows/Directory.Build.* ./
-
-      - name: Make .config directory
-        shell: pwsh
-        working-directory: ./
-        run: mkdir ./.config
-
-      - name: Copy tooling config to root
-        shell: pwsh
-        working-directory: ./
-        run: copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
-
-      - name: Make empty component directory
-        shell: pwsh
-        working-directory: ./
-        run: mkdir ./components
+        run: |
+          copy ./tooling/.github/workflows/Directory.Build.* ./
+          mkdir ./.config
+          copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
+          mkdir ./components
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
         working-directory: ./
         run: dotnet tool restore
+
+      # Create a new experiment from the template and test using that
+      - name: Install template
+        working-directory: ${{ env.PROJECT_DIRECTORY }}
+        run: dotnet new --install ./
+
+      - name: Create new experiment
+        working-directory: ./components
+        run: dotnet new labexp -n ${{ env.TEST_PROJECT_NAME }}
 
       - name: Generate solution
         shell: pwsh
