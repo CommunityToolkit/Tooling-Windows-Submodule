@@ -362,3 +362,4 @@ heads/
 
 # We use slngen to generate solutions
 *.sln
+!CommunityToolkit.Tooling.sln
