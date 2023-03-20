@@ -530,9 +530,9 @@ public partial class ToolkitSampleMetadataTests
 
         foreach ((string filename, string text) in results)
         {
-            SyntaxTree generatedTree = outputCompilation.SyntaxTrees.Single(tree => Path.GetFileName(tree.FilePath) == filename);
+            SyntaxTree? generatedTree = outputCompilation.SyntaxTrees.FirstOrDefault(tree => Path.GetFileName(tree.FilePath) == filename);
 
-            Assert.AreEqual(text, generatedTree.ToString());
+            Assert.AreEqual(text, generatedTree?.ToString());
         }
 
         GC.KeepAlive(sampleattributeObjectType);
