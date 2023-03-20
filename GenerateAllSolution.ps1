@@ -70,7 +70,7 @@ if ($IncludeHeads -ne 'uwp')
 if ($UseDiagnostics.IsPresent)
 {
     $sdkoptions = " -d"
-    $diagnostics = '-bl:slngen.binlog --consolelogger:"ShowEventId;Summary;Verbosity=Detailed" --filelogger:"LogFile=slngen.log;Append;Verbosity=Diagnostic;Encoding=UTF-8" '
+    $diagnostics = '-bl:slngen.binlog '
 }
 else
 {
