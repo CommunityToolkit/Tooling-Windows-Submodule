@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Tooling.SampleGen", "CommunityToolkit.Tooling.SampleGen\CommunityToolkit.Tooling.SampleGen.csproj", "{D1A78C19-61B6-416F-926F-F0520B16ECEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Tooling.SampleGen.Tests", "CommunityToolkit.Tooling.SampleGen.Tests\CommunityToolkit.Tooling.SampleGen.Tests.csproj", "{48B8DA1F-17D9-4425-A7D5-8CF078042727}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Tooling.TestGen", "CommunityToolkit.Tooling.TestGen\CommunityToolkit.Tooling.TestGen.csproj", "{6101E286-908C-4D9E-87AB-5F4D36AF1BE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Tooling.TestGen.Tests", "CommunityToolkit.Tooling.TestGen.Tests\CommunityToolkit.Tooling.TestGen.Tests.csproj", "{FE42E6F5-6576-43C7-9A24-69CD93724D72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Tooling.XamlNamedPropertyRelay", "CommunityToolkit.Tooling.XamlNamedPropertyRelay\CommunityToolkit.Tooling.XamlNamedPropertyRelay.csproj", "{FE7981C9-6847-4A3F-A695-FB2A0A4C9B9A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1A78C19-61B6-416F-926F-F0520B16ECEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A78C19-61B6-416F-926F-F0520B16ECEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A78C19-61B6-416F-926F-F0520B16ECEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A78C19-61B6-416F-926F-F0520B16ECEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B8DA1F-17D9-4425-A7D5-8CF078042727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B8DA1F-17D9-4425-A7D5-8CF078042727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B8DA1F-17D9-4425-A7D5-8CF078042727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B8DA1F-17D9-4425-A7D5-8CF078042727}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6101E286-908C-4D9E-87AB-5F4D36AF1BE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6101E286-908C-4D9E-87AB-5F4D36AF1BE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6101E286-908C-4D9E-87AB-5F4D36AF1BE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6101E286-908C-4D9E-87AB-5F4D36AF1BE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE42E6F5-6576-43C7-9A24-69CD93724D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE42E6F5-6576-43C7-9A24-69CD93724D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE42E6F5-6576-43C7-9A24-69CD93724D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE42E6F5-6576-43C7-9A24-69CD93724D72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE7981C9-6847-4A3F-A695-FB2A0A4C9B9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE7981C9-6847-4A3F-A695-FB2A0A4C9B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE7981C9-6847-4A3F-A695-FB2A0A4C9B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE7981C9-6847-4A3F-A695-FB2A0A4C9B9A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
