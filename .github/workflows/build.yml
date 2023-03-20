@@ -45,6 +45,48 @@ jobs:
       - name: Check XAML Styling
         run: powershell -version 5.1 -command "./ApplyXamlStyling.ps1 -Passive" -ErrorAction Stop
 
+  test-tooling:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: .NET Info (if diagnostics)
+        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
+        run: dotnet --info
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: dotnet build
+        working-directory: ./
+        run: dotnet build /bl CommunityToolkit.Tooling.sln
+
+      # Run tests
+      - name: Install Testspace Module
+        uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{ github.repository_owner }}
+
+      - name: Run tests against Source Generators
+        run: dotnet test --logger "trx;LogFileName=sourceGeneratorTestResults.trx"
+
+      - name: Create test reports
+        run: |
+          testspace '[Source Generators]./**/TestResults/*.trx'
+        if: ${{ always() }}
+
+      - name: Artifact - Diagnostic Logs
+        uses: actions/upload-artifact@v3
+        if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
+        with:
+          name: test-tooling-logs
+          path: ./**/*.*log
+
   # Test job to build the project template
   project-template:
     runs-on: windows-latest
