@@ -163,6 +163,10 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
     private static void CreateSampleRegistry(SourceProductionContext ctx, Dictionary<string, ToolkitSampleRecord> sampleMetadata)
     {
+        // TODO: Emit a better error that no samples are here?
+        if (sampleMetadata.Count == 0)
+            return;
+
         var source = BuildRegistrationCallsFromMetadata(sampleMetadata);
         ctx.AddSource($"ToolkitSampleRegistry.g.cs", source);
     }
