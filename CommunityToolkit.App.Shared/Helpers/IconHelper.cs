@@ -15,7 +15,9 @@ public static class IconHelper
         {
             case ToolkitSampleCategory.Controls: iconElement = new FontIcon() { Glyph = "\ue73a" }; break;
             case ToolkitSampleCategory.Animations: iconElement = new FontIcon() { Glyph = "\ue945" }; break;
-            case ToolkitSampleCategory.Behaviors: iconElement = new FontIcon() { Glyph = "\ue8b1" }; break; 
+            case ToolkitSampleCategory.Extensions: iconElement = new FontIcon() { Glyph = "\ue95f" }; break;
+            case ToolkitSampleCategory.Helpers: iconElement = new FontIcon() { Glyph = "\ue946" }; break;
+            case ToolkitSampleCategory.Xaml: iconElement = new FontIcon() { Glyph = "\ue8af" }; break;
         }
         return iconElement;
     }
@@ -26,10 +28,16 @@ public static class IconHelper
         switch (subcategory)
         {
             case ToolkitSampleSubcategory.None: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
+            case ToolkitSampleSubcategory.Behaviors: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
+            case ToolkitSampleSubcategory.Controls: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
+            case ToolkitSampleSubcategory.Converters: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
             case ToolkitSampleSubcategory.Input: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
             case ToolkitSampleSubcategory.Layout: imagePath = "ms-appx:///Assets/ControlIcons/Layout.png"; break;
+            case ToolkitSampleSubcategory.Markup: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
+            case ToolkitSampleSubcategory.Math: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
             case ToolkitSampleSubcategory.Media: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
             case ToolkitSampleSubcategory.StatusAndInfo: imagePath = "ms-appx:///Assets/ControlIcons/Status.png"; break;
+            case ToolkitSampleSubcategory.Triggers: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
         }
         return imagePath;
     }

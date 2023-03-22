@@ -36,5 +36,35 @@ public enum ToolkitSampleSubcategory : byte
     /// A sample that focuses on media controls or behaviors.
     /// </summary>
     Media,
+
+    /// <summary>
+    /// A sample that focuses on general control extensions.
+    /// </summary>
+    Controls,
+
+    /// <summary>
+    /// A sample that focuses on markup extensions.
+    /// </summary>
+    Markup,
+
+    /// <summary>
+    /// Samples that focus on helping with mathmatical operations.
+    /// </summary>
+    Math,
+
+    /// <summary>
+    /// Samples that focus on XAML behaviors.
+    /// </summary>
+    Behaviors,
+
+    /// <summary>
+    /// Samples that focus on XAML converters.
+    /// </summary>
+    Converters,
+
+    /// <summary>
+    /// Samples that focus on XAML triggers.
+    /// </summary>
+    Triggers,
 }
 

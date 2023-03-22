@@ -20,7 +20,17 @@ public enum ToolkitSampleCategory : byte
     Animations,
 
     /// <summary>
-    /// Various Behaviors.
+    /// Various Extensions that augment existing classes and controls.
     /// </summary>
-    Behaviors,
+    Extensions,
+
+    /// <summary>
+    /// Other misc. helper classes.
+    /// </summary>
+    Helpers,
+
+    /// <summary>
+    /// Various Xaml related helpers and concepts.
+    /// </summary>
+    Xaml,
 }
