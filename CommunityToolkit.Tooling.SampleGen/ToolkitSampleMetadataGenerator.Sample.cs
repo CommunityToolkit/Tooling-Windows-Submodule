@@ -23,16 +23,14 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
     {
         var symbolsInExecutingAssembly = context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (s, _) => s is ClassDeclarationSyntax c && c.AttributeLists.Count > 0,
+                static (s, _) => s is ClassDeclarationSyntax c && c.AttributeLists.Count > 0 || s is MethodDeclarationSyntax m && m.AttributeLists.Count > 0,
                 static (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
             .Where(static m => m is not null)
             .Select(static (x, _) => x!);
 
         var symbolsInReferencedAssemblies = context.CompilationProvider
                               .SelectMany((x, _) => x.SourceModule.ReferencedAssemblySymbols)
-                              .SelectMany((asm, _) => asm.GlobalNamespace.CrawlForAllNamedTypes())
-                              .Where(x => x.TypeKind == TypeKind.Class && x.CanBeReferencedByName)
-                              .Select((x, _) => (ISymbol)x);
+                              .SelectMany((asm, _) => asm.GlobalNamespace.CrawlForAllSymbols(SymbolKind.NamedType | SymbolKind.Method));
 
         var markdownFiles = context.AdditionalTextsProvider
             .Where(static file => file.Path.EndsWith(".md"))
@@ -60,7 +58,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                 {
                     (ISymbol Symbol, ToolkitSampleOptionBaseAttribute Attribute) item = default;
 
-                    // Try and get base attribute of whatever sample attribute types we support.
+                    // Reconstruct declared sample option attribute class instances from Roslyn symbols.
                     if (x.Item2.TryReconstructAs<ToolkitSampleBoolOptionAttribute>() is ToolkitSampleBoolOptionAttribute boolOptionAttribute)
                     {
                         item = (x.Item1, boolOptionAttribute);
@@ -76,6 +74,13 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                     else if (x.Item2.TryReconstructAs<ToolkitSampleTextOptionAttribute>() is ToolkitSampleTextOptionAttribute textOptionAttribute)
                     {
                         item = (x.Item1, textOptionAttribute);
+                    }
+                    else if (x.Item2.TryReconstructAs<ToolkitSampleButtonActionAttribute>() is ToolkitSampleButtonActionAttribute buttonActionAttribute)
+                    {
+                        // Auto-assign the attached method name as the generated property name.
+                        buttonActionAttribute.Name = x.Item1.Name;
+
+                        item = (x.Item1, buttonActionAttribute);
                     }
 
                     // Add extra property data, like Title back to Attribute
@@ -309,6 +314,10 @@ public static class ToolkitSampleRegistry
             else if (item is ToolkitSampleBoolOptionAttribute boolAttribute)
             {
                 yield return $@"new {typeof(ToolkitSampleBoolOptionMetadataViewModel).FullName}(name: ""{boolAttribute.Name}"", defaultState: {boolAttribute.DefaultState?.ToString().ToLower()}, title: ""{boolAttribute.Title}"")";
+            }
+            else if (item is ToolkitSampleButtonActionAttribute buttonAttribute)
+            {
+                yield return $@"new {typeof(ToolkitSampleButtonActionMetadataViewModel).FullName}(name: ""{buttonAttribute.Name}"", label: ""{buttonAttribute.Label}"", title: ""{buttonAttribute.Title}"")";
             }
             else if (item is ToolkitSampleNumericOptionAttribute numericAttribute)
             {
