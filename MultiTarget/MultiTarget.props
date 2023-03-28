@@ -40,7 +40,7 @@
 
   <PropertyGroup>
     <!-- These suppressions are for references between generated assemblies and that VS can keep in the Error List once resolved -->
-    <NoWarn>WMC1006;CS8034;</NoWarn>
+    <NoWarn>$(NoWarn);WMC1006;CS8034;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
