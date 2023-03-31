@@ -30,7 +30,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
         var symbolsInReferencedAssemblies = context.CompilationProvider
                               .SelectMany((x, _) => x.SourceModule.ReferencedAssemblySymbols)
-                              .SelectMany((asm, _) => asm.GlobalNamespace.CrawlForAllSymbols(SymbolKind.NamedType | SymbolKind.Method));
+                              .SelectMany((asm, _) => asm.GlobalNamespace.CrawlForAllSymbols().Where(x => x.Kind is SymbolKind.NamedType or SymbolKind.Method));
 
         var markdownFiles = context.AdditionalTextsProvider
             .Where(static file => file.Path.EndsWith(".md"))
@@ -83,15 +83,14 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                         item = (x.Item1, buttonActionAttribute);
                     }
 
-                    // Add extra property data, like Title back to Attribute
-                    if (item.Attribute != null && x.Item2.TryGetNamedArgument(nameof(ToolkitSampleOptionBaseAttribute.Title), out string? title) && !string.IsNullOrWhiteSpace(title))
+                    // Add extra property data, like Title, back to Attribute
+                    if (item.Attribute is not null && x.Item2.TryGetNamedArgument(nameof(ToolkitSampleOptionBaseAttribute.Title), out string? title) && !string.IsNullOrWhiteSpace(title))
                     {
                         item.Attribute.Title = title;
                     }
 
                     return item;
                 })
-                .Where(static x => x != default)
                 .Collect();
 
             // Find and reconstruct sample attributes
@@ -121,7 +120,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             {
                 var toolkitSampleAttributeData = data.Left.Left.Left.Right.Where(x => x != default).Distinct();
                 var optionsPaneAttribute = data.Left.Left.Left.Left.Where(x => x != default).Distinct();
-                var generatedOptionPropertyData = data.Left.Left.Right.Where(x => x != default);
+                var generatedOptionPropertyData = data.Left.Left.Right.Where(x => x.Attribute is not null && x.Symbol is not null);
                 var markdownFileData = data.Left.Right.Where(x => x != default).Distinct();
                 var currentAssembly = data.Right;
 
@@ -191,9 +190,9 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                                                                   IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute,
                                                                   IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
     {
-        var toolkitAttributesOnUnsupportedType = toolkitSampleAttributeData.Where(x => x.Symbol is not INamedTypeSymbol namedSym || !IsValidXamlControl(namedSym));
-        var optionsAttributeOnUnsupportedType = optionsPaneAttribute.Where(x => x.Item2 is not INamedTypeSymbol namedSym || !IsValidXamlControl(namedSym));
-        var generatedOptionAttributeOnUnsupportedType = generatedOptionPropertyData.Where(x => x.Item1 is not INamedTypeSymbol namedSym || !IsValidXamlControl(namedSym));
+        var toolkitAttributesOnUnsupportedType = toolkitSampleAttributeData.Where(x => x.Symbol is INamedTypeSymbol namedSym && !IsValidXamlControl(namedSym));
+        var optionsAttributeOnUnsupportedType = optionsPaneAttribute.Where(x => x.Item2 is INamedTypeSymbol namedSym && !IsValidXamlControl(namedSym));
+        var generatedOptionAttributeOnUnsupportedType = generatedOptionPropertyData.Where(x => x.Item1 is INamedTypeSymbol namedSym && !IsValidXamlControl(namedSym));
 
 
         foreach (var item in toolkitAttributesOnUnsupportedType)
@@ -237,7 +236,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
         ReportGeneratedMultiChoiceOptionsPaneDiagnostics(ctx, generatedOptionPropertyData);
 
         // Check for generated options which don't have a valid sample attribute
-        var generatedOptionsWithMissingSampleAttribute = generatedOptionPropertyData.Where(x => !toolkitSampleAttributeData.Any(sample => ReferenceEquals(sample.Symbol, x.Item1)));
+        var generatedOptionsWithMissingSampleAttribute = generatedOptionPropertyData.Where(x => x.Item1 is INamedTypeSymbol && !toolkitSampleAttributeData.Any(sample => ReferenceEquals(sample.Symbol, x.Item1)));
 
         foreach (var item in generatedOptionsWithMissingSampleAttribute)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample, item.Item1.Locations.FirstOrDefault()));
@@ -260,7 +259,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithDuplicateName, item.SelectMany(x => x.Item1.Locations).FirstOrDefault(), item.Key));
 
         // Check for generated options that conflict with an existing property name
-        var generatedOptionsWithConflictingPropertyNames = generatedOptionPropertyData.Where(x => GetAllMembers((INamedTypeSymbol)x.Item1).Any(y => x.Item2.Name == y.Name));
+        var generatedOptionsWithConflictingPropertyNames = generatedOptionPropertyData.Where(x => x.Item1 is INamedTypeSymbol sym && GetAllMembers(sym).Any(y => x.Item2.Name == y.Name));
 
         foreach (var item in generatedOptionsWithConflictingPropertyNames)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithConflictingName, item.Item1.Locations.FirstOrDefault(), item.Item2.Name));

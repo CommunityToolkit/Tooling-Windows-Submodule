@@ -12,21 +12,17 @@ public static class GeneratorExtensions
     /// Crawls a namespace and all child namespaces for all contained types.
     /// </summary>
     /// <returns>A flattened enumerable of <see cref="INamedTypeSymbol"/>s.</returns>
-    public static IEnumerable<ISymbol> CrawlForAllSymbols(this INamespaceSymbol namespaceSymbol, SymbolKind symbolKind)
+    public static IEnumerable<ISymbol> CrawlForAllSymbols(this INamespaceSymbol namespaceSymbol)
     {
         foreach (var member in namespaceSymbol.GetMembers())
         {
             if (member is INamespaceSymbol nestedNamespace)
             {
-                foreach (var item in CrawlForAllSymbols(nestedNamespace, symbolKind))
+                foreach (var item in CrawlForAllSymbols(nestedNamespace))
                     yield return item;
             }
 
-            foreach (Enum value in Enum.GetValues(typeof(SymbolKind)))
-            {
-                if (symbolKind.HasFlag(value) && member.Kind.HasFlag(value))
-                    yield return member;
-            }
+            yield return member;
         }
     }
 
