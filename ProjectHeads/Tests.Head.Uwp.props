@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
-    <PackageReference Include="Microsoft.Toolkit.Uwp.UI" Version="7.1.2"/>
+    <!-- TODO: We need a way to toggle this between Package and Source of the Extension module if we want to set it up 'globally' -->
+    <!--<PackageReference Include="Microsoft.Toolkit.Uwp.UI" Version="7.1.2"/>-->
   </ItemGroup>
 </Project>
