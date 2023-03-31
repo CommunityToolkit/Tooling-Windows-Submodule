@@ -7,7 +7,8 @@
       <Version>17.1.0</Version>
       <ExcludeAssets>build</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2"/>
+    <!-- TODO: See comment in LINK:Tests.Head.Uwp.props file -->
+    <!-- <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2"/> -->
   </ItemGroup>
 
   <ItemGroup>
