@@ -2,11 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using CommunityToolkit.Tooling.SampleGen.Attributes;
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel.DataAnnotations;
 
@@ -31,7 +27,7 @@ public partial class ToolkitSampleMetadataTests
                 }}
             }}";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [TestMethod]
@@ -60,7 +56,7 @@ public partial class ToolkitSampleMetadataTests
                 public class UserControl {{ }}
             }}";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleOptionPaneAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleOptionPaneAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [TestMethod]
@@ -86,135 +82,6 @@ public partial class ToolkitSampleMetadataTests
             }}";
 
         // TODO: We should have this return the references to the registries or something so we can check the generated output?
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
-    }
-
-    /// <summary>
-    /// Verifies the output of a source generator.
-    /// </summary>
-    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
-    /// <param name="source">The input source to process.</param>
-    /// <param name="markdown">The input documentation info to process.</param>
-    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-    internal static void VerifyGeneratedDiagnostics<TGenerator>(string source, string markdown, params string[] diagnosticsIds)
-        where TGenerator : class, IIncrementalGenerator, new()
-    {
-        VerifyGeneratedDiagnostics<TGenerator>(CSharpSyntaxTree.ParseText(source), markdown, diagnosticsIds);
-    }
-
-    /// <summary>
-    /// Verifies the output of a source generator.
-    /// </summary>
-    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
-    /// <param name="syntaxTree">The input source tree to process.</param>
-    /// <param name="markdown">The input documentation info to process.</param>
-    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-    internal static void VerifyGeneratedDiagnostics<TGenerator>(SyntaxTree syntaxTree, string markdown, params string[] diagnosticsIds)
-        where TGenerator : class, IIncrementalGenerator, new()
-    {
-        var sampleAttributeType = typeof(ToolkitSampleAttribute);
-
-        var references =
-            from assembly in AppDomain.CurrentDomain.GetAssemblies()
-            where !assembly.IsDynamic
-            let reference = MetadataReference.CreateFromFile(assembly.Location)
-            select reference;
-
-        var compilation = CSharpCompilation.Create(
-            "original.Samples",
-            new[] { syntaxTree },
-            references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-        var compilationDiagnostics = compilation.GetDiagnostics();
-
-        IIncrementalGenerator generator = new TGenerator();
-
-        GeneratorDriver driver =
-            CSharpGeneratorDriver
-                .Create(generator)
-                .WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
-
-        if (!string.IsNullOrWhiteSpace(markdown))
-        {
-            var text = new InMemoryAdditionalText(@"C:\pathtorepo\components\experiment\samples\experiment.Samples\documentation.md", markdown);
-
-            driver = driver.AddAdditionalTexts(ImmutableArray.Create<AdditionalText>(text));
-        }
-
-        _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
-
-        HashSet<string> resultingIds = diagnostics.Select(diagnostic => diagnostic.Id).ToHashSet();
-        var generatedCompilationDiaghostics = outputCompilation.GetDiagnostics();
-
-        Assert.IsTrue(resultingIds.SetEquals(diagnosticsIds), $"Expected one of [{string.Join(", ", diagnosticsIds)}] diagnostic Ids. Got [{string.Join(", ", resultingIds)}]");
-        Assert.IsTrue(generatedCompilationDiaghostics.All(x => x.Severity != DiagnosticSeverity.Error), $"Expected no generated compilation errors. Got: \n{string.Join("\n", generatedCompilationDiaghostics.Where(x => x.Severity == DiagnosticSeverity.Error).Select(x => $"[{x.Id}: {x.GetMessage()}]"))}");
-
-        GC.KeepAlive(sampleAttributeType);
-    }
-
-    //// See: https://github.com/CommunityToolkit/dotnet/blob/c2053562d1a4d4829fc04b1cb86d1564c2c4a03c/tests/CommunityToolkit.Mvvm.SourceGenerators.UnitTests/Test_SourceGeneratorsCodegen.cs#L103
-    /// <summary>
-    /// Generates the requested sources
-    /// </summary>
-    /// <param name="source">The input source to process.</param>
-    /// <param name="generators">The generators to apply to the input syntax tree.</param>
-    /// <param name="results">The source files to compare.</param>
-    internal static void VerifyGenerateSources(string assemblyName, string source, IIncrementalGenerator[] generators, bool ignoreDiagnostics = false, params (string Filename, string Text)[] results)
-    {
-        // Ensure our types are loaded
-        Type sampleattributeObjectType = typeof(ToolkitSampleAttribute);
-
-        // Get all assembly references for the loaded assemblies (easy way to pull in all necessary dependencies)
-        IEnumerable<MetadataReference> references =
-            from assembly in AppDomain.CurrentDomain.GetAssemblies()
-            where !assembly.IsDynamic
-            let reference = MetadataReference.CreateFromFile(assembly.Location)
-            select reference;
-
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10));
-
-        // Create a syntax tree with the input source
-        CSharpCompilation compilation = CSharpCompilation.Create(
-            assemblyName,
-            new SyntaxTree[] { syntaxTree },
-            references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(generators).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
-
-        // Run all source generators on the input source code
-        _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
-
-        // Ensure that no diagnostics were generated
-        if (!ignoreDiagnostics)
-        {
-            CollectionAssert.AreEquivalent(Array.Empty<Diagnostic>(), diagnostics);
-        }
-
-        foreach ((string filename, string text) in results)
-        {
-            SyntaxTree generatedTree = outputCompilation.SyntaxTrees.Single(tree => Path.GetFileName(tree.FilePath) == filename);
-
-            Assert.AreEqual(text, generatedTree.ToString());
-        }
-
-        GC.KeepAlive(sampleattributeObjectType);
-    }
-
-    // From: https://github.com/dotnet/roslyn/blob/main/src/Compilers/Test/Core/SourceGeneration/TestGenerators.cs
-    internal class InMemoryAdditionalText : AdditionalText
-    {
-        private readonly SourceText _content;
-
-        public InMemoryAdditionalText(string path, string content)
-        {
-            Path = path;
-            _content = SourceText.From(content, Encoding.UTF8);
-        }
-
-        public override string Path { get; }
-
-        public override SourceText GetText(CancellationToken cancellationToken = default) => _content;
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 }

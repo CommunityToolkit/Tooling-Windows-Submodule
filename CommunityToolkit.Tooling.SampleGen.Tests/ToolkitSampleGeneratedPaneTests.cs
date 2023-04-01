@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
+[TestClass]
 public partial class ToolkitSampleGeneratedPaneTests
 {
     [TestMethod]
@@ -38,7 +39,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleOptionGenerator>(source, string.Empty);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleOptionGenerator>(source, string.Empty);
     }
 
     [TestMethod]
@@ -128,7 +129,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleOptionGenerator>(source, string.Empty);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleOptionGenerator>(source, string.Empty);
     }
 
     [TestMethod]
@@ -151,7 +152,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl { }
             }";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample.Id);
     }
 
     [DataRow("", DisplayName = "Empty string"), DataRow(" ", DisplayName = "Only whitespace"), DataRow("Test ", DisplayName = "Text with whitespace")]
@@ -179,7 +180,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithBadName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithBadName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
 
@@ -206,7 +207,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithConflictingName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithConflictingName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [TestMethod]
@@ -236,7 +237,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithConflictingName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithConflictingName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [TestMethod]
@@ -264,7 +265,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithDuplicateName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithDuplicateName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [TestMethod]
@@ -297,7 +298,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [TestMethod]
@@ -317,7 +318,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleGeneratedOptionAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleGeneratedOptionAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample.Id);
     }
 
     [TestMethod]
@@ -343,7 +344,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneMultiChoiceOptionWithNoChoices.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneMultiChoiceOptionWithNoChoices.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [TestMethod]
@@ -359,11 +360,10 @@ public partial class ToolkitSampleGeneratedPaneTests
                 [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
                 {{
-                }}
-
-                [ToolkitSampleButtonAction(label: ""Raise notification"")]
-                private void RaiseNotification()
-                {{
+                    [ToolkitSampleButtonAction(label: ""Raise notification"")]
+                    private void RaiseNotification()
+                    {{
+                    }}
                 }}
             }}
 
@@ -372,6 +372,6 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        ToolkitSampleMetadataTests.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 }
