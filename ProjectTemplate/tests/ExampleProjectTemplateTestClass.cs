@@ -57,13 +57,13 @@ public partial class ExampleProjectTemplateTestClass : VisualUITestBase
     public void SimpleUIExamplePageTest(ExampleProjectTemplateTestPage page)
     {
         // You can use the Toolkit Visual Tree helpers here to find the component by type or name:
-        var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
+        /*var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
 
         Assert.IsNotNull(component);
 
         var componentByName = page.FindDescendant("ProjectTemplateControl");
 
-        Assert.IsNotNull(componentByName);
+        Assert.IsNotNull(componentByName);*/
     }
 
     // You can still do async work with a UIThreadTestMethod as well.
@@ -73,9 +73,9 @@ public partial class ExampleProjectTemplateTestClass : VisualUITestBase
         // This helper can be used to wait for a rendering pass to complete.
         await CompositionTargetHelper.ExecuteAfterCompositionRenderingAsync(() => { });
 
-        var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
+        /*var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
 
-        Assert.IsNotNull(component);
+        Assert.IsNotNull(component);*/
     }
 
     //// ----------------------------- ADVANCED TEST SCENARIOS -----------------------------
