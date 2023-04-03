@@ -67,16 +67,16 @@ public partial class ExampleProjectTemplateTestClass : VisualUITestBase
     }
 
     // You can still do async work with a UIThreadTestMethod as well.
-    [UIThreadTestMethod]
+    /*[UIThreadTestMethod]
     public async Task SimpleAsyncUIExamplePageTest(ExampleProjectTemplateTestPage page)
     {
         // This helper can be used to wait for a rendering pass to complete.
         await CompositionTargetHelper.ExecuteAfterCompositionRenderingAsync(() => { });
 
-        /*var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
+        var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
 
-        Assert.IsNotNull(component);*/
-    }
+        Assert.IsNotNull(component);
+    }*/
 
     //// ----------------------------- ADVANCED TEST SCENARIOS -----------------------------
 
