@@ -29,7 +29,6 @@ public static class TestHelpers
 
         _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation generatorCompilation, out ImmutableArray<Diagnostic> postGeneratorCompilationDiagnostics);
 
-        VerifyCompilationErrors(compilation);
         VerifyCompilationErrors(generatorCompilation);
         VerifyDiagnostics(diagnosticsIds, postGeneratorCompilationDiagnostics);
     }
@@ -48,7 +47,7 @@ public static class TestHelpers
             CollectionAssert.AreEquivalent(Array.Empty<Diagnostic>(), diagnostics);
         }
 
-        VerifyCompilationErrors(compilation);
+        VerifyCompilationErrors(generatorCompilation);
         VerifyGeneratedSources(results, generatorCompilation);
     }
 

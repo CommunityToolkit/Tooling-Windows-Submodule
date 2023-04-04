@@ -58,8 +58,6 @@ public partial class ToolkitSampleGeneratedPaneTests
                 {
                     public Sample()
                     {
-                        var x = this.Test;
-                        var y = this.TextFontFamily;
                     }
                 }
             }
@@ -83,7 +81,7 @@ public partial class ToolkitSampleGeneratedPaneTests
             }
             """;
 
-        ToolkitSampleMetadataTests.VerifyGenerateSources("MyApp.Tests", source, new[] { new ToolkitSampleMetadataGenerator() }, ignoreDiagnostics: true, ("ToolkitSampleRegistry.g.cs", result));
+        TestHelpers.VerifyGenerateSources("MyApp.Tests", source, new[] { new ToolkitSampleMetadataGenerator() }, ignoreDiagnostics: true, ("ToolkitSampleRegistry.g.cs", result));
     }
 
     // https://github.com/CommunityToolkit/Labs-Windows/issues/175

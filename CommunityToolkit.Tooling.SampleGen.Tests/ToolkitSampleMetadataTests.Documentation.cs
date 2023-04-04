@@ -40,7 +40,7 @@ public partial class ToolkitSampleMetadataTests
             Without any front matter.
             ";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown, DiagnosticDescriptors.MarkdownYAMLFrontMatterException.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown, DiagnosticDescriptors.MarkdownYAMLFrontMatterException.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
 
     [DataRow(1, DisplayName = "Title")]
@@ -74,7 +74,7 @@ Without any front matter.";
         lines.RemoveAt(removeline);
         markdown = String.Join('\n', lines);
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown, DiagnosticDescriptors.MarkdownYAMLFrontMatterMissingField.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id); // We won't see the sample reference as we bail out when the front matter fails to be complete...
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown, DiagnosticDescriptors.MarkdownYAMLFrontMatterMissingField.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id); // We won't see the sample reference as we bail out when the front matter fails to be complete...
     }
 
     [TestMethod]
@@ -97,7 +97,7 @@ issue-id: 0
 Without any front matter.
 ";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown,
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown,
             DiagnosticDescriptors.MarkdownSampleIdNotFound.Id,
             DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
@@ -120,7 +120,7 @@ issue-id: 0
 # This is some test documentation...
 Without any sample.";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown,
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown,
             DiagnosticDescriptors.DocumentationHasNoSamples.Id,
             DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
     }
@@ -144,7 +144,7 @@ issue-id: 0
 Which is valid.
 > [!SAMPLE Sample]";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown);
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown);
     }
 
     [TestMethod]
@@ -165,7 +165,7 @@ issue-id: 0
 # This is some test documentation...
 Without an invalid discussion id.";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(string.Empty, markdown,
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(string.Empty, markdown,
             DiagnosticDescriptors.MarkdownYAMLFrontMatterException.Id,
             DiagnosticDescriptors.DocumentationHasNoSamples.Id);
     }
@@ -188,7 +188,7 @@ issue-id: https://github.com/1234
 # This is some test documentation...
 Without an invalid discussion id.";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(string.Empty, markdown,
+        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(string.Empty, markdown,
             DiagnosticDescriptors.MarkdownYAMLFrontMatterException.Id,
             DiagnosticDescriptors.DocumentationHasNoSamples.Id);
     }
