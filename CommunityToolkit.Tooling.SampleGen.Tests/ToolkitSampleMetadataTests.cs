@@ -3,14 +3,16 @@
 // See the LICENSE file in the project root for more information.
 
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
+using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.ComponentModel.DataAnnotations;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
 [TestClass]
 public partial class ToolkitSampleMetadataTests
 {
+    private const string SAMPLE_ASM_NAME = "MetadataTests.Samples";
+
     [TestMethod]
     public void SampleAttributeOnUnsupportedType()
     {
@@ -27,7 +29,10 @@ public partial class ToolkitSampleMetadataTests
                 }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SampleAttributeOnUnsupportedType, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
+        result.AssertNoCompilationErrors();
     }
 
     [TestMethod]
@@ -56,7 +61,10 @@ public partial class ToolkitSampleMetadataTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleOptionPaneAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SampleOptionPaneAttributeOnUnsupportedType, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
+        result.AssertNoCompilationErrors();
     }
 
     [TestMethod]
@@ -81,7 +89,9 @@ public partial class ToolkitSampleMetadataTests
                 public class UserControl {{ }}
             }}";
 
-        // TODO: We should have this return the references to the registries or something so we can check the generated output?
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SampleNotReferencedInMarkdown);
+        result.AssertNoCompilationErrors();
     }
 }

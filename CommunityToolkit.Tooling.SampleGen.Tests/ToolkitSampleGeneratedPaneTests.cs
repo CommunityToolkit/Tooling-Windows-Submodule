@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
+using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
@@ -10,6 +11,8 @@ namespace CommunityToolkit.Tooling.SampleGen.Tests;
 [TestClass]
 public partial class ToolkitSampleGeneratedPaneTests
 {
+    private const string SAMPLE_ASM_NAME = "PaneTests.Samples";
+
     [TestMethod]
     public void PaneOption_GeneratesWithoutDiagnostics()
     {
@@ -39,13 +42,16 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleOptionGenerator>(source, string.Empty);
+        var result = source.RunSourceGenerator<ToolkitSampleOptionGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre();
     }
 
     [TestMethod]
     public void PaneOption_GeneratesTitleProperty()
     {
-        var source = """
+        var syntaxTree = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
@@ -66,25 +72,31 @@ public partial class ToolkitSampleGeneratedPaneTests
             {
                 public class UserControl { }
             }
-        """;
+        """.ToSyntaxTree();
 
-        var result = """
-            #nullable enable
-            namespace CommunityToolkit.Tooling.SampleGen;
+        // Create compilation builder with custom assembly name
+        var compilation = syntaxTree.CreateCompilation("MyApp.Tests");
 
-            public static class ToolkitSampleRegistry
-            {
-                public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing
-                { get; } = new() {
-                    ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
-                };
-            }
-            """;
+        // Run source generator
+        var result = syntaxTree.RunSourceGenerator<ToolkitSampleMetadataGenerator>(compilation);
 
-        TestHelpers.VerifyGenerateSources("MyApp.Tests", source, new[] { new ToolkitSampleMetadataGenerator() }, ignoreDiagnostics: true, ("ToolkitSampleRegistry.g.cs", result));
+        result.AssertDiagnosticsAre();
+        result.AssertNoCompilationErrors();
+
+        result.AssertSourceGenerated(filename: "ToolkitSampleRegistry.g.cs", expectedContents: """
+        #nullable enable
+        namespace CommunityToolkit.Tooling.SampleGen;
+
+        public static class ToolkitSampleRegistry
+        {
+            public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing
+            { get; } = new() {
+                ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
+            };
+        }
+        """);
     }
 
-    // https://github.com/CommunityToolkit/Labs-Windows/issues/175
     [TestMethod]
     public void PaneOption_GeneratesProperty_DuplicatePropNamesAcrossSampleClasses()
     {
@@ -127,7 +139,10 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleOptionGenerator>(source, string.Empty);
+        var result = source.RunSourceGenerator<ToolkitSampleOptionGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre();
     }
 
     [TestMethod]
@@ -150,7 +165,8 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl { }
             }";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+        result.Diagnostics.AssertDiagnosticsAre(DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample);
     }
 
     [DataRow("", DisplayName = "Empty string"), DataRow(" ", DisplayName = "Only whitespace"), DataRow("Test ", DisplayName = "Text with whitespace")]
@@ -178,7 +194,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithBadName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SamplePaneOptionWithBadName, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
 
@@ -205,7 +223,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithConflictingName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SamplePaneOptionWithConflictingName, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -235,7 +255,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithConflictingName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SamplePaneOptionWithConflictingName, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -263,7 +285,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneOptionWithDuplicateName.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SamplePaneOptionWithDuplicateName, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -296,7 +320,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -316,7 +342,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleGeneratedOptionAttributeOnUnsupportedType.Id, DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SampleGeneratedOptionAttributeOnUnsupportedType, DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample);
     }
 
     [TestMethod]
@@ -342,7 +370,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SamplePaneMultiChoiceOptionWithNoChoices.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SamplePaneMultiChoiceOptionWithNoChoices, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -370,6 +400,9 @@ public partial class ToolkitSampleGeneratedPaneTests
                 public class UserControl {{ }}
             }}";
 
-        TestHelpers.VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(source, string.Empty, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+
+        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 }
