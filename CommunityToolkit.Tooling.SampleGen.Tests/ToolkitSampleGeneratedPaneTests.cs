@@ -80,9 +80,11 @@ public partial class ToolkitSampleGeneratedPaneTests
             .CreateCompilation("MyApp.Samples")
             .ToMetadataReference();
 
-        // Get all current referenced assemblies + our generated sample project.
-        var headReferences = TestHelpers.GetAllReferencedAssemblies().Concat(new[] { sampleProjectAssembly });
-        var headCompilation = string.Empty.ToSyntaxTree().CreateCompilation("MyApp.Head", headReferences);
+        // Create application head that references generated sample project
+        var headCompilation = string.Empty
+            .ToSyntaxTree()
+            .CreateCompilation("MyApp.Head", TestHelpers.GetAllReferencedAssemblies())
+            .AddReferences(sampleProjectAssembly);
 
         // Run source generator
         var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>();
@@ -90,7 +92,7 @@ public partial class ToolkitSampleGeneratedPaneTests
         result.AssertDiagnosticsAre();
         result.AssertNoCompilationErrors();
 
-        result.AssertSourceGenerated(filename: "ToolkitSampleRegistry.g.cs", expectedContents: """
+        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"), """
         #nullable enable
         namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -101,7 +103,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
             };
         }
-        """);
+        """, "Unexpected code generated");
     }
 
     [TestMethod]
@@ -385,7 +387,7 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void GeneratedPaneOption_ButtonAction()
     {
-        var syntaxTree = $@"
+        var sampleProjectAssembly = $@"
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
@@ -405,19 +407,24 @@ public partial class ToolkitSampleGeneratedPaneTests
             namespace Windows.UI.Xaml.Controls
             {{
                 public class UserControl {{ }}
-            }}".ToSyntaxTree();
+            }}"
+            .ToSyntaxTree()
+            .CreateCompilation("MyApp.Samples")
+            .ToMetadataReference();
 
-
-        // Create compilation builder with custom assembly name
-        var compilation = syntaxTree.CreateCompilation("MyApp.Tests");
+        // Create application head that references generated sample project
+        var headCompilation = string.Empty
+            .ToSyntaxTree()
+            .CreateCompilation("MyApp.Head", TestHelpers.GetAllReferencedAssemblies())
+            .AddReferences(sampleProjectAssembly);
 
         // Run source generator
-        var result = compilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>();
+        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>();
 
         result.AssertDiagnosticsAre();
         result.AssertNoCompilationErrors();
 
-        result.AssertSourceGenerated(filename: "ToolkitSampleRegistry.g.cs", expectedContents: """
+        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"), """
         #nullable enable
         namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -428,6 +435,6 @@ public partial class ToolkitSampleGeneratedPaneTests
                 ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
             };
         }
-        """);
+        """, "Unexpected code generated");
     }
 }

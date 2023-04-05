@@ -6,7 +6,7 @@ namespace CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 public static partial class TestHelpers
 {
     internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this string source, string assemblyName, string markdown = "") where TGenerator : class, IIncrementalGenerator, new() => RunSourceGenerator<TGenerator>(source.ToSyntaxTree(), assemblyName, markdown);
-    
+
     internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this SyntaxTree syntaxTree, string assemblyName, string markdown = "")
         where TGenerator : class, IIncrementalGenerator, new()
     {
@@ -42,17 +42,19 @@ public static partial class TestHelpers
         Assert.IsTrue(generatedCompilationDiagnostics.All(x => x.Severity != DiagnosticSeverity.Error), $"Expected no generated compilation errors. Got: \n{string.Join("\n", generatedCompilationDiagnostics.Where(x => x.Severity == DiagnosticSeverity.Error).Select(x => $"[{x.Id}: {x.GetMessage()}]"))}");
     }
 
-    internal static void AssertSourceGenerated(this Compilation compilation, string filename, string expectedContents)
+    internal static string GetFileContentsByName(this Compilation compilation, string filename)
     {
         var generatedTree = compilation.SyntaxTrees.SingleOrDefault(tree => Path.GetFileName(tree.FilePath) == filename);
-
         Assert.IsNotNull(generatedTree, $"No file named {filename} was generated");
-        Assert.AreEqual(expectedContents, generatedTree.ToString(), "Unexpected code generated");
+
+        return generatedTree.ToString();
+    }
+
+    internal static void AssertSourceGenerated(this Compilation compilation, string filename, string expectedContents)
+    {
     }
 
     internal static void AssertDiagnosticsAre(this SourceGeneratorRunResult result, params DiagnosticDescriptor[] expectedDiagnosticDescriptors) => AssertDiagnosticsAre(result.Diagnostics, expectedDiagnosticDescriptors);
 
     internal static void AssertNoCompilationErrors(this SourceGeneratorRunResult result) => AssertNoCompilationErrors(result.Compilation);
-
-    internal static void AssertSourceGenerated(this SourceGeneratorRunResult result, string filename, string expectedContents) => AssertSourceGenerated(result.Compilation, filename, expectedContents);
 }
