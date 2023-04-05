@@ -33,14 +33,14 @@ public static partial class TestHelpers
         return CSharpCompilation.Create(assemblyName, syntaxTree, references ?? GetAllReferencedAssemblies(), new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
 
-    internal static GeneratorDriver CreateSourceGeneratorDriver(this SyntaxTree syntaxTree, IIncrementalGenerator generator)
-    {
-        return CSharpGeneratorDriver.Create(generator).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
-    }
-
     internal static GeneratorDriver CreateSourceGeneratorDriver(this SyntaxTree syntaxTree, params IIncrementalGenerator[] generators)
     {
         return CSharpGeneratorDriver.Create(generators).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
+    }
+
+    internal static GeneratorDriver CreateSourceGeneratorDriver(this Compilation compilation, params IIncrementalGenerator[] generators)
+    {
+        return CSharpGeneratorDriver.Create(generators).WithUpdatedParseOptions((CSharpParseOptions)compilation.SyntaxTrees.First().Options);
     }
 
     internal static GeneratorDriver WithMarkdown(this GeneratorDriver driver, params string[] markdownFilesToCreate)

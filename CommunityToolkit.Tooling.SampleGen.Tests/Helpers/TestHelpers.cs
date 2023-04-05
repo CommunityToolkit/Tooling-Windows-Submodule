@@ -6,20 +6,19 @@ namespace CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 public static partial class TestHelpers
 {
     internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this string source, string assemblyName, string markdown = "") where TGenerator : class, IIncrementalGenerator, new() => RunSourceGenerator<TGenerator>(source.ToSyntaxTree(), assemblyName, markdown);
-
+    
     internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this SyntaxTree syntaxTree, string assemblyName, string markdown = "")
         where TGenerator : class, IIncrementalGenerator, new()
     {
-        var references = GetAllReferencedAssemblies();
-        var compilation = syntaxTree.CreateCompilation(assemblyName, references); // assembly name should always be supplied in param
-        return RunSourceGenerator<TGenerator>(syntaxTree, compilation, markdown);
+        var compilation = syntaxTree.CreateCompilation(assemblyName); // assembly name should always be supplied in param
+        return RunSourceGenerator<TGenerator>(compilation, markdown);
     }
 
-    internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this SyntaxTree syntaxTree, Compilation compilation, string markdown = "")
+    internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this Compilation compilation, string markdown = "")
         where TGenerator : class, IIncrementalGenerator, new()
     {
         // Create a driver for the source generator
-        var driver = syntaxTree
+        var driver = compilation
             .CreateSourceGeneratorDriver(new TGenerator())
             .WithMarkdown(markdown);
 

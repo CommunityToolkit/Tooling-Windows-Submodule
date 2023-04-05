@@ -4,7 +4,9 @@
 
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
@@ -51,7 +53,9 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOption_GeneratesTitleProperty()
     {
-        var syntaxTree = """
+        // The sample registry is designed to be declared in the sample project, and generated in the project head where its displayed in the UI as data.
+        // To test the contents of the generated sample registry, we must replicate this setup.
+        var sampleProjectAssembly = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
@@ -72,13 +76,16 @@ public partial class ToolkitSampleGeneratedPaneTests
             {
                 public class UserControl { }
             }
-        """.ToSyntaxTree();
+        """.ToSyntaxTree()
+            .CreateCompilation("MyApp.Samples")
+            .ToMetadataReference();
 
-        // Create compilation builder with custom assembly name
-        var compilation = syntaxTree.CreateCompilation("MyApp.Tests");
+        // Get all current referenced assemblies + our generated sample project.
+        var headReferences = TestHelpers.GetAllReferencedAssemblies().Concat(new[] { sampleProjectAssembly });
+        var headCompilation = string.Empty.ToSyntaxTree().CreateCompilation("MyApp.Head", headReferences);
 
         // Run source generator
-        var result = syntaxTree.RunSourceGenerator<ToolkitSampleMetadataGenerator>(compilation);
+        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>();
 
         result.AssertDiagnosticsAre();
         result.AssertNoCompilationErrors();
@@ -378,7 +385,7 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void GeneratedPaneOption_ButtonAction()
     {
-        var source = $@"
+        var syntaxTree = $@"
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
@@ -398,11 +405,29 @@ public partial class ToolkitSampleGeneratedPaneTests
             namespace Windows.UI.Xaml.Controls
             {{
                 public class UserControl {{ }}
-            }}";
+            }}".ToSyntaxTree();
 
 
-        var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
+        // Create compilation builder with custom assembly name
+        var compilation = syntaxTree.CreateCompilation("MyApp.Tests");
 
-        result.AssertDiagnosticsAre(DiagnosticDescriptors.SampleNotReferencedInMarkdown);
+        // Run source generator
+        var result = compilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>();
+
+        result.AssertDiagnosticsAre();
+        result.AssertNoCompilationErrors();
+
+        result.AssertSourceGenerated(filename: "ToolkitSampleRegistry.g.cs", expectedContents: """
+        #nullable enable
+        namespace CommunityToolkit.Tooling.SampleGen;
+
+        public static class ToolkitSampleRegistry
+        {
+            public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing
+            { get; } = new() {
+                ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
+            };
+        }
+        """);
     }
 }

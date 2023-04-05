@@ -125,7 +125,6 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                 var currentAssembly = data.Right;
 
                 var isExecutingInSampleProject = currentAssembly?.EndsWith(".Samples") ?? false;
-                var isExecutingInTestProject = currentAssembly?.EndsWith(".Tests") ?? false;
 
                 // Reconstruct sample metadata from attributes
                 var sampleMetadata = toolkitSampleAttributeData
@@ -151,9 +150,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                     ReportDocumentDiagnostics(ctx, sampleMetadata, markdownFileData, toolkitSampleAttributeData, docFrontMatter);
                 }
 
-                // For tests we need one pass to do diagnostics and registry as we're in a contrived environment that'll have both our scenarios. Though we check if we have anything to write, as we will hit both executes.
-                if ((!isExecutingInSampleProject && !skipRegistry) ||
-                    (isExecutingInTestProject && (docFrontMatter.Any() || sampleMetadata.Any())))
+                if (!isExecutingInSampleProject && !skipRegistry)
                 {
                     CreateDocumentRegistry(ctx, docFrontMatter);
                     CreateSampleRegistry(ctx, sampleMetadata);
