@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup>
+    <DependencyVariant>WinUI</DependencyVariant>
+  </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)\Tests.Head.props"/>
   <Import Project="$(MSBuildThisFileDirectory)\Head.WinAppSdk.props"/>
 
@@ -7,8 +10,6 @@
       <Version>17.1.0</Version>
       <ExcludeAssets>build</ExcludeAssets>
     </PackageReference>
-    <!-- TODO: See comment in LINK:Tests.Head.Uwp.props file -->
-    <!-- <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2"/> -->
   </ItemGroup>
 
   <ItemGroup>
