@@ -4,6 +4,8 @@
 
 using CommunityToolkit.Tooling.TestGen;
 using CommunityToolkit.Tests;
+using CommunityToolkit.Tests.Internal; // TODO: For CompositionTargetHelper until ported over into package.
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Controls;
 
 namespace ProjectTemplateExperiment.Tests;
@@ -57,26 +59,27 @@ public partial class ExampleProjectTemplateTestClass : VisualUITestBase
     public void SimpleUIExamplePageTest(ExampleProjectTemplateTestPage page)
     {
         // You can use the Toolkit Visual Tree helpers here to find the component by type or name:
-        /*var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
+        var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
 
         Assert.IsNotNull(component);
 
         var componentByName = page.FindDescendant("ProjectTemplateControl");
 
-        Assert.IsNotNull(componentByName);*/
+        Assert.IsNotNull(componentByName);
     }
 
     // You can still do async work with a UIThreadTestMethod as well.
-    /*[UIThreadTestMethod]
+    [UIThreadTestMethod]
     public async Task SimpleAsyncUIExamplePageTest(ExampleProjectTemplateTestPage page)
     {
         // This helper can be used to wait for a rendering pass to complete.
+        // Note, this is already done by loading a Page with the [UIThreadTestMethod] helper.
         await CompositionTargetHelper.ExecuteAfterCompositionRenderingAsync(() => { });
 
         var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();
 
         Assert.IsNotNull(component);
-    }*/
+    }
 
     //// ----------------------------- ADVANCED TEST SCENARIOS -----------------------------
 

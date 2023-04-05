@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup>
+    <DependencyVariant>Uwp</DependencyVariant>
+  </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)\Tests.Head.props"/>
   <Import Project="$(MSBuildThisFileDirectory)\Head.Uwp.props" />
   
@@ -9,7 +12,5 @@
 
   <ItemGroup>
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
-    <!-- TODO: We need a way to toggle this between Package and Source of the Extension module if we want to set it up 'globally' -->
-    <!--<PackageReference Include="Microsoft.Toolkit.Uwp.UI" Version="7.1.2"/>-->
   </ItemGroup>
 </Project>

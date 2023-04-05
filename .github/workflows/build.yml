@@ -116,7 +116,7 @@ jobs:
       - name: Copy props files to root
         shell: pwsh
         working-directory: ./
-        run: copy ./tooling/.github/workflows/Directory.Build.* ./
+        run: copy ./tooling/.github/workflows/config/* ./
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.3.1
@@ -162,7 +162,7 @@ jobs:
         shell: pwsh
         working-directory: ./
         run: |
-          copy ./tooling/.github/workflows/Directory.Build.* ./
+          copy ./tooling/.github/workflows/config/* ./
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
@@ -247,7 +247,7 @@ jobs:
         shell: pwsh
         working-directory: ./
         run: |
-          copy ./tooling/.github/workflows/Directory.Build.* ./
+          copy ./tooling/.github/workflows/config/* ./
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
