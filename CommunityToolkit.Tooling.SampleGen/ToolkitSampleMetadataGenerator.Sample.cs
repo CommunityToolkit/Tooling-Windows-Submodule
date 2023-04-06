@@ -29,8 +29,8 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             .Select(static (x, _) => x!);
 
         var symbolsInReferencedAssemblies = context.CompilationProvider
-                              .SelectMany((x, _) => x.SourceModule.ReferencedAssemblySymbols)
-                              .SelectMany((asm, _) => asm.GlobalNamespace.CrawlForAllSymbols().Where(x => x.Kind is SymbolKind.NamedType or SymbolKind.Method));
+            .SelectMany((x, _) => x.SourceModule.ReferencedAssemblySymbols)
+            .SelectMany((asm, _) => asm.GlobalNamespace.CrawlForAllSymbols());
 
         var markdownFiles = context.AdditionalTextsProvider
             .Where(static file => file.Path.EndsWith(".md"))
@@ -80,7 +80,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                         // Auto-assign the attached method name as the generated property name.
                         buttonActionAttribute.Name = x.Item1.Name;
 
-                        item = (x.Item1, buttonActionAttribute);
+                        item = (x.Item1.ContainingSymbol, buttonActionAttribute);
                     }
 
                     // Add extra property data, like Title, back to Attribute
@@ -138,7 +138,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                                 sample.Attribute.Description,
                                 sample.AttachedQualifiedTypeName,
                                 optionsPaneAttribute.FirstOrDefault(x => x.Item1?.SampleId == sample.Attribute.Id).Item2?.ToString(),
-                                generatedOptionPropertyData.Where(x => ReferenceEquals(x.Item1, sample.Symbol)).Select(x => x.Item2)
+                                generatedOptionPropertyData.Where(x => Equals(x.Symbol, sample.Symbol)).Select(x => x.Item2)
                             )
                     );
 
@@ -256,7 +256,9 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithDuplicateName, item.SelectMany(x => x.Item1.Locations).FirstOrDefault(), item.Key));
 
         // Check for generated options that conflict with an existing property name
-        var generatedOptionsWithConflictingPropertyNames = generatedOptionPropertyData.Where(x => x.Item1 is INamedTypeSymbol sym && GetAllMembers(sym).Any(y => x.Item2.Name == y.Name));
+        var generatedOptionsWithConflictingPropertyNames = generatedOptionPropertyData
+            .Where(x => x.Item2 is not ToolkitSampleButtonActionAttribute)
+            .Where(x => x.Item1 is INamedTypeSymbol sym && GetAllMembers(sym).Any(y => x.Item2.Name == y.Name));
 
         foreach (var item in generatedOptionsWithConflictingPropertyNames)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithConflictingName, item.Item1.Locations.FirstOrDefault(), item.Item2.Name));

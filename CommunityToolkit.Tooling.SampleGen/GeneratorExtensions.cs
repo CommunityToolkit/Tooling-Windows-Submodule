@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -14,15 +16,29 @@ public static class GeneratorExtensions
     /// <returns>A flattened enumerable of <see cref="INamedTypeSymbol"/>s.</returns>
     public static IEnumerable<ISymbol> CrawlForAllSymbols(this INamespaceSymbol namespaceSymbol)
     {
-        foreach (var member in namespaceSymbol.GetMembers())
+        foreach (var member in namespaceSymbol.GetNamespaceMembers())
         {
             if (member is INamespaceSymbol nestedNamespace)
             {
                 foreach (var item in CrawlForAllSymbols(nestedNamespace))
+                {
                     yield return item;
+                }
             }
+        }
 
-            yield return member;
+        // Get all classes and methods
+        foreach (var item in namespaceSymbol.GetTypeMembers())
+        {
+            yield return item;
+
+            foreach (var itemMember in item.GetMembers())
+            {
+                if (itemMember.Kind == SymbolKind.Method)
+                {
+                    yield return itemMember;
+                }
+            }
         }
     }
 
