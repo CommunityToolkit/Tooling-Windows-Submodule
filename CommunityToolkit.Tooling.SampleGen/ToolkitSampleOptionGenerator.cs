@@ -206,7 +206,7 @@ namespace {{attachedMethodSymbol.ContainingNamespace}}
             get
             {
                 var metadata = GeneratedPropertyMetadata!.First(x => x.Name == nameof({{attachedMethodSymbol.Name}}));
-                return ({{typeof(System.Windows.Input.ICommand).FullName}})(metadata.Value ??= new {{typeof(ToolkitSampleButtonCommand).FullName}}({{attachedMethodSymbol.Name}}));
+                return ({{typeof(System.Windows.Input.ICommand).FullName}})(metadata.Value ??= new {{typeof(ToolkitSampleButtonCommand).FullName}}(() => {{attachedMethodSymbol.Name}}()));
             }
             set
             {

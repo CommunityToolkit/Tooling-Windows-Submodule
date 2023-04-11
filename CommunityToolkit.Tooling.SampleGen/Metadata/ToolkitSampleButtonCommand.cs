@@ -20,11 +20,11 @@ public class ToolkitSampleButtonCommand : ICommand
 
     /// <inheritdoc />
     public event EventHandler? CanExecuteChanged;
-    
+
     /// <inheritdoc />
     public bool CanExecute(object parameter)
     {
-        throw new NotImplementedException();
+        return true;
     }
     /// <inheritdoc />
     public void Execute(object parameter)

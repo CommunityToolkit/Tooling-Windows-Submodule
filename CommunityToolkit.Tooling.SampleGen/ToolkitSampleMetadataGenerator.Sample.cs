@@ -54,7 +54,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
             // Find and reconstruct generated pane option attributes + the original type symbol.
             var generatedPaneOptions = allAttributeData
-                .Select(static (x, _) =>
+                .Select((x, _) =>
                 {
                     (ISymbol Symbol, ToolkitSampleOptionBaseAttribute Attribute) item = default;
 
@@ -118,7 +118,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
             context.RegisterSourceOutput(all, (ctx, data) =>
             {
-                var toolkitSampleAttributeData = data.Left.Left.Left.Right.Where(x => x != default).Distinct();
+                var toolkitSampleAttributeData = data.Left.Left.Left.Right.Where(x => x != default).Distinct().ToArray();
                 var optionsPaneAttribute = data.Left.Left.Left.Left.Where(x => x != default).Distinct();
                 var generatedOptionPropertyData = data.Left.Left.Right.Where(x => x.Attribute is not null && x.Symbol is not null);
                 var markdownFileData = data.Left.Right.Where(x => x != default).Distinct();
@@ -138,7 +138,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                                 sample.Attribute.Description,
                                 sample.AttachedQualifiedTypeName,
                                 optionsPaneAttribute.FirstOrDefault(x => x.Item1?.SampleId == sample.Attribute.Id).Item2?.ToString(),
-                                generatedOptionPropertyData.Where(x => Equals(x.Symbol, sample.Symbol)).Select(x => x.Item2)
+                                generatedOptionPropertyData.Where(x => x.Symbol.Equals(sample.Symbol, SymbolEqualityComparer.Default)).Select(x => x.Item2)
                             )
                     );
 
@@ -315,7 +315,7 @@ public static class ToolkitSampleRegistry
             }
             else if (item is ToolkitSampleButtonActionAttribute buttonAttribute)
             {
-                yield return $@"new {typeof(ToolkitSampleButtonActionMetadataViewModel).FullName}(name: ""{buttonAttribute.Name}"", label: ""{buttonAttribute.Label}"", title: ""{buttonAttribute.Title}"")";
+                yield return $@"new {typeof(ToolkitSampleButtonActionMetadataViewModel).FullName}(name: ""{buttonAttribute.Name}"", controlToBindingValueFactory: x => x.{buttonAttribute.Name}Command, label: ""{buttonAttribute.Label}"", title: ""{buttonAttribute.Title}"")";
             }
             else if (item is ToolkitSampleNumericOptionAttribute numericAttribute)
             {

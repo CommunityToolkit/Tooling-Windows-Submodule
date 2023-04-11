@@ -16,17 +16,6 @@ public static class GeneratorExtensions
     /// <returns>A flattened enumerable of <see cref="INamedTypeSymbol"/>s.</returns>
     public static IEnumerable<ISymbol> CrawlForAllSymbols(this INamespaceSymbol namespaceSymbol)
     {
-        foreach (var member in namespaceSymbol.GetNamespaceMembers())
-        {
-            if (member is INamespaceSymbol nestedNamespace)
-            {
-                foreach (var item in CrawlForAllSymbols(nestedNamespace))
-                {
-                    yield return item;
-                }
-            }
-        }
-
         // Get all classes and methods
         foreach (var item in namespaceSymbol.GetTypeMembers())
         {
@@ -35,8 +24,17 @@ public static class GeneratorExtensions
             foreach (var itemMember in item.GetMembers())
             {
                 if (itemMember.Kind == SymbolKind.Method)
-                {
                     yield return itemMember;
+            }
+        }
+
+        foreach (var member in namespaceSymbol.GetNamespaceMembers())
+        {
+            if (member is INamespaceSymbol nestedNamespace)
+            {
+                foreach (var item in CrawlForAllSymbols(nestedNamespace))
+                {
+                    yield return item;
                 }
             }
         }
