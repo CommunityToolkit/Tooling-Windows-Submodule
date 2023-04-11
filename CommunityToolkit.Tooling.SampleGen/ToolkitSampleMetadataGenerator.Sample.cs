@@ -118,7 +118,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
             context.RegisterSourceOutput(all, (ctx, data) =>
             {
-                var toolkitSampleAttributeData = data.Left.Left.Left.Right.Where(x => x != default).Distinct().ToArray();
+                var toolkitSampleAttributeData = data.Left.Left.Left.Right.Where(x => x != default).Distinct();
                 var optionsPaneAttribute = data.Left.Left.Left.Left.Where(x => x != default).Distinct();
                 var generatedOptionPropertyData = data.Left.Left.Right.Where(x => x.Attribute is not null && x.Symbol is not null);
                 var markdownFileData = data.Left.Right.Where(x => x != default).Distinct();
