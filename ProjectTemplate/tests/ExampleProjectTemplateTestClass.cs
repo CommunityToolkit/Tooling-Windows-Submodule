@@ -4,8 +4,6 @@
 
 using CommunityToolkit.Tooling.TestGen;
 using CommunityToolkit.Tests;
-using CommunityToolkit.Tests.Internal; // TODO: For CompositionTargetHelper until ported over into package.
-using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Controls;
 
 namespace ProjectTemplateExperiment.Tests;
