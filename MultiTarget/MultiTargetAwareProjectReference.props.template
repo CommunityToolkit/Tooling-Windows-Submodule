@@ -14,7 +14,8 @@
 							($(IsGtk) == 'true' AND [CanTargetLinuxGtk] == 'true') OR
 							($(IsMacOS) == 'true' AND [CanTargetMacOS] == 'true') OR
 							($(IsiOS) == 'true' AND [CanTargetiOS] == 'true') OR
-							($(IsDroid) == 'true' AND [CanTargetDroid] == 'true')">
+							($(IsDroid) == 'true' AND [CanTargetDroid] == 'true') OR
+							($(IsNetstandard) == 'true' AND [CanTargetNetstandard] == 'true')">
 			<ItemGroup>
 				<ProjectReference Include="$(RepositoryDirectory)[ProjectRoot]\[ProjectFileName]" />
 			</ItemGroup>

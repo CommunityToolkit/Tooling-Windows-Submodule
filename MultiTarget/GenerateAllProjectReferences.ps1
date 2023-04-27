@@ -3,8 +3,8 @@ Param (
   [string]$projectPropsOutputDir = "$PSScriptRoot/Generated",
 
   [Parameter(HelpMessage = "Only projects that support these targets will have references generated for use by deployable heads.")]
-  [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android")
-)
+  [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
+  )
 
 $preWorkingDir = $pwd;
 Set-Location $PSScriptRoot;

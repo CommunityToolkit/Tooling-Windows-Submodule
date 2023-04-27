@@ -18,8 +18,8 @@ Param (
     [string]$projectRootPlaceholder = "[ProjectRoot]",
 
     [Parameter(HelpMessage = "Only projects that support these targets will have references generated for use by deployable heads.")]
-    [ValidateSet("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android")]
-    [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android")
+    [ValidateSet("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")]
+    [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
 )
 
 $preWorkingDir = $pwd;
@@ -58,6 +58,7 @@ $templateContents = $templateContents -replace [regex]::escape("[CanTargetLinuxG
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetMacOS]"), "'$(ShouldMultiTarget "macos")'";
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetiOS]"), "'$(ShouldMultiTarget "ios")'";
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetDroid]"), "'$(ShouldMultiTarget "droid")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetNetstandard]"), "'$(ShouldMultiTarget "netstandard")'";
 
 # Save to disk
 Set-Content -Path $outputPath -Value $templateContents;

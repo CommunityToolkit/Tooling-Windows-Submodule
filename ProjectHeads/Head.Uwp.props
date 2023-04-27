@@ -1,7 +1,8 @@
 <Project>
+    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\Windows.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
+
     <PropertyGroup>
-        <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
-        <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
         <IncludeContentInPack>false</IncludeContentInPack>
     </PropertyGroup>
 
