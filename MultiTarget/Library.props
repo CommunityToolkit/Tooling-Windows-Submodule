@@ -9,12 +9,12 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledMultiTargets.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
 
+  <!-- Use <MultiTarget> values to define <TargetFrameworks> -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetToTargetFramework.props" />
+
   <!-- Enable project identifiers -->
   <Import Project="$(ToolingDirectory)\MultiTarget\ProjectIdentifiers.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
-
-  <!-- Use <MultiTarget> values to define <TargetFrameworks> -->
-  <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetToTargetFramework.props" />
 
   <!-- Add platform package dependencies -->
   <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Netstandard.props" Condition="$(IsNetstandard) == 'true'" />

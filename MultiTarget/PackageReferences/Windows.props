@@ -1,6 +1,7 @@
 <Project>
   <ItemGroup Condition="'$(IsUwp)' == 'true'">
     <PackageReference Include="Microsoft.UI.Xaml" Version="2.7.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsWinAppSdk)' == 'true'">
