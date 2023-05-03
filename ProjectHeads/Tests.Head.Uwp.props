@@ -5,6 +5,7 @@
   <!-- Workaround as discussed https://github.com/unoplatform/uno/discussions/5007 for https://developercommunity.visualstudio.com/t/HasSharedItems-is-explicitly-set-to-em/10016046 -->
   <PropertyGroup>
     <SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
 
   <ItemGroup>
