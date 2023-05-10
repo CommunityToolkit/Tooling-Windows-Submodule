@@ -21,7 +21,16 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+        <!-- Don't overwrite if already defined. Needed for disabling .NET Native in test projects. -->
+        <UseDotNetNativeToolchain Condition="'$(UseDotNetNativeToolchain)' == ''">true</UseDotNetNativeToolchain>
+
+        <!--
+            Workarounds for ILT0005: Out of memory.
+         -->
+        <IlcParameters>/ExtraNutcArguments:"/d2threads1"</IlcParameters>
+        <SingleThreadNUTC>true</SingleThreadNUTC>
+        <Use64BitCompiler>true</Use64BitCompiler>
+        <OutOfProcPDB>true</OutOfProcPDB>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">

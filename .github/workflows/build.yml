@@ -95,6 +95,13 @@ jobs:
       PROJECT_DIRECTORY: tooling/ProjectTemplate
 
     steps:
+      - name: Configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+          minimum-size: 32GB
+          maximum-size: 32GB
+          disk-root: "C:"
+
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v3
         with:
