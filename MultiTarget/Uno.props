@@ -31,7 +31,7 @@
             Uno uses IDisposable internally, but exposes it publicly.
             See https://github.com/CommunityToolkit/Labs-Windows/pull/275#issuecomment-1331113635
          -->
-        <NoWarn>$(NoWarn);CA1063</NoWarn>
+        <NoWarn>$(NoWarn);CA1063;CA1001;</NoWarn>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsWasmHead)' == 'true'">
