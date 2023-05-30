@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\GlobalUsings.cs" Link="GlobalUsings.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CommunityToolkit.Tooling.TestGen\CommunityToolkit.Tooling.TestGen.csproj" />
   </ItemGroup>
 
