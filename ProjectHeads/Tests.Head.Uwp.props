@@ -11,19 +11,6 @@
     <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
 
-  <Choose>
-    <When Condition="'$(ToolkitExtensionSourceProject)' == ''">
-      <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.0-beta.1"/>
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="$(ToolkitExtensionSourceProject)"/>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
-
   <ItemGroup>
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
