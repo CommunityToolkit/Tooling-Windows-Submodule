@@ -58,8 +58,6 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-
     <!-- Turn-off .NET based AssemblyInfo.cs generator, see below -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

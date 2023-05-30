@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <DefineConstants Condition="'(HasWinUI)' == 'true'">$(DefineConstants);WINUI$(WinUIMajorVersion);</DefineConstants>
+        <DefineConstants Condition="'$(HasWinUI)' == 'true'">$(DefineConstants);WINUI$(WinUIMajorVersion);</DefineConstants>
 
         <DefineConstants Condition="'$(IsUno)' == 'true'">$(DefineConstants);HAS_UNO;</DefineConstants>
         <DefineConstants Condition="'$(IsUwp)' == 'true'">$(DefineConstants);WINDOWS_UWP;NETFX_CORE;</DefineConstants>

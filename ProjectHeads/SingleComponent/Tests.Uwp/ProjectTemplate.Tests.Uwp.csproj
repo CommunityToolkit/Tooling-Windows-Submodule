@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetPathOfFileAbove(directory.build.props))" Condition="Exists('$([MSBuild]::GetPathOfFileAbove(directory.build.props))')" />
-  
-  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
+
   <PropertyGroup>
     <IsDeployableHead>true</IsDeployableHead>
     <IsUno>false</IsUno>
@@ -22,8 +21,10 @@
     <IsGtkLib>false</IsGtkLib>
   </PropertyGroup>
 
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\ProjectIdentifiers.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
+  
   <Import Project="$(ToolingDirectory)\ProjectHeads\Tests.Head.Uwp.props" />
 
   <PropertyGroup>

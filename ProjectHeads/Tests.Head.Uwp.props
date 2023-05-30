@@ -4,11 +4,24 @@
   </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)\Tests.Head.props"/>
   <Import Project="$(MSBuildThisFileDirectory)\Head.Uwp.props" />
-  
+
   <!-- Workaround as discussed https://github.com/unoplatform/uno/discussions/5007 for https://developercommunity.visualstudio.com/t/HasSharedItems-is-explicitly-set-to-em/10016046 -->
   <PropertyGroup>
     <SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
   </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(ToolkitExtensionSourceProject)' == ''">
+      <ItemGroup>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.0-beta.1"/>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="$(ToolkitExtensionSourceProject)"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
   <ItemGroup>
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />

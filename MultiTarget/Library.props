@@ -19,7 +19,8 @@
   <!-- Add platform package dependencies -->
   <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Netstandard.props" Condition="$(IsNetstandard) == 'true'" />
   <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Uno.props" Condition="$(IsUno) == 'true'" />
-  <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Windows.props" Condition="$(HasWinUI) == 'true' AND $(IsUno) != 'true'"/>
+  <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Uwp.props" Condition="$(IsUwp) == 'true'"/>
+  <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\WinAppSdk.props" Condition="$(IsWinAppSdk) == 'true'"/>
 
   <!-- Configure WinUI -->
   <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.AutoIncludeXamlPages.props" Condition="$(HasWinUI) == 'true'" />

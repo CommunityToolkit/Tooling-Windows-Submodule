@@ -1,5 +1,5 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\Windows.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\Uwp.props" />
     <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
     <PropertyGroup>

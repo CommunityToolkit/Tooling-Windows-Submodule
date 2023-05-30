@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
   <PropertyGroup>
+    <IsAllExperimentHead>true</IsAllExperimentHead>
     <IsDeployableHead>true</IsDeployableHead>
     <IsUno>false</IsUno>
     <IsWasm>false</IsWasm>
@@ -20,7 +20,7 @@
     <IsGtkLib>false</IsGtkLib>
   </PropertyGroup>
 
-  <Import Project="$(ToolingDirectory)\MultiTarget\ProjectIdentifiers.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.props" />
   <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.WinAppSdk.props" />
