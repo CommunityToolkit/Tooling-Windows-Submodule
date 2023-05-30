@@ -2,6 +2,9 @@
     <PropertyGroup>
         <DefineConstants Condition="'$(HasWinUI)' == 'true'">$(DefineConstants);WINUI$(WinUIMajorVersion);</DefineConstants>
 
+        <!-- The WINAPPSDK const is the legacy version of the WINUI3 const.  -->
+        <DefineConstants Condition="'$(WinUIMajorVersion)' == '3'">$(DefineConstants);WINAPPSDK;</DefineConstants>
+
         <DefineConstants Condition="'$(IsUno)' == 'true'">$(DefineConstants);HAS_UNO;</DefineConstants>
         <DefineConstants Condition="'$(IsUwp)' == 'true'">$(DefineConstants);WINDOWS_UWP;NETFX_CORE;</DefineConstants>
         <DefineConstants Condition="'$(IsWinAppSdk)' == 'true'">$(DefineConstants);WINDOWS_WINAPPSDK;WINAPPSDK</DefineConstants>
