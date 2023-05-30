@@ -5,20 +5,12 @@
     <IsUno>true</IsUno>
     <IsWasm>true</IsWasm>
     <IsWasmHead>true</IsWasmHead>
-    <IsWasmLib>false</IsWasmLib>
-    <IsDroid>false</IsDroid>
-    <IsMacOS>false</IsMacOS>
-    <IsiOS>false</IsiOS>
-    <IsUwp>false</IsUwp>
-    <IsWinAppSdk>false</IsWinAppSdk>
-    <IsWpf>false</IsWpf>
-    <IsWpfHead>false</IsWpfHead>
-    <IsWpfLib>false</IsWpfLib>
-    <IsGtk>false</IsGtk>
-    <IsGtkHead>false</IsGtkHead>
-    <IsGtkLib>false</IsGtkLib>
+
+    <IsSingleExperimentHead>true</IsSingleExperimentHead>
   </PropertyGroup>
 
+  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.TargetVersion.props" />
+  
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
   <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.Wasm.props" />
