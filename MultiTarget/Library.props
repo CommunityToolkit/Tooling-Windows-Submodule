@@ -8,12 +8,12 @@
   <!-- Get the enabled MultiTarget features for this project / run -->
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledMultiTargets.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.TargetVersion.props" />
 
   <!-- Use <MultiTarget> values to define <TargetFrameworks> -->
   <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetToTargetFramework.props" />
 
   <!-- Enable project identifiers -->
-  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.TargetVersion.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetIdentifiers.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
 
