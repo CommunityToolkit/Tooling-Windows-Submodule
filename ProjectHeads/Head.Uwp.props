@@ -22,13 +22,22 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+        <!-- Don't overwrite if already defined. Needed for disabling .NET Native in test projects. -->
+        <UseDotNetNativeToolchain Condition="'$(UseDotNetNativeToolchain)' == ''">true</UseDotNetNativeToolchain>
+
+        <!--
+            Workarounds for ILT0005: Out of memory.
+         -->
+        <IlcParameters>/ExtraNutcArguments:"/d2threads1"</IlcParameters>
+        <SingleThreadNUTC>true</SingleThreadNUTC>
+        <Use64BitCompiler>true</Use64BitCompiler>
+        <OutOfProcPDB>true</OutOfProcPDB>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
         <DebugSymbols>true</DebugSymbols>
         <OutputPath>bin\x86\Debug\</OutputPath>
-        <DefineConstants>$(DefineConstants);DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>        
+        <DefineConstants>$(DefineConstants);DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
         <DebugType>full</DebugType>
         <PlatformTarget>x86</PlatformTarget>
         <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -120,6 +129,10 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
             <Version>6.2.12</Version>
+        </PackageReference>
+        <PackageReference Include="PolySharp" Version="1.13.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 

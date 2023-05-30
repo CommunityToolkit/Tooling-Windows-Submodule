@@ -26,6 +26,14 @@
         <NoWarn>$(NoWarn);NU1701</NoWarn>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <!--
+            Uno uses IDisposable internally, but exposes it publicly.
+            See https://github.com/CommunityToolkit/Labs-Windows/pull/275#issuecomment-1331113635
+         -->
+        <NoWarn>$(NoWarn);CA1063;CA1001;</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup Condition="'$(IsWasmHead)' == 'true'">
         <PackageReference Include="Uno.UI.WebAssembly" Version="4.6.18" />
     </ItemGroup>
