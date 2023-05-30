@@ -1,26 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(ToolingDirectory)\MultiTarget\TargetFrameworks.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
   <PropertyGroup>
     <IsDeployableHead>true</IsDeployableHead>
-    <IsUno>false</IsUno>
-    <IsWasm>false</IsWasm>
-    <IsWasmHead>false</IsWasmHead>
-    <IsWasmLib>false</IsWasmLib>
-    <IsDroid>false</IsDroid>
-    <IsMacOS>false</IsMacOS>
-    <IsiOS>false</IsiOS>
-    <IsUwp>false</IsUwp>
     <IsWinAppSdk>true</IsWinAppSdk>
-    <IsWpf>false</IsWpf>
-    <IsWpfHead>false</IsWpfHead>
-    <IsWpfLib>false</IsWpfLib>
-    <IsGtk>false</IsGtk>
-    <IsGtkHead>false</IsGtkHead>
-    <IsGtkLib>false</IsGtkLib>
+    <HasWinUI>true</HasWinUI>
+    <WinUIMajorVersion>2</WinUIMajorVersion>
+
+    <IsSingleExperimentHead>true</IsSingleExperimentHead>
   </PropertyGroup>
 
-  <Import Project="$(ToolingDirectory)\MultiTarget\ProjectIdentifiers.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
   <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.WinAppSdk.props" />
 
   <ItemGroup>

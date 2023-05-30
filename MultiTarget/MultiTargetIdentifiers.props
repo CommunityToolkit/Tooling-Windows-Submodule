@@ -1,0 +1,55 @@
+<!--
+    These custom properties use EnabledTargetFrameworks.props to enable
+    - More robust project identification.
+    - Using the same TargetFramework for multiple available MultiTarget targets.
+
+    They can be overriden if defined in the consuming project.
+-->
+<Project InitialTargets="MultiTargetCompatabilityCheck">
+  <Target Name="MultiTargetCompatabilityCheck">
+    <!-- netstandard is not compatible with Uno platforms. -->
+    <Error Condition="$(IsNetstandard) == 'true' AND $(IsUno) == 'true'" Text="Projects cannot MultiTarget both netstandard and Uno Platform." />
+  </Target>
+
+  <PropertyGroup Condition="$(IsDeployableHead) == 'true'">
+    <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
+    <IsAllExperimentHead Condition="$(MSBuildProjectName.StartsWith('CommunityToolkit.')) == 'true'">true</IsAllExperimentHead>
+    <IsProjectTemplateHead Condition="$(MSBuildProjectName.StartsWith('ProjectTemplate')) == 'true'">true</IsProjectTemplateHead>
+    <IsSingleExperimentHead Condition="'$(IsAllExperimentHead)' != 'true' AND '$(IsProjectTemplateHead)' != 'true'">true</IsSingleExperimentHead>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MultiTargetsWasm Condition="$(MultiTarget.Contains('wasm')) == 'true'">true</MultiTargetsWasm>
+    <MultiTargetsWpf Condition="$(MultiTarget.Contains('wpf')) == 'true'">true</MultiTargetsWpf>
+    <MultiTargetsLinuxGtk Condition="$(MultiTarget.Contains('linuxgtk')) == 'true'">true</MultiTargetsLinuxGtk>
+    <MultiTargetsDroid Condition="$(MultiTarget.Contains('android')) == 'true'">true</MultiTargetsDroid>
+    <MultiTargetsMacOS Condition="$(MultiTarget.Contains('macos')) == 'true'">true</MultiTargetsMacOS>
+    <MultiTargetsiOS Condition="$(MultiTarget.Contains('ios')) == 'true'">true</MultiTargetsiOS>
+    <MultiTargetsUwp Condition="$(MultiTarget.Contains('uwp')) == 'true'">true</MultiTargetsUwp>
+    <MultiTargetsWasdk Condition="$(MultiTarget.Contains('wasdk')) == 'true'">true</MultiTargetsWasdk>
+    <MultiTargetsNetstandard Condition="$(MultiTarget.Contains('netstandard')) == 'true'">true</MultiTargetsNetstandard>
+
+    <IsWasmHead Condition="$(IsDeployableHead) == 'true' AND '$(IsWasmHead)' == '' AND '$(TargetFramework)' == '$(WasmHeadTargetFramework)'">true</IsWasmHead>
+    <IsWasmLib Condition="'$(IsWasmLib)' == '' AND '$(TargetFramework)' == '$(WasmLibTargetFramework)' AND '$(MultiTargetsWasm)' == 'true'">true</IsWasmLib>
+    <IsWasm Condition="'$(IsWasm)' == '' AND ('$(IsWasmHead)' == 'true' or '$(IsWasmLib)' == 'true')">true</IsWasm>
+
+    <IsWpfHead Condition="$(IsDeployableHead) == 'true' AND '$(IsWpfHead)' == '' AND '$(TargetFramework)' == '$(WpfHeadTargetFramework)'">true</IsWpfHead>
+    <IsWpfLib Condition="'$(IsWpfLib)' == '' AND '$(TargetFramework)' == '$(WpfLibTargetFramework)' AND '$(MultiTargetsWpf)' == 'true'">true</IsWpfLib>
+    <IsWpf Condition="'$(IsWpf)' == '' AND ('$(IsWpfHead)' == 'true' or '$(IsWpfLib)' == 'true')">true</IsWpf>
+
+    <IsGtkHead Condition="$(IsDeployableHead) == 'true' AND '$(IsGtkHead)' == '' AND '$(TargetFramework)' == '$(LinuxHeadTargetFramework)'">true</IsGtkHead>
+    <IsGtkLib Condition="'$(IsGtkLib)' == '' AND '$(TargetFramework)' == '$(LinuxLibTargetFramework)' AND '$(MultiTargetsLinuxGtk)' == 'true'">true</IsGtkLib>
+    <IsGtk Condition="'$(IsGtk)' == '' AND ('$(IsGtkHead)' == 'true' or '$(IsGtkLib)' == 'true')">true</IsGtk>
+
+    <IsUwp Condition="'$(IsUwp)' == '' AND '$(TargetFramework)' == '$(UwpTargetFramework)' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
+    <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND '$(TargetFramework)' == '$(WinAppSdkTargetFramework)' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
+    <IsDroid Condition="'$(IsDroid)' == '' AND '$(TargetFramework)' == '$(AndroidLibTargetFramework)' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
+    <IsMacOS Condition="'$(IsMacOS)' == '' AND '$(TargetFramework)' == '$(MacOSLibTargetFramework)' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
+    <IsiOS Condition="'$(IsiOS)' == '' AND '$(TargetFramework)' == '$(iOSLibTargetFramework)' AND '$(MultiTargetsiOS)' == 'true'">true</IsiOS>
+    <IsNetstandard Condition="'$(IsNetstandard)' == '' AND $(MultiTargetsNetstandard) == 'true'">true</IsNetstandard>
+
+    <IsUno Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true' OR '$(IsDroid)' == 'true' OR '$(IsMacOS)' == 'true' OR '$(IsiOS)' == 'true'">true</IsUno>
+
+    <HasWinUI Condition="'$(IsUwp)' == 'true' OR '$(IsWinAppSdk)' == 'true' OR '$(IsUno)' == 'true'">true</HasWinUI>
+  </PropertyGroup>
+</Project>
