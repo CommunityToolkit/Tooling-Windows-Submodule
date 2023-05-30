@@ -5,6 +5,7 @@
     <IsUno>true</IsUno>
     <IsWasm>true</IsWasm>
     <IsWasmHead>true</IsWasmHead>
+    <HasWinUI>true</HasWinUI>
 
     <IsSingleExperimentHead>true</IsSingleExperimentHead>
   </PropertyGroup>
