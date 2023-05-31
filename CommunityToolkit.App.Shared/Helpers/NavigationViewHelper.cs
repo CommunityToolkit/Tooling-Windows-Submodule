@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 using CommunityToolkit.Tooling.SampleGen.Metadata;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace CommunityToolkit.App.Shared.Helpers;
 
@@ -29,7 +30,6 @@ public static class NavigationViewHelper
                 }
 
                 // Add subcategory to category
-       
                 navData.NavItem.MenuItems.Add(subcategoryItemData.NavItem);
             }
 
@@ -45,7 +45,7 @@ public static class NavigationViewHelper
             yield return new MUXC.NavigationViewItem
             {
                 Content = metadata.Title,
-                Icon = new BitmapIcon() { ShowAsMonochrome = false, UriSource = new Uri(IconHelper.GetSubcategoryIcon(metadata.Subcategory)) }, // TO DO: This is probably a property we need to add to ToolkitFrontMatter?
+                Icon = new BitmapIcon() { ShowAsMonochrome = false, UriSource = new Uri(IconHelper.GetControlIcon(metadata.Icon)) }, // TO DO: This is probably a property we need to add to ToolkitFrontMatter?
                 Tag = metadata,
             };
         }
@@ -61,6 +61,7 @@ public static class NavigationViewHelper
             {
                 Content = subcategoryGroup.Key,
                 SelectsOnInvoked = false,
+                IsExpanded = true,
                 Style = (Style)App.Current.Resources["SubcategoryNavigationViewItemStyle"],
             }, subcategoryGroup.ToArray());
         }

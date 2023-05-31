@@ -18,6 +18,11 @@ public enum ToolkitSampleSubcategory : byte
     None,
 
     /// <summary>
+    /// A sample that focuses on layout panels.
+    /// </summary>
+    Panel,
+
+    /// <summary>
     /// A sample that focuses on control layout.
     /// </summary>
     Layout,

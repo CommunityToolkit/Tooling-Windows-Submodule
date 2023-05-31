@@ -13,6 +13,7 @@ public static class IconHelper
         IconElement? iconElement = null;
         switch (category)
         {
+            case ToolkitSampleCategory.Layouts: iconElement = new FontIcon() { Glyph = "\uF58C" }; break;
             case ToolkitSampleCategory.Controls: iconElement = new FontIcon() { Glyph = "\ue73a" }; break;
             case ToolkitSampleCategory.Animations: iconElement = new FontIcon() { Glyph = "\ue945" }; break;
             case ToolkitSampleCategory.Extensions: iconElement = new FontIcon() { Glyph = "\ue95f" }; break;
@@ -40,5 +41,17 @@ public static class IconHelper
             case ToolkitSampleSubcategory.Triggers: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
         }
         return imagePath;
+    }
+
+    public static string GetControlIcon(string? icon)
+    {
+        if (string.IsNullOrEmpty(icon))
+        {
+            return "ms-appx:///Assets/ControlIcons/default.png";
+        }
+        else
+        {
+            return "ms-appx:///Assets/ControlIcons/" + icon;
+        }
     }
 }
