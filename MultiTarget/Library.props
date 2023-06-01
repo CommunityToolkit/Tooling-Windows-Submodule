@@ -18,7 +18,6 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
 
   <!-- Add platform package dependencies -->
-  <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Netstandard.props" Condition="$(IsNetstandard) == 'true'" />
   <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Uno.props" Condition="$(IsUno) == 'true'" />
   <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Uwp.props" Condition="$(IsUwp) == 'true'"/>
   <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\WinAppSdk.props" Condition="$(IsWinAppSdk) == 'true'"/>

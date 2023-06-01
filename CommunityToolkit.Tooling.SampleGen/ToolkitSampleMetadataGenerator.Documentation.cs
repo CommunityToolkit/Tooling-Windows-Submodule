@@ -7,6 +7,7 @@ using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using System.Collections.Immutable;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 

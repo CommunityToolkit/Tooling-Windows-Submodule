@@ -2,13 +2,14 @@
   <Target Name="CheckComponentName">
     <Error Condition="$(ToolkitComponentName) == ''" Message="ToolkitComponentName is not defined. Please check your csproj." />
   </Target>
-  
+
   <!-- Set up the MultiTarget system -->
   <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
   <!-- Import this component's source project -->
   <ItemGroup>
     <ProjectReference Include="$(MSBuildProjectDirectory)\..\src\*.csproj" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +26,7 @@
     <!-- Manually include XAML files, except under UWP in Release mode. The files already exist in the final app package (with some modifications) -->
     <Content Condition="!('$(IsUwp)' == 'true' AND '$(Configuration)' == 'Release')" Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 
-    <!-- Manually include .cs and .md files -->    
+    <!-- Manually include .cs and .md files -->
     <Content Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs" />
     <Content Include="**\*.md" Exclude="bin\**\*.md;obj\**\*.md" />
   </ItemGroup>
