@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;

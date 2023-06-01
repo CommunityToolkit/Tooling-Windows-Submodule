@@ -1,6 +1,5 @@
 <Project>
   <ItemGroup>
     <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.UI.Xaml" Version="2.7.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>
 </Project>
