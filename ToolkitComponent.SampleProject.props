@@ -9,7 +9,7 @@
   <!-- Import this component's source project -->
   <ItemGroup>
     <ProjectReference Include="$(MSBuildProjectDirectory)\..\src\*.csproj" />
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" PrivateAssets="All" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
