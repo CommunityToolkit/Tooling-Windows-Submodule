@@ -50,7 +50,7 @@
 
     <IsUno Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true' OR '$(IsDroid)' == 'true' OR '$(IsMacOS)' == 'true' OR '$(IsiOS)' == 'true'">true</IsUno>
 
-    <HasWinUI Condition="'$(HasWinUI)' == '' AND '$(IsUwp)' == 'true' OR '$(IsWinAppSdk)' == 'true' OR '$(IsUno)' == 'true'">true</HasWinUI>
+    <HasWinUI Condition="'$(HasWinUI)' == '' AND ('$(IsUwp)' == 'true' OR '$(IsWinAppSdk)' == 'true' OR '$(IsUno)' == 'true')">true</HasWinUI>
 
     <!--
       This property is only for changing the version used by Uno.
