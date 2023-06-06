@@ -7,6 +7,7 @@ using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using System.Collections.Immutable;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -245,9 +246,7 @@ public static class ToolkitDocumentRegistry
 {{
     public static System.Collections.Generic.IEnumerable<{typeof(ToolkitFrontMatter).FullName}> Execute()
     {{
-        {
-        string.Join("\n        ", sampleMetadata.Select(FrontMatterToRegistryCall).ToArray())
-    }
+        {string.Join("\n        ", sampleMetadata.Select(FrontMatterToRegistryCall).ToArray())}
     }}
 }}";
     }

@@ -5,6 +5,8 @@
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 

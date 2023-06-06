@@ -4,7 +4,7 @@
     <ItemGroup Condition="'$(IsUno)' == 'true'">
         <PackageReference Include="Uno.UI" Version="4.6.18" />
     </ItemGroup>
-    
+
     <PropertyGroup Condition="'$(IsUno)' == 'true'">
         <UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
     </PropertyGroup>
@@ -20,15 +20,21 @@
     <ItemGroup Condition="'$(IsWpfHead)' == 'true'">
         <PackageReference Include="Uno.UI.Skia.Wpf" Version="4.6.18" />
     </ItemGroup>
+
     <PropertyGroup Condition="'$(IsWpfHead)' == 'true'">
         <!-- Ignorable issue from SkiaSharp package, see: https://github.com/CommunityToolkit/Labs-Windows/pull/119#issuecomment-1125373091 -->
-        <NoWarn>NU1701</NoWarn>
+        <NoWarn>$(NoWarn);NU1701</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!--
+            Uno uses IDisposable internally, but exposes it publicly.
+            See https://github.com/CommunityToolkit/Labs-Windows/pull/275#issuecomment-1331113635
+         -->
+        <NoWarn>$(NoWarn);CA1063;CA1001;</NoWarn>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsWasmHead)' == 'true'">
         <PackageReference Include="Uno.UI.WebAssembly" Version="4.6.18" />
     </ItemGroup>
-
-    <!-- Import Uno and native dependencies for all multitargeted library projects. -->
-    <Import Project="$(MSBuildProjectDirectory)\Dependencies.props" Condition="'$(IsDeployableHead)' != 'true' AND Exists('$(MSBuildProjectDirectory)\Dependencies.props')" />
 </Project>

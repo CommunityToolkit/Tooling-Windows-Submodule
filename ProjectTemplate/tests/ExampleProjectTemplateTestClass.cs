@@ -71,6 +71,7 @@ public partial class ExampleProjectTemplateTestClass : VisualUITestBase
     public async Task SimpleAsyncUIExamplePageTest(ExampleProjectTemplateTestPage page)
     {
         // This helper can be used to wait for a rendering pass to complete.
+        // Note, this is already done by loading a Page with the [UIThreadTestMethod] helper.
         await CompositionTargetHelper.ExecuteAfterCompositionRenderingAsync(() => { });
 
         var component = page.FindDescendant<ProjectTemplate_ClassicBinding>();

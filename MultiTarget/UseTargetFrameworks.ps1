@@ -23,7 +23,7 @@
 #>
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
-    [ValidateSet('all', 'all-uwp', 'wasm', 'uwp', 'winappsdk', 'wpf', 'gtk', 'macos', 'ios', 'droid')]
+    [ValidateSet('all', 'all-uwp', 'wasm', 'uwp', 'winappsdk', 'wpf', 'gtk', 'macos', 'ios', 'droid', 'netstandard')]
     [string[]]$targets = @('uwp', 'winappsdk', 'wasm'), # default settings
     
     [Parameter(HelpMessage = "Disables suppressing changes to the TargetFrameworks file in git, allowing changes to be committed.")] 
@@ -35,11 +35,11 @@ Param (
 
 if ($allowGitChanges.IsPresent) {
     Write-Warning "Changes to the default TargetFrameworks can now be committed. Run this command again without the -allowGitChanges flag to disable committing further changes.";
-    git update-index --no-assume-unchanged $PSScriptRoot/TargetFrameworks.props
+    git update-index --no-assume-unchanged $PSScriptRoot/EnabledTargetFrameworks.props
 }
 else {
     Write-Output "Changes to the default TargetFrameworks are now suppressed. To switch branches, run git reset --hard with a clean working tree.";
-    git update-index --assume-unchanged $PSScriptRoot/TargetFrameworks.props
+    git update-index --assume-unchanged $PSScriptRoot/EnabledTargetFrameworks.props
 }
 
 $UwpTfm = "UwpTargetFramework";
@@ -50,8 +50,9 @@ $GtkTfm = "NetStandardCommonTargetFramework";
 $macOSTfm = "MacOSLibTargetFramework";
 $iOSTfm = "iOSLibTargetFramework";
 $DroidTfm = "AndroidLibTargetFramework";
+$NetstandardTfm = "NetStandardCommonTargetFramework";
 
-$fileContents = Get-Content -Path $PSScriptRoot/TargetFrameworks.All.props
+$fileContents = Get-Content -Path $PSScriptRoot/AvailableTargetFrameworks.props
 
 $allTargetFrameworks = @(
     $WasmTfm,
@@ -61,7 +62,8 @@ $allTargetFrameworks = @(
     $GtkTfm,
     $macOSTfm,
     $iOSTfm,
-    $DroidTfm
+    $DroidTfm,
+    $NetstandardTfm
 );
 
 $desiredTfmValues = @();
@@ -104,6 +106,10 @@ if ($targets.Contains("ios")) {
 
 if ($targets.Contains("droid")) {
     $desiredTfmValues += $DroidTfm;
+}
+
+if ($targets.Contains("netstandard")) {
+    $desiredTfmValues += $NetstandardTfm;
 }
 
 $targetFrameworksToRemove = $allTargetFrameworks.Where({ -not $desiredTfmValues.Contains($_) })

@@ -5,16 +5,13 @@
 // This file contains directives available in test projects.
 // Learn more global using directives at https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/using-directive#global-modifier
 
+global using CommunityToolkit.Tests.Internal; // TODO: For CompositionTargetHelper until ported over into package.
+global using CommunityToolkit.WinUI;
+
 #if !WINAPPSDK
-global using Microsoft.Toolkit.Uwp;
-global using Microsoft.Toolkit.Uwp.UI;
-global using Microsoft.Toolkit.Uwp.UI.Helpers;
 global using Windows.UI;
 global using Windows.UI.Core;
 #else
-global using CommunityToolkit.WinUI;
-global using CommunityToolkit.WinUI.UI;
-global using CommunityToolkit.WinUI.UI.Helpers;
 global using Microsoft.UI;
 #endif
 

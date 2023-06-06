@@ -95,6 +95,13 @@ jobs:
       PROJECT_DIRECTORY: tooling/ProjectTemplate
 
     steps:
+      - name: Configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+          minimum-size: 32GB
+          maximum-size: 32GB
+          disk-root: "C:"
+
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v3
         with:
@@ -116,7 +123,7 @@ jobs:
       - name: Copy props files to root
         shell: pwsh
         working-directory: ./
-        run: copy ./tooling/.github/workflows/Directory.Build.* ./
+        run: copy ./tooling/.github/workflows/config/* ./
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.3.1
@@ -140,6 +147,13 @@ jobs:
       TEST_PROJECT_DIRECTORY: components/CiTestExp
 
     steps:
+      - name: Configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+        with:
+          minimum-size: 32GB
+          maximum-size: 32GB
+          disk-root: "C:"
+          
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v3
         with:
@@ -162,7 +176,7 @@ jobs:
         shell: pwsh
         working-directory: ./
         run: |
-          copy ./tooling/.github/workflows/Directory.Build.* ./
+          copy ./tooling/.github/workflows/config/* ./
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
@@ -247,7 +261,7 @@ jobs:
         shell: pwsh
         working-directory: ./
         run: |
-          copy ./tooling/.github/workflows/Directory.Build.* ./
+          copy ./tooling/.github/workflows/config/* ./
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components

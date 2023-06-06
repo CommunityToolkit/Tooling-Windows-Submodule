@@ -1,0 +1,14 @@
+<!-- Imports the <MultiTarget> values for the current project. -->
+<Project>
+  <PropertyGroup>
+    <MultiTargetIsSampleProject Condition="$(MSBuildProjectName.EndsWith('.Samples')) == 'true'">true</MultiTargetIsSampleProject>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildProjectDirectory)\MultiTarget.props" Condition="Exists('$(MSBuildProjectDirectory)\MultiTarget.props') AND '$(MultiTarget)' == ''" />
+
+  <!-- If in a sample project, pull the MultiTarget settings from the source project. -->
+  <!-- This behavior is also implemented in GeneratedAllProjectReferences.ps1 for <ProjectReference> generation. -->
+  <Import Project="$(MSBuildProjectDirectory)/../src/MultiTarget.props" Condition="$(MultiTargetIsSampleProject) == 'true' AND !Exists('$(MSBuildProjectDirectory)\MultiTarget.props') AND Exists('$(MSBuildProjectDirectory)/../src/MultiTarget.props') AND '$(MultiTarget)' == ''" />
+  
+  <Import Project="$(MSBuildThisFileDirectory)\Defaults.props" Condition="'$(MultiTarget)' == ''" />
+</Project>

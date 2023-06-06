@@ -1,6 +1,7 @@
 <Project>
     <Import Project="$(MSBuildThisFileDirectory)\App.Head.props" />
-    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\Uno.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\Uno.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
     <!--
         Import Uno dependencies for all deployable Uno-based Labs project heads.
