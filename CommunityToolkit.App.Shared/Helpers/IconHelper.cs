@@ -45,13 +45,15 @@ public static class IconHelper
 
     public static string GetControlIcon(string? icon)
     {
+       // return "ms-appx:///Assets/ControlIcons/default.png";
+        return "ms-appx:///SourceAssets/Animations/samples/Assets/icon.png";
         if (string.IsNullOrEmpty(icon))
         {
             return "ms-appx:///Assets/ControlIcons/default.png";
         }
         else
         {
-            return "ms-appx:///Assets/ControlIcons/" + icon;
+            return icon!;
         }
     }
 }

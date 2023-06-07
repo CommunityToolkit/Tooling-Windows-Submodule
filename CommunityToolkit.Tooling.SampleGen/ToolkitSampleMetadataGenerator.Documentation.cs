@@ -263,6 +263,6 @@ public static class ToolkitDocumentRegistry
         var categoryParam = $"{nameof(ToolkitSampleCategory)}.{metadata.Category}";
         var subcategoryParam = $"{nameof(ToolkitSampleSubcategory)}.{metadata.Subcategory}";
 
-        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = ""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }} }};"; // TODO: Add list of sample ids in document
+        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }} }};"; // TODO: Add list of sample ids in document
     }
 }
