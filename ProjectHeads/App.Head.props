@@ -49,6 +49,10 @@
       <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension).dat</Link>
     </Content>
 
+    <Content Include="$(RepositoryDirectory)components\**\samples\**\*.png" Exclude="$(RepositoryDirectory)**\**\samples\obj\**\*.png;$(RepositoryDirectory)**\**\samples\bin\**\*.png;$(RepositoryDirectory)\**\SourceAssets\**\*.png">
+      <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Content>
+
     <!-- Include markdown files from all samples so the head can access them in the source generator -->
     <AdditionalFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
   </ItemGroup>
