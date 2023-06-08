@@ -50,6 +50,7 @@ public partial class ToolkitSampleMetadataTests
     [DataRow(8, DisplayName = "Subcategory")]
     [DataRow(9, DisplayName = "GitHub Discussion Id")]
     [DataRow(10, DisplayName = "GitHub Issue Id")]
+    [DataRow(10, DisplayName = "Icon")]
     [TestMethod]
     public void MissingFrontMatterField(int removeline)
     {
@@ -64,6 +65,7 @@ category: Controls
 subcategory: Layout
 discussion-id: 0
 issue-id: 0
+icon: assets/icon.png
 ---
 # This is some test documentation...
 > [!SAMPLE Sample]
@@ -91,6 +93,7 @@ category: Controls
 subcategory: Layout
 discussion-id: 0
 issue-id: 0
+icon: assets/icon.png
 ---
 # This is some test documentation...
 > [!SAMPLE SampINVALIDle]
@@ -116,6 +119,7 @@ category: Controls
 subcategory: Layout
 discussion-id: 0
 issue-id: 0
+icon: assets/icon.png
 ---
 # This is some test documentation...
 Without any sample.";
@@ -139,6 +143,7 @@ category: Controls
 subcategory: Layout
 discussion-id: 0
 issue-id: 0
+icon: assets/icon.png
 ---
 # This is some test documentation...
 Which is valid.
@@ -161,6 +166,7 @@ category: Controls
 subcategory: Layout
 discussion-id: https://github.com/1234
 issue-id: 0
+icon: assets/icon.png
 ---
 # This is some test documentation...
 Without an invalid discussion id.";
@@ -184,6 +190,7 @@ category: Controls
 subcategory: Layout
 discussion-id: 0
 issue-id: https://github.com/1234
+icon: assets/icon.png
 ---
 # This is some test documentation...
 Without an invalid discussion id.";
