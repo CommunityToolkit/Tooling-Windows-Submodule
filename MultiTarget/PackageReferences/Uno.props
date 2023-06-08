@@ -37,7 +37,4 @@
     <ItemGroup Condition="'$(IsWasmHead)' == 'true'">
         <PackageReference Include="Uno.UI.WebAssembly" Version="4.6.18" />
     </ItemGroup>
-
-    <!-- Import Uno and native dependencies for all multitargeted library projects. -->
-    <Import Project="$(MSBuildProjectDirectory)\Dependencies.props" Condition="'$(IsDeployableHead)' != 'true' AND Exists('$(MSBuildProjectDirectory)\Dependencies.props')" />
 </Project>

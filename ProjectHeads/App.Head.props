@@ -18,18 +18,7 @@
     <ProjectReference Include="$(ToolingDirectory)\CommunityToolkit.Tooling.SampleGen\CommunityToolkit.Tooling.SampleGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="$(ToolingDirectory)\GlobalUsings_WinUI.cs" />
-  </ItemGroup>
-
   <PropertyGroup>
-    <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
-    <IsAllExperimentHead Condition="$(MSBuildProjectName.StartsWith('CommunityToolkit.')) == 'true'">true</IsAllExperimentHead>
-    <IsProjectTemplateHead Condition="$(MSBuildProjectName.StartsWith('ProjectTemplate')) == 'true'">true</IsProjectTemplateHead>
-    <IsSingleExperimentHead Condition="'$(IsAllExperimentHead)' != 'true' AND '$(IsProjectTemplateHead)' != 'true'">true</IsSingleExperimentHead>
-
-    <DefineConstants Condition="$(IsAllExperimentHead) == 'true'">$(DefineConstants);ALL_SAMPLES</DefineConstants>
-
     <SlnGenIsDeployable>true</SlnGenIsDeployable>
   </PropertyGroup>
 
@@ -74,8 +63,6 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-
     <!-- Turn-off .NET based AssemblyInfo.cs generator, see below -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

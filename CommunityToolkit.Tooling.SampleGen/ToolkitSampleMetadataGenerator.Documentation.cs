@@ -255,9 +255,7 @@ public static class ToolkitDocumentRegistry
 {{
     public static System.Collections.Generic.IEnumerable<{typeof(ToolkitFrontMatter).FullName}> Execute()
     {{
-        {
-        string.Join("\n        ", sampleMetadata.Select(FrontMatterToRegistryCall).ToArray())
-    }
+        {string.Join("\n        ", sampleMetadata.Select(FrontMatterToRegistryCall).ToArray())}
     }}
 }}";
     }

@@ -1,6 +1,8 @@
 # CommunityToolkit MultiTarget System
 Simplified targeting, packaging and deployment of an application and it's supporting libraries.
 
+> **Note** The MultiTarget system is not designed to be used outside the Windows Community Toolkit or Toolkit Labs.
+
 ## MultiTarget MSBuild Property
 
 `<MultiTarget>` is a custom property that indicates which target a component is designed to be built for / run on.

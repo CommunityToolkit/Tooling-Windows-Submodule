@@ -4,8 +4,6 @@
     <TargetFramework>$(WasmHeadTargetFramework)</TargetFramework>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)\App.Head.props" />
-  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\Uno.props" />
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uno.props" />
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">

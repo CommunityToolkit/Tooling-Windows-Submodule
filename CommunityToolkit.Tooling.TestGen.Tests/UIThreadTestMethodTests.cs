@@ -7,6 +7,7 @@ using CommunityToolkit.Tooling.TestGen.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Immutable;
 
 namespace CommunityToolkit.Tooling.TestGen.Tests;
 

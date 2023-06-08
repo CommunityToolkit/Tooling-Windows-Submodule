@@ -2,26 +2,16 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetPathOfFileAbove(directory.build.props))" Condition="Exists('$([MSBuild]::GetPathOfFileAbove(directory.build.props))')" />
   
-  <Import Project="$(ToolingDirectory)\MultiTarget\TargetFrameworks.props" />
   <PropertyGroup>
     <IsDeployableHead>true</IsDeployableHead>
-    <IsUno>false</IsUno>
-    <IsWasm>false</IsWasm>
-    <IsWasmHead>false</IsWasmHead>
-    <IsWasmLib>false</IsWasmLib>
-    <IsDroid>false</IsDroid>
-    <IsMacOS>false</IsMacOS>
-    <IsiOS>false</IsiOS>
     <IsUwp>true</IsUwp>
-    <IsWinAppSdk>false</IsWinAppSdk>
-    <IsWpf>false</IsWpf>
-    <IsWpfHead>false</IsWpfHead>
-    <IsWpfLib>false</IsWpfLib>
-    <IsGtk>false</IsGtk>
-    <IsGtkHead>false</IsGtkHead>
-    <IsGtkLib>false</IsGtkLib>
+    <HasWinUI>true</HasWinUI>
+    <WinUIMajorVersion>2</WinUIMajorVersion>
   </PropertyGroup>
-  <Import Project="$(ToolingDirectory)\MultiTarget\ProjectIdentifiers.props" />
+
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
+  
   <Import Project="$(ToolingDirectory)\ProjectHeads\Tests.Head.Uwp.props" />
   <Import Project="$(ToolingDirectory)\ProjectHeads\AllComponents\Tests.Head.AllComponents.props" />
 

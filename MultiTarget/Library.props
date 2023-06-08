@@ -1,0 +1,31 @@
+<!-- An end-to-end setup of the MultiTarget system for library projects. -->
+<Project>
+  <PropertyGroup>
+    <IsLibraryProject>true</IsLibraryProject>
+    <IsDeployableHead>false</IsDeployableHead>
+  </PropertyGroup>
+
+  <!-- Get the enabled MultiTarget features for this project / run -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledMultiTargets.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.TargetVersion.props" />
+
+  <!-- Use <MultiTarget> values to define <TargetFrameworks> -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetToTargetFramework.props" />
+
+  <!-- Enable project identifiers -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetIdentifiers.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
+
+  <!-- Add platform package dependencies -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Uno.props" Condition="$(IsUno) == 'true'" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Uwp.props" Condition="$(IsUwp) == 'true'"/>
+  <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\WinAppSdk.props" Condition="$(IsWinAppSdk) == 'true'"/>
+
+  <!-- Configure WinUI -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.AutoIncludeXamlPages.props" Condition="$(HasWinUI) == 'true'" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.Extra.props" Condition="$(HasWinUI) == 'true'" />
+
+  <!-- Import Uno and native dependencies for all multitargeted library projects. -->
+  <Import Project="$(MSBuildProjectDirectory)\Dependencies.props" Condition="Exists('$(MSBuildProjectDirectory)\Dependencies.props')" />
+</Project>
