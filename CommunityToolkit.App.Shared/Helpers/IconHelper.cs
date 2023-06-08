@@ -9,6 +9,7 @@ namespace CommunityToolkit.App.Shared.Helpers;
 public static class IconHelper
 {
     internal const string SourceAssetsPrefix = "ms-appx:///SourceAssets/";
+    internal const string FallBackControlIconPath = "ms-appx:///Assets/ControlIcons/Control.png";
 
     public static IconElement? GetCategoryIcon(ToolkitSampleCategory category)
     {
@@ -25,8 +26,15 @@ public static class IconHelper
         return iconElement;
     }
 
-    public static string GetIconPath(string IconPath)
+    public static string GetIconPath(string? IconPath)
     {
-       return SourceAssetsPrefix + IconPath;
+        if (!string.IsNullOrEmpty(IconPath))
+        {
+            return SourceAssetsPrefix + IconPath;
+        }
+        else
+        {
+            return FallBackControlIconPath;
+        }
     }
 }
