@@ -24,7 +24,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\PackageProjectUrlAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\NavigateToUriAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\TitleBar.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Converters\SubcategoryToIconConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocOrSampleTemplateSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BackgroundHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\IconHelper.cs" />
@@ -109,27 +108,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\camerapreview.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\constrainedbox.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\contentsizer.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\dockpanel.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\gridsplitter.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\headeredcontentcontrol.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\headereditemscontrol.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\metadatacontrol.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\propertysizer.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\radialgauge.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\rangeselector.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\richsuggestbox.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\staggeredpanel.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\uniformgrid.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\wraplayout.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\wrappanel.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Control.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\default.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Input.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Status.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Layout.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppTitleBar.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppTitleBar.scale-125.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppTitleBar.scale-150.png" />
