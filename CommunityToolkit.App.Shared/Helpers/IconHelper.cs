@@ -8,6 +8,8 @@ namespace CommunityToolkit.App.Shared.Helpers;
 
 public static class IconHelper
 {
+    internal const string SourceAssetsPrefix = "ms-appx:///SourceAssets/";
+
     public static IconElement? GetCategoryIcon(ToolkitSampleCategory category)
     {
         IconElement? iconElement = null;
@@ -21,5 +23,10 @@ public static class IconHelper
             case ToolkitSampleCategory.Xaml: iconElement = new FontIcon() { Glyph = "\ue8af" }; break;
         }
         return iconElement;
+    }
+
+    public static string GetIconPath(string IconPath)
+    {
+       return SourceAssetsPrefix + IconPath;
     }
 }

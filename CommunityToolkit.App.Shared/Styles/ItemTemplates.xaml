@@ -81,7 +81,6 @@
                 </Image>
             </Grid>
 
-
             <RelativePanel Grid.Column="1"
                            Grid.ColumnSpan="2"
                            Margin="16,6,0,0">
