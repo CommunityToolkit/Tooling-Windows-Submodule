@@ -7,6 +7,7 @@ using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using System.Collections.Immutable;
 using System.IO;
 
 namespace CommunityToolkit.Tooling.SampleGen;
@@ -85,8 +86,6 @@ public partial class ToolkitSampleMetadataGenerator
 
     private ImmutableArray<ToolkitFrontMatter> GatherDocumentFrontMatter(SourceProductionContext ctx, IEnumerable<AdditionalText> data)
     {
-     
-    //    System.Diagnostics.Debug
         return data.Select(file =>
         {
             // We have to manually parse the YAML here for now because of

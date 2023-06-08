@@ -71,5 +71,20 @@ public enum ToolkitSampleSubcategory : byte
     /// Samples that focus on XAML triggers.
     /// </summary>
     Triggers,
+
+    /// <summary>
+    /// Samples that focus on data helpers.
+    /// </summary>
+    Data,
+
+    /// <summary>
+    /// Samples that focus on system helpers.
+    /// </summary>
+    System,
+
+    /// <summary>
+    /// Samples that focus on helpers during development.
+    /// </summary>
+    Developer,
 }
 
