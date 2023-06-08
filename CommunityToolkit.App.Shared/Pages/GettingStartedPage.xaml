@@ -72,7 +72,7 @@
                      HorizontalAlignment="Right"
                      VerticalAlignment="Top">
                 <Image x:Name="headerImage"
-                       Source="ms-appx:///sourceassets/animations/samples/assets/icon.png"
+                       Source="{ThemeResource HeaderImage}"
                        Stretch="UniformToFill" />
             </Viewbox>
             <Rectangle x:Name="BackdropRect"

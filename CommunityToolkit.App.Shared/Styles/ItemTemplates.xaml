@@ -5,8 +5,6 @@
                     xmlns:meta="using:CommunityToolkit.Tooling.SampleGen.Metadata"
                     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 
-    <converters:IconConverter x:Key="iconConverter" />
-
     <!-- Kind of not supported in Uno (at least directly like this) see https://github.com/unoplatform/uno/issues/7582 (and related root issue)
     <Style x:Key="IndentedGridViewItemStyle"
            BasedOn="{StaticResource DefaultGridViewItemStyle}"
@@ -23,7 +21,7 @@
             </Grid.ColumnDefinitions>
             <Image Width="16">
                 <Image.Source>
-                    <BitmapImage UriSource="{Binding Icon, Converter={StaticResource iconConverter}}" DecodePixelHeight="16" DecodePixelWidth="16" />
+                    <BitmapImage UriSource="{Binding Icon}" DecodePixelHeight="16" DecodePixelWidth="16" />
                 </Image.Source>
             </Image>
             <TextBlock Grid.Column="1"
@@ -74,7 +72,7 @@
                        VerticalAlignment="Center"
                        Stretch="Uniform">
                     <Image.Source>
-                        <BitmapImage UriSource="{Binding Icon, Converter={StaticResource iconConverter}}" />
+                        <BitmapImage UriSource="{Binding Icon}" />
                     </Image.Source>
                 </Image>
             </Grid>
