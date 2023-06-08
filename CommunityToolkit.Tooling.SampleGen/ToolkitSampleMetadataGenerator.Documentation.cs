@@ -7,6 +7,7 @@ using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using System.IO;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -84,6 +85,8 @@ public partial class ToolkitSampleMetadataGenerator
 
     private ImmutableArray<ToolkitFrontMatter> GatherDocumentFrontMatter(SourceProductionContext ctx, IEnumerable<AdditionalText> data)
     {
+     
+    //    System.Diagnostics.Debug
         return data.Select(file =>
         {
             // We have to manually parse the YAML here for now because of
@@ -154,6 +157,7 @@ public partial class ToolkitSampleMetadataGenerator
 
                 // Get the filepath we need to be able to load the markdown file in sample app.
                 var filepath = file.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                var iconpath = filepath.Replace(Path.GetFileName(filepath), icon);
 
                 // Look for sample id tags
                 var matches = MarkdownRegexSampleTag.Matches(content);
@@ -208,7 +212,7 @@ public partial class ToolkitSampleMetadataGenerator
                     SampleIdReferences = sampleids.ToArray(),
                     DiscussionId = discussionId,
                     IssueId = issueId,
-                    Icon = icon,
+                    Icon = iconpath.Replace('\\', '/'),
                 };
             }
         }).OfType<ToolkitFrontMatter>().ToImmutableArray();

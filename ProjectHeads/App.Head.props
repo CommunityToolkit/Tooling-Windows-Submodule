@@ -61,6 +61,7 @@
   <ItemGroup Condition="'$(IsSingleExperimentHead)' == 'true' or '$(IsProjectTemplateHead)' == 'true'">
     <!-- These are also included in the Samples props file, but added here to workaround https://github.com/unoplatform/uno/issues/2502 -->
     <Content Include="$(MSBuildProjectDirectory)\..\..\samples\**\*.md" Exclude="$(MSBuildProjectDirectory)\..\..\samples\obj\**\*.md;$(MSBuildProjectDirectory)\..\..\samples\bin\**\*.md;$(MSBuildProjectDirectory)\..\..\**\SourceAssets\**\*.md" Link="SourceAssets/%(RecursiveDir)%(FileName)%(Extension)"/>
+<Content Include="$(MSBuildProjectDirectory)\..\..\samples\**\*.png" Exclude="$(MSBuildProjectDirectory)\..\..\samples\obj\**\*.png;$(MSBuildProjectDirectory)\..\..\samples\bin\**\*.png;$(MSBuildProjectDirectory)\..\..\**\SourceAssets\**\*.png" Link="SourceAssets/%(RecursiveDir)%(FileName)%(Extension)"/>
     <Content Include="$(MSBuildProjectDirectory)\..\..\samples\**\*.xaml" Exclude="$(MSBuildProjectDirectory)\..\..\samples\obj\**\*.xaml;$(MSBuildProjectDirectory)\..\..\samples\bin\**\*.xaml;$(MSBuildProjectDirectory)\..\..\**\SourceAssets\**\*.xaml" Link="SourceAssets/%(RecursiveDir)%(FileName)%(Extension)"/>
 
     <!-- Link/.dat is a workaround for https://github.com/unoplatform/uno/issues/8649 -->

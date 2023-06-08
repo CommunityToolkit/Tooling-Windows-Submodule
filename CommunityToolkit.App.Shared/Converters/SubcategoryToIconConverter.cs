@@ -10,7 +10,8 @@ public sealed class IconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
-        return new Uri(IconHelper.GetControlIcon((string)value));
+        Uri x = new Uri(IconHelper.GetControlIcon((string)value));
+        return x;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, string language)

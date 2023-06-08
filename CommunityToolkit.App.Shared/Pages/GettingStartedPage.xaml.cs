@@ -4,6 +4,7 @@
 
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using CommunityToolkit.Tooling.SampleGen;
+using Windows.Storage;
 
 namespace CommunityToolkit.App.Shared.Pages
 {
@@ -20,15 +21,16 @@ namespace CommunityToolkit.App.Shared.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             controlsGridView.ItemsSource = e.Parameter as IEnumerable<ToolkitFrontMatter>;
+
+
             base.OnNavigatedTo(e);
         }
 
-        private void controlsGridView_ItemClick(object sender, ItemClickEventArgs e)
+        private async void controlsGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var selectedSample = e.ClickedItem as ToolkitFrontMatter;
 
             Shell.Current?.NavigateToSample(selectedSample);
-
         }
     }
 }

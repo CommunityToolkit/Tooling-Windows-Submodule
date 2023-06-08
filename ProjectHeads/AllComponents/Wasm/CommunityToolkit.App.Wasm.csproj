@@ -26,4 +26,10 @@
   <ItemGroup>
     <EmbeddedResource Include="WasmScripts\AppManifest.js" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="C:\Repos\Windows\components\Animations\samples\Assets\icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
