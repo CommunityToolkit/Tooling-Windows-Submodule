@@ -13,6 +13,7 @@ public enum ToolkitSampleCategory : byte
     /// Various layouts and panels
     /// </summary>
     Layouts,
+    
     /// <summary>
     /// Various UI controls that the user sees and interacts with.
     /// </summary>
