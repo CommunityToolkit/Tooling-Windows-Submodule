@@ -44,7 +44,7 @@ public static class NavigationViewHelper
             yield return new MUXC.NavigationViewItem
             {
                 Content = metadata.Title,
-                Icon = new BitmapIcon() { ShowAsMonochrome = false, UriSource = new Uri(IconHelper.GetIconPath(metadata.Icon)) }, // TO DO: This is probably a property we need to add to ToolkitFrontMatter?
+                Icon = new BitmapIcon() { ShowAsMonochrome = false, UriSource = new Uri(IconHelper.GetIconPath(metadata.Icon)) },
                 Tag = metadata,
             };
         }
