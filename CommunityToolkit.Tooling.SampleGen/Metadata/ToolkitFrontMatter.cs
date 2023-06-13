@@ -23,6 +23,5 @@ public sealed class ToolkitFrontMatter : DocsFrontMatter
     //// Extra Metadata needed for Sample App
     public string? FilePath { get; set; }
     public string[]? SampleIdReferences { get; set; }
-
     public string? Icon { get; set; }
 }
