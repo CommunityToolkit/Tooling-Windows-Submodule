@@ -12,64 +12,58 @@
              d:DesignWidth="400"
              mc:Ignorable="d">
 
-	<UserControl.Resources>
-		<local:GeneratedSampleOptionTemplateSelector x:Key="GeneratedSampleOptionTemplateSelector">
-			<local:GeneratedSampleOptionTemplateSelector.BoolOptionTemplate>
-				<DataTemplate x:DataType="metadata:ToolkitSampleBoolOptionMetadataViewModel">
-					<ToggleSwitch Header="{x:Bind Title, Mode=OneWay}"
+    <UserControl.Resources>
+        <local:GeneratedSampleOptionTemplateSelector x:Key="GeneratedSampleOptionTemplateSelector">
+            <local:GeneratedSampleOptionTemplateSelector.BoolOptionTemplate>
+                <DataTemplate x:DataType="metadata:ToolkitSampleBoolOptionMetadataViewModel">
+                    <ToggleSwitch Header="{x:Bind Title, Mode=OneWay}"
 					              IsOn="{x:Bind BoolValue, Mode=TwoWay}" />
-				</DataTemplate>
-			</local:GeneratedSampleOptionTemplateSelector.BoolOptionTemplate>
-			<local:GeneratedSampleOptionTemplateSelector.ButtonActionTemplate>
-				<DataTemplate x:DataType="metadata:ToolkitSampleButtonActionMetadataViewModel">
-					<Button Command="{x:Bind CommandValue, Mode=TwoWay}"
-					        Content="{x:Bind Label, Mode=OneWay}" />
-				</DataTemplate>
-			</local:GeneratedSampleOptionTemplateSelector.ButtonActionTemplate>
-			<local:GeneratedSampleOptionTemplateSelector.MultiChoiceOptionTemplate>
-				<DataTemplate x:DataType="metadata:ToolkitSampleMultiChoiceOptionMetadataViewModel">
-					<ComboBox Header="{x:Bind Title, Mode=OneWay}"
+                </DataTemplate>
+            </local:GeneratedSampleOptionTemplateSelector.BoolOptionTemplate>
+            <local:GeneratedSampleOptionTemplateSelector.MultiChoiceOptionTemplate>
+                <DataTemplate x:DataType="metadata:ToolkitSampleMultiChoiceOptionMetadataViewModel">
+                    <ComboBox Header="{x:Bind Title, Mode=OneWay}"
 					          ItemsSource="{x:Bind Options}"
 					          SelectedIndex="0"
 					          SelectedItem="{x:Bind Value, Mode=TwoWay}" />
-				</DataTemplate>
-			</local:GeneratedSampleOptionTemplateSelector.MultiChoiceOptionTemplate>
-			<local:GeneratedSampleOptionTemplateSelector.SliderOptionTemplate>
-				<DataTemplate x:DataType="metadata:ToolkitSampleNumericOptionMetadataViewModel">
-					<Slider Header="{x:Bind Title, Mode=OneWay}"
+                </DataTemplate>
+            </local:GeneratedSampleOptionTemplateSelector.MultiChoiceOptionTemplate>
+            <local:GeneratedSampleOptionTemplateSelector.SliderOptionTemplate>
+                <DataTemplate x:DataType="metadata:ToolkitSampleNumericOptionMetadataViewModel">
+                    <Slider Header="{x:Bind Title, Mode=OneWay}"
 					        Maximum="{x:Bind Max, Mode=OneWay}"
 					        Minimum="{x:Bind Min, Mode=OneWay}"
 					        StepFrequency="{x:Bind Step, Mode=OneWay}"
 					        Value="{x:Bind Initial, Mode=TwoWay}" />
-				</DataTemplate>
-			</local:GeneratedSampleOptionTemplateSelector.SliderOptionTemplate>
-			<local:GeneratedSampleOptionTemplateSelector.NumberBoxOptionTemplate>
-				<DataTemplate x:DataType="metadata:ToolkitSampleNumericOptionMetadataViewModel">
-					<muxc:NumberBox Header="{x:Bind Title, Mode=OneWay}"
+                </DataTemplate>
+            </local:GeneratedSampleOptionTemplateSelector.SliderOptionTemplate>
+            <local:GeneratedSampleOptionTemplateSelector.NumberBoxOptionTemplate>
+                <DataTemplate x:DataType="metadata:ToolkitSampleNumericOptionMetadataViewModel">
+                    <muxc:NumberBox Header="{x:Bind Title, Mode=OneWay}"
 					                Maximum="{x:Bind Max, Mode=OneWay}"
 					                Minimum="{x:Bind Min, Mode=OneWay}"
 					                SmallChange="{x:Bind Step, Mode=OneWay}"
 					                SpinButtonPlacementMode="Compact"
 					                Value="{x:Bind Initial, Mode=TwoWay}" />
-				</DataTemplate>
-			</local:GeneratedSampleOptionTemplateSelector.NumberBoxOptionTemplate>
-			<local:GeneratedSampleOptionTemplateSelector.TextOptionTemplate>
-				<DataTemplate x:DataType="metadata:ToolkitSampleTextOptionMetadataViewModel">
-					<TextBox HorizontalAlignment="Stretch"
+                </DataTemplate>
+            </local:GeneratedSampleOptionTemplateSelector.NumberBoxOptionTemplate>
+            <local:GeneratedSampleOptionTemplateSelector.TextOptionTemplate>
+                <DataTemplate x:DataType="metadata:ToolkitSampleTextOptionMetadataViewModel">
+                    <TextBox HorizontalAlignment="Stretch"
 					         Header="{x:Bind Title, Mode=OneWay}"
 					         Text="{x:Bind PlaceholderText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-				</DataTemplate>
-			</local:GeneratedSampleOptionTemplateSelector.TextOptionTemplate>
-		</local:GeneratedSampleOptionTemplateSelector>
-	</UserControl.Resources>
+                </DataTemplate>
+            </local:GeneratedSampleOptionTemplateSelector.TextOptionTemplate>
+        </local:GeneratedSampleOptionTemplateSelector>
+    </UserControl.Resources>
 
-	<ItemsControl ItemTemplateSelector="{StaticResource GeneratedSampleOptionTemplateSelector}"
+    <ItemsControl ItemTemplateSelector="{StaticResource GeneratedSampleOptionTemplateSelector}"
 	              ItemsSource="{x:Bind SampleOptions, Mode=OneWay}">
-		<ItemsControl.ItemsPanel>
-			<ItemsPanelTemplate>
-				<StackPanel Orientation="Vertical"
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical"
 				            Spacing="12" />
-			</ItemsPanelTemplate>
-		</ItemsControl.ItemsPanel>
-	</ItemsControl>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+    </ItemsControl>
 </UserControl>

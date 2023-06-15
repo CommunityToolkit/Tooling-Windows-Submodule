@@ -13,8 +13,6 @@ internal class GeneratedSampleOptionTemplateSelector : DataTemplateSelector
 {
     public DataTemplate? BoolOptionTemplate { get; set; }
 
-    public DataTemplate? ButtonActionTemplate { get; set; }
-
     public DataTemplate? MultiChoiceOptionTemplate { get; set; }
 
     public DataTemplate? SliderOptionTemplate { get; set; }
@@ -28,7 +26,6 @@ internal class GeneratedSampleOptionTemplateSelector : DataTemplateSelector
         return item switch
         {
             ToolkitSampleBoolOptionMetadataViewModel => BoolOptionTemplate ?? base.SelectTemplateCore(item, container),
-            ToolkitSampleButtonActionMetadataViewModel => ButtonActionTemplate ?? base.SelectTemplateCore(item, container),
             ToolkitSampleMultiChoiceOptionMetadataViewModel => MultiChoiceOptionTemplate ?? base.SelectTemplateCore(item, container),
             ToolkitSampleNumericOptionMetadataViewModel { ShowAsNumberBox: true } => NumberBoxOptionTemplate ?? base.SelectTemplateCore(item, container),
             ToolkitSampleNumericOptionMetadataViewModel { ShowAsNumberBox: false } => SliderOptionTemplate ?? base.SelectTemplateCore(item, container),

@@ -74,13 +74,6 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                     {
                         item = (x.Item1, textOptionAttribute);
                     }
-                    else if (x.Item2.TryReconstructAs<ToolkitSampleButtonActionAttribute>() is ToolkitSampleButtonActionAttribute buttonActionAttribute)
-                    {
-                        // Auto-assign the attached method name as the generated property name.
-                        buttonActionAttribute.Name = x.Item1.Name;
-
-                        item = (x.Item1.ContainingSymbol, buttonActionAttribute);
-                    }
 
                     // Add extra property data, like Title, back to Attribute
                     if (item.Attribute is not null && x.Item2.TryGetNamedArgument(nameof(ToolkitSampleOptionBaseAttribute.Title), out string? title) && !string.IsNullOrWhiteSpace(title))
@@ -255,9 +248,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithDuplicateName, item.SelectMany(x => x.Item1.Locations).FirstOrDefault(), item.Key));
 
         // Check for generated options that conflict with an existing property name
-        var generatedOptionsWithConflictingPropertyNames = generatedOptionPropertyData
-            .Where(x => x.Item2 is not ToolkitSampleButtonActionAttribute)
-            .Where(x => x.Item1 is INamedTypeSymbol sym && GetAllMembers(sym).Any(y => x.Item2.Name == y.Name));
+        var generatedOptionsWithConflictingPropertyNames = generatedOptionPropertyData.Where(x => x.Item1 is INamedTypeSymbol sym && GetAllMembers(sym).Any(y => x.Item2.Name == y.Name));
 
         foreach (var item in generatedOptionsWithConflictingPropertyNames)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithConflictingName, item.Item1.Locations.FirstOrDefault(), item.Item2.Name));
@@ -311,10 +302,6 @@ public static class ToolkitSampleRegistry
             else if (item is ToolkitSampleBoolOptionAttribute boolAttribute)
             {
                 yield return $@"new {typeof(ToolkitSampleBoolOptionMetadataViewModel).FullName}(name: ""{boolAttribute.Name}"", defaultState: {boolAttribute.DefaultState?.ToString().ToLower()}, title: ""{boolAttribute.Title}"")";
-            }
-            else if (item is ToolkitSampleButtonActionAttribute buttonAttribute)
-            {
-                yield return $@"new {typeof(ToolkitSampleButtonActionMetadataViewModel).FullName}(name: ""{buttonAttribute.Name}"", label: ""{buttonAttribute.Label}"", title: ""{buttonAttribute.Title}"")";
             }
             else if (item is ToolkitSampleNumericOptionAttribute numericAttribute)
             {

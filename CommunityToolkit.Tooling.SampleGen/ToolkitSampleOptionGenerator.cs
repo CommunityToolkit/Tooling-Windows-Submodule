@@ -38,9 +38,6 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
                 if (x.Item2.TryReconstructAs<ToolkitSampleBoolOptionAttribute>() is ToolkitSampleBoolOptionAttribute boolOptionAttribute)
                     return (Attribute: (ToolkitSampleOptionBaseAttribute)boolOptionAttribute, AttachedSymbol: x.Item1, Type: typeof(ToolkitSampleBoolOptionMetadataViewModel));
 
-                if (x.Item2.TryReconstructAs<ToolkitSampleButtonActionAttribute>() is ToolkitSampleButtonActionAttribute buttonActionAttribute)
-                    return (Attribute: (ToolkitSampleOptionBaseAttribute)buttonActionAttribute, AttachedSymbol: x.Item1, Type: typeof(ToolkitSampleButtonActionMetadataViewModel));
-
                 if (x.Item2.TryReconstructAs<ToolkitSampleMultiChoiceOptionAttribute>() is ToolkitSampleMultiChoiceOptionAttribute multiChoiceOptionAttribute)
                     return (Attribute: (ToolkitSampleOptionBaseAttribute)multiChoiceOptionAttribute, AttachedSymbol: x.Item1, Type: typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel));
 
@@ -94,7 +91,6 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
             {
                 var dependencyPropertySource = data.AttachedSymbol.Kind switch
                 {
-                    SymbolKind.Method => BuildCommandProperty(attachedMethodSymbol: data.AttachedSymbol, data.Type),
                     SymbolKind.NamedType => BuildProperty(containingClassSymbol: data.AttachedSymbol, data.Attribute.Name, data.Attribute.TypeName, data.Type),
                     _ => throw new NotSupportedException("Only methods and classes are supported here."),
                 };
@@ -184,41 +180,5 @@ namespace {containingClassSymbol.ContainingNamespace}
     }}
 }}
 ";
-    }
-
-    private static string BuildCommandProperty(ISymbol attachedMethodSymbol, Type viewModelType)
-    {
-        // User-supplied command methods are instance methods, and must be called from the same containing object instance.
-        // To generate a command property that points to this, we lazy-set the default command value in
-        // the getter and pass the instance method in as the command delegate.
-
-        return $$"""
-#nullable enable
-using System.ComponentModel;
-using System.Linq;
-
-namespace {{attachedMethodSymbol.ContainingNamespace}}
-{
-    public partial class {{attachedMethodSymbol.ContainingSymbol.Name}}
-    {
-        public {{typeof(System.Windows.Input.ICommand).FullName}} {{attachedMethodSymbol.Name}}Command
-        {
-            get
-            {
-                var metadata = GeneratedPropertyMetadata!.First(x => x.Name == nameof({{attachedMethodSymbol.Name}}));
-                return ({{typeof(System.Windows.Input.ICommand).FullName}})(metadata.Value ??= new {{typeof(ToolkitSampleButtonCommand).FullName}}(() => {{attachedMethodSymbol.Name}}()));
-            }
-            set
-            {
-				if (GeneratedPropertyMetadata?.FirstOrDefault(x => x.Name == nameof({{attachedMethodSymbol.Name}})) is {{viewModelType.FullName}} metadata)
-				{
-                    metadata.Value = (object)value;
-					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof({{attachedMethodSymbol.Name}}Command)));
-				}
-            }
-        }
-    }
-}
-""";
     }
 }
