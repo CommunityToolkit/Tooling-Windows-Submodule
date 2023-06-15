@@ -414,7 +414,7 @@ public partial class ToolkitSampleGeneratedPaneTests
         // Create application head that references generated sample project
         var headCompilation = string.Empty
             .ToSyntaxTree()
-            .CreateCompilation("MyApp.Head")
+            .CreateCompilation("CommunityToolkit.App.Head")
             .AddReferences(sampleProjectAssembly);
 
         // Run source generator

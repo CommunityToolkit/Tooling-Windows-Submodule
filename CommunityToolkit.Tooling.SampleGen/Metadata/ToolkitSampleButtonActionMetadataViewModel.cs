@@ -43,7 +43,7 @@ public class ToolkitSampleButtonActionMetadataViewModel : IGeneratedToolkitSampl
     public string Name { get; }
 
     /// <summary>
-    /// The current boolean value.
+    /// The current command value.
     /// </summary>
     /// <remarks>
     /// Provided to accomodate binding to a property that is a non-nullable <see cref="bool"/>.
@@ -60,12 +60,12 @@ public class ToolkitSampleButtonActionMetadataViewModel : IGeneratedToolkitSampl
     }
 
     /// <summary>
-    /// The current boolean value.
+    /// The current value.
     /// </summary>
     public object? Value
     {
         get => _value;
-        set 
+        set
         {
             _value = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));

@@ -4,6 +4,7 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Collections.Immutable;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 

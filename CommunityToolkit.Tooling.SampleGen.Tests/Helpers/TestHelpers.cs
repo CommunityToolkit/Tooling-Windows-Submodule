@@ -1,5 +1,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Immutable;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 

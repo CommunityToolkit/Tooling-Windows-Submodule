@@ -8,7 +8,6 @@ using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -315,7 +314,7 @@ public static class ToolkitSampleRegistry
             }
             else if (item is ToolkitSampleButtonActionAttribute buttonAttribute)
             {
-                yield return $@"new {typeof(ToolkitSampleButtonActionMetadataViewModel).FullName}(name: ""{buttonAttribute.Name}"", controlToBindingValueFactory: x => x.{buttonAttribute.Name}Command, label: ""{buttonAttribute.Label}"", title: ""{buttonAttribute.Title}"")";
+                yield return $@"new {typeof(ToolkitSampleButtonActionMetadataViewModel).FullName}(name: ""{buttonAttribute.Name}"", label: ""{buttonAttribute.Label}"", title: ""{buttonAttribute.Title}"")";
             }
             else if (item is ToolkitSampleNumericOptionAttribute numericAttribute)
             {
