@@ -17,16 +17,11 @@
         <controls:TitleBar x:Name="appTitleBar"
                            Title="Toolkit Labs Gallery"
                            BackButtonClick="TitleBar_BackButtonClick"
-                           Icon="ms-appx:///Assets/AppTitleBar.png" />
-        <muxc:NavigationView x:Name="NavView"
-                             Grid.Row="1"
-                             Margin="0,16,0,0"
-                             IsBackButtonVisible="Collapsed"
-                             IsSettingsVisible="False"
-                             ItemInvoked="NavView_ItemInvoked">
-            <Frame x:Name="NavigationFrame"
-                   Navigated="NavigationFrameOnNavigated" />
-            <muxc:NavigationView.AutoSuggestBox>
+                           Icon="ms-appx:///Assets/AppTitleBar.png"
+                           IsBackButtonVisible="True"
+                           IsPaneButtonVisible="True"
+                           Subtitle="Testtest">
+            <controls:TitleBar.Content>
                 <!--  See AutoSuggestBox issue for WASM https://github.com/unoplatform/uno/issues/7778  -->
                 <win:AutoSuggestBox x:Name="searchBox"
                                     win:AutomationProperties.Name="Search"
@@ -36,7 +31,20 @@
                                     QuerySubmitted="searchBox_QuerySubmitted"
                                     TextChanged="searchBox_TextChanged"
                                     UpdateTextOnSelect="False" />
-            </muxc:NavigationView.AutoSuggestBox>
+            </controls:TitleBar.Content>
+            <controls:TitleBar.Footer>
+                <PersonPicture Width="32"
+                               Initials="NL" />
+            </controls:TitleBar.Footer>
+        </controls:TitleBar>
+        <muxc:NavigationView x:Name="NavView"
+                             Grid.Row="1"
+                             Margin="0,16,0,0"
+                             IsBackButtonVisible="Collapsed"
+                             IsSettingsVisible="False"
+                             ItemInvoked="NavView_ItemInvoked">
+            <Frame x:Name="NavigationFrame"
+                   Navigated="NavigationFrameOnNavigated" />
         </muxc:NavigationView>
     </Grid>
 </Page>

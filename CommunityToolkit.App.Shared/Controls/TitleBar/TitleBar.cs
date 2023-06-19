@@ -2,53 +2,40 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 
-// A control to show a Fluent titlebar
+using Windows.ApplicationModel.Core;
 
 namespace CommunityToolkit.App.Shared.Controls;
 
-[TemplateVisualState(Name = "Visible", GroupName = "BackButtonStates")]
-[TemplateVisualState(Name = "Collapsed", GroupName = "BackButtonStates")]
-[TemplatePart(Name = PartIconPresenter, Type = typeof(Button))]
+[TemplateVisualState(Name = BackButtonVisibleState, GroupName = BackButtonStates)]
+[TemplateVisualState(Name = BackButtonCollapsedState, GroupName = BackButtonStates)]
+[TemplateVisualState(Name = PaneButtonVisibleState, GroupName = PaneButtonStates)]
+[TemplateVisualState(Name = PaneButtonCollapsedState, GroupName = PaneButtonStates)]
+[TemplatePart(Name = PartBackButton, Type = typeof(Button))]
+[TemplatePart(Name = PartPaneButton, Type = typeof(Button))]
 [TemplatePart(Name = PartDragRegionPresenter, Type = typeof(Grid))]
-public sealed partial class TitleBar : Control
+public partial class TitleBar : Control
 {
     private const string PartDragRegionPresenter = "PART_DragRegion";
-    private const string PartIconPresenter = "PART_BackButton";
-    private Button? _backButton;
+    private const string PartBackButton = "PART_BackButton";
+    private const string PartPaneButton = "PART_PaneButton";
+
+    private const string BackButtonVisibleState = "PaneButtonVisible";
+    private const string BackButtonCollapsedState = "PaneButtonCollapsed";
+    private const string BackButtonStates = "BackButtonStates";
+
+    private const string PaneButtonVisibleState = "PaneButtonVisible";
+    private const string PaneButtonCollapsedState = "PaneButtonCollapsed";
+    private const string PaneButtonStates = "PaneButtonStates";
+
+
     private Grid? _dragRegion;
     private TitleBar? _titleBar;
   
-    public string Title
-    {
-        get => (string)GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
-    }
-
-    public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(TitleBar), new PropertyMetadata(default(string)));
-
-    public ImageSource Icon
-    {
-        get => (ImageSource)GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
-    }
-
-    public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(ImageSource), typeof(TitleBar), new PropertyMetadata(default(ImageSource)));
-
-    public bool IsBackButtonVisible
-    {
-        get => (bool)GetValue(IsBackButtonVisibleProperty);
-        set => SetValue(IsBackButtonVisibleProperty, value);
-    }
-
-    public static readonly DependencyProperty IsBackButtonVisibleProperty = DependencyProperty.Register("IsBackButtonVisible", typeof(bool), typeof(TitleBar), new PropertyMetadata(default(bool), IsBackButtonVisibleChanged));
+   
 
     public event EventHandler<RoutedEventArgs>? BackButtonClick;
-
+    public event EventHandler<RoutedEventArgs>? PaneButtonClick;
 
     public TitleBar()
     {
@@ -59,17 +46,34 @@ public sealed partial class TitleBar : Control
     {
         Update();
         _titleBar = (TitleBar)this;
-        _backButton = (Button)_titleBar.GetTemplateChild(PartIconPresenter);
+
+        if ((Button)_titleBar.GetTemplateChild(PartBackButton) is Button backButton)
+        {
+            backButton.Click -= BackButton_Click;
+            backButton.Click += BackButton_Click;
+        }
+
+        if ((Button)_titleBar.GetTemplateChild(PartPaneButton) is Button paneButton)
+        {
+            paneButton.Click -= PaneButton_Click;
+            paneButton.Click += PaneButton_Click;
+        }
         _dragRegion = (Grid)_titleBar.GetTemplateChild(PartDragRegionPresenter);
-        _backButton.Click += _backButton_Click;
+      
+
 
         SetTitleBar();
         base.OnApplyTemplate();
     }
 
-    private void _backButton_Click(object sender, RoutedEventArgs e)
+    private void BackButton_Click(object sender, RoutedEventArgs e)
     {
         OnBackButtonClicked();
+    }
+
+    private void PaneButton_Click(object sender, RoutedEventArgs e)
+    {
+        OnPaneButtonClicked();
     }
 
     private void OnBackButtonClicked()
@@ -77,14 +81,17 @@ public sealed partial class TitleBar : Control
         BackButtonClick?.Invoke(this, new RoutedEventArgs());
     }
 
-    private static void IsBackButtonVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private void OnPaneButtonClicked()
     {
-        ((TitleBar)d).Update();
+        PaneButtonClick?.Invoke(this, new RoutedEventArgs());
     }
+
+
 
     private void Update()
     {
-        VisualStateManager.GoToState(this, IsBackButtonVisible ? "Visible" : "Collapsed", true);
+        VisualStateManager.GoToState(this, IsBackButtonVisible ? BackButtonVisibleState : BackButtonCollapsedState, true);
+        VisualStateManager.GoToState(this, IsPaneButtonVisible ? PaneButtonVisibleState : PaneButtonCollapsedState, true);
     }
 
     private void SetTitleBar()
@@ -97,8 +104,20 @@ public sealed partial class TitleBar : Control
 #endif
 #if WINDOWS_UWP && !HAS_UNO
         Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+        Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += this.TitleBar_LayoutMetricsChanged;
         Window.Current.SetTitleBar(_dragRegion);
         // NOT SUPPORTED IN UNO WASM
 #endif
+    }
+
+    private void TitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+    {
+        if (_titleBar != null)
+        {
+            ColumnDefinition Left = (ColumnDefinition)_titleBar.GetTemplateChild("LeftPaddingColumn");
+            ColumnDefinition Right = (ColumnDefinition)_titleBar.GetTemplateChild("RightPaddingColumn");
+            Left.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayLeftInset);
+            Right.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayRightInset);
+        }
     }
 }
