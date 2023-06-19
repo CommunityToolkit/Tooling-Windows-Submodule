@@ -76,14 +76,6 @@ public sealed partial class Shell : Page
         }
     }
 
-    private void TitleBar_BackButtonClick(object sender, RoutedEventArgs e)
-    {
-        if (NavigationFrame.CanGoBack)
-        {
-            NavigationFrame.GoBack();
-        }
-    }
-
     public void NavigateToSample(ToolkitFrontMatter? sample)
     {
         if (sample is null)
@@ -186,6 +178,19 @@ public sealed partial class Shell : Page
         else
         {
             return;
+        }
+    }
+
+    private void TitleBar_PaneButtonClick(object sender, RoutedEventArgs e)
+    {
+        NavView.IsPaneOpen = !NavView.IsPaneOpen;
+    }
+
+    private void TitleBar_BackButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (NavigationFrame.CanGoBack)
+        {
+            NavigationFrame.GoBack();
         }
     }
 #endif

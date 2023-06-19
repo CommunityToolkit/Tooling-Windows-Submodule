@@ -18,12 +18,15 @@
                            Title="Toolkit Labs Gallery"
                            BackButtonClick="TitleBar_BackButtonClick"
                            Icon="ms-appx:///Assets/AppTitleBar.png"
-                           IsBackButtonVisible="True"
                            IsPaneButtonVisible="True"
-                           Subtitle="Testtest">
+                           IsBackButtonVisible="True"
+                           
+                           PaneButtonClick="TitleBar_PaneButtonClick"
+                           Subtitle="Preview">
             <controls:TitleBar.Content>
                 <!--  See AutoSuggestBox issue for WASM https://github.com/unoplatform/uno/issues/7778  -->
                 <win:AutoSuggestBox x:Name="searchBox"
+                                    MaxWidth="360"
                                     win:AutomationProperties.Name="Search"
                                     ItemTemplate="{StaticResource ControlItemAutoSuggestBoxTemplate}"
                                     PlaceholderText="Search Labs"
@@ -41,6 +44,7 @@
                              Grid.Row="1"
                              Margin="0,16,0,0"
                              IsBackButtonVisible="Collapsed"
+                             IsPaneToggleButtonVisible="False"
                              IsSettingsVisible="False"
                              ItemInvoked="NavView_ItemInvoked">
             <Frame x:Name="NavigationFrame"

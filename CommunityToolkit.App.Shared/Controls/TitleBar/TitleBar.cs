@@ -20,8 +20,8 @@ public partial class TitleBar : Control
     private const string PartBackButton = "PART_BackButton";
     private const string PartPaneButton = "PART_PaneButton";
 
-    private const string BackButtonVisibleState = "PaneButtonVisible";
-    private const string BackButtonCollapsedState = "PaneButtonCollapsed";
+    private const string BackButtonVisibleState = "BackButtonVisible";
+    private const string BackButtonCollapsedState = "BackButtonCollapsed";
     private const string BackButtonStates = "BackButtonStates";
 
     private const string PaneButtonVisibleState = "PaneButtonVisible";
@@ -44,7 +44,7 @@ public partial class TitleBar : Control
 
     protected override void OnApplyTemplate()
     {
-        Update();
+
         _titleBar = (TitleBar)this;
 
         if ((Button)_titleBar.GetTemplateChild(PartBackButton) is Button backButton)
@@ -59,7 +59,7 @@ public partial class TitleBar : Control
             paneButton.Click += PaneButton_Click;
         }
         _dragRegion = (Grid)_titleBar.GetTemplateChild(PartDragRegionPresenter);
-      
+        Update();
 
 
         SetTitleBar();

@@ -93,7 +93,7 @@
 
     <!--  THIS XAML IS FROM WINUI TITLEBAR EXPERIMENT  -->
     <Style TargetType="local:TitleBar">
-        <Setter Property="Height" Value="{ThemeResource TitleBarCompactHeight}" />
+        <Setter Property="Height" Value="{ThemeResource TitleBarExpandedHeight}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:TitleBar">
@@ -126,9 +126,30 @@
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="ReflowStates">
+                                <VisualState x:Name="Wide">
+                                    <VisualState.StateTriggers>
+                                        <AdaptiveTrigger MinWindowWidth="850" />
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <!--  Adding left margin, so SearchBoxHolder is centered in the wide mode  -->
+                                        <!--  Left margin = 220 (width of column 1) + 40 (space between SearchBoxHolder and UserProfileControl)  -->
+                                        <Setter Target="PART_TitleText.Visibility" Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Narrow">
+                                    <VisualState.StateTriggers>
+                                        <AdaptiveTrigger MinWindowWidth="0" />
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="PART_TitleText.Visibility" Value="Collapsed" />
+                                        <Setter Target="PART_SubTitleText.Visibility" Value="Collapsed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                        <Grid Grid.Column="1">
+                        <Grid Grid.Column="1" Padding="4,0,4,0">
                             <Grid.ColumnDefinitions>
                                 <!--  0: Back button  -->
                                 <ColumnDefinition Width="Auto" />
@@ -150,7 +171,7 @@
                                      Grid.Column="2"
                                      MaxWidth="16"
                                      MaxHeight="16"
-                                     Margin="4,0,0,0"
+                                     Margin="8,0,8,0"
                                      VerticalAlignment="Center">
                                 <Image Source="{TemplateBinding Icon}" />
                             </Viewbox>
@@ -158,7 +179,7 @@
                             <TextBlock x:Name="PART_TitleText"
                                        Grid.Column="3"
                                        MinWidth="48"
-                                       Margin="16,0,0,2"
+                                       Margin="8,0,0,1"
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
                                        Foreground="{ThemeResource TitleBarForegroundBrush}"
@@ -169,9 +190,10 @@
                             <TextBlock x:Name="PART_SubTitleText"
                                        Grid.Column="4"
                                        MinWidth="48"
-                                       Margin="16,0,16,2"
+                                       Margin="4,0,0,1"
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Text="{TemplateBinding Subtitle}"
                                        TextTrimming="CharacterEllipsis"
@@ -180,28 +202,27 @@
                                   Grid.Column="2"
                                   Grid.ColumnSpan="8"
                                   Background="Transparent" />
-
                             <Button x:Name="PART_BackButton"
                                     Grid.Column="0"
-                                    Margin="2,0,0,0"
                                     Style="{ThemeResource TitleBarBackButtonStyle}"
                                     ToolTipService.ToolTip="Back" />
 
                             <Button x:Name="PART_PaneButton"
                                     Grid.Column="1"
-                                    Margin="2,0,0,0"
                                     Style="{StaticResource TitleBarPaneToggleButtonStyle}"
                                     ToolTipService.ToolTip="Back" />
 
                             <ContentPresenter x:Name="PART_ContentPresenter"
                                               Grid.Column="5"
-                                              HorizontalContentAlignment="Center"
+                                              Margin="4,0,0,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalContentAlignment="Stretch"
                                               Content="{TemplateBinding Content}" />
                             <ContentPresenter x:Name="PART_Footer"
                                               Grid.Column="6"
+                                              Margin="40,0,0,0"
                                               HorizontalContentAlignment="Right"
                                               Content="{TemplateBinding Footer}" />
-
                         </Grid>
                     </Grid>
                 </ControlTemplate>
@@ -216,25 +237,24 @@
         <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForegroundChecked}" />
         <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
         <Setter Property="FontSize" Value="16" />
-        <Setter Property="Width" Value="44" />
+        <Setter Property="MaxHeight" Value="40" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="Content" Value="&#xE72B;" />
-        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="12,4,12,4" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid x:Name="RootGrid"
+                          Padding="{TemplateBinding Padding}"
                           Background="{TemplateBinding Background}"
                           CornerRadius="{TemplateBinding CornerRadius}">
-
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
-
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
@@ -281,7 +301,6 @@
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
-
                         </VisualStateManager.VisualStateGroups>
 
                         <muxc:AnimatedIcon x:Name="Content"
@@ -308,87 +327,91 @@
     <!--  Copy of WinUI PaneToggleButtonStyle - cannot use it as it picks up the generic.xaml version, not the WinUI version  -->
     <Style x:Key="TitleBarPaneToggleButtonStyle"
            TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource NavigationViewBackButtonBackground}" />
+        <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForegroundChecked}" />
+        <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
         <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}" />
-        <Setter Property="MinHeight" Value="{StaticResource PaneToggleButtonHeight}" />
-        <Setter Property="MinWidth" Value="{StaticResource PaneToggleButtonWidth}" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="MaxHeight" Value="40" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
-        <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
-        <Setter Property="BorderThickness" Value="{ThemeResource NavigationViewToggleBorderThickness}" />
-        <Setter Property="Padding" Value="{ThemeResource NavigationViewItemButtonMargin}" />
+        <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+        <Setter Property="Content" Value="&#xE700;" />
+        <Setter Property="Padding" Value="12,4,12,4" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="LayoutRoot"
-                          Height="{TemplateBinding MinHeight}"
-                          Margin="{TemplateBinding Padding}"
-                          HorizontalAlignment="Stretch"
+                    <Grid x:Name="RootGrid"
+                          Padding="{TemplateBinding Padding}"
                           Background="{TemplateBinding Background}"
                           CornerRadius="{TemplateBinding CornerRadius}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="{ThemeResource PaneToggleButtonHeight}" />
-                        </Grid.RowDefinitions>
-
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="PointerOver">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource NavigationViewButtonBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content"
+                                                                       Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource NavigationViewButtonForegroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
                                     <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource NavigationViewButtonBackgroundPointerOver}" />
-                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource NavigationViewButtonForegroundPointerOver}" />
-                                        <Setter Target="Icon.Foreground" Value="{ThemeResource NavigationViewButtonForegroundPointerOver}" />
-                                        <Setter Target="Icon.(muxc:AnimatedIcon.State)" Value="PointerOver" />
+                                        <Setter Target="Content.(AnimatedIcon.State)" Value="PointerOver" />
                                     </VisualState.Setters>
                                 </VisualState>
+
                                 <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource NavigationViewButtonBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content"
+                                                                       Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource NavigationViewButtonForegroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
                                     <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource NavigationViewButtonBackgroundPressed}" />
-                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource NavigationViewButtonForegroundPressed}" />
-                                        <Setter Target="Icon.Foreground" Value="{ThemeResource NavigationViewButtonForegroundPressed}" />
-                                        <Setter Target="Icon.(muxc:AnimatedIcon.State)" Value="Pressed" />
+                                        <Setter Target="Content.(AnimatedIcon.State)" Value="Pressed" />
                                     </VisualState.Setters>
                                 </VisualState>
+
                                 <VisualState x:Name="Disabled">
-                                    <VisualState.Setters>
-                                        <Setter Target="LayoutRoot.Background" Value="{ThemeResource NavigationViewButtonBackgroundDisabled}" />
-                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource NavigationViewButtonForegroundDisabled}" />
-                                    </VisualState.Setters>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content"
+                                                                       Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                    Value="{ThemeResource NavigationViewButtonForegroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                        <Border Width="{TemplateBinding MinWidth}">
-                            <muxc:AnimatedIcon x:Name="Icon"
-                                               Width="16"
-                                               Height="16"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                               muxc:AnimatedIcon.State="Normal"
-                                               AutomationProperties.AccessibilityView="Raw"
-                                               Foreground="{TemplateBinding Foreground}">
-                                <animatedvisuals:AnimatedGlobalNavigationButtonVisualSource />
-                                <muxc:AnimatedIcon.FallbackIconSource>
-                                    <muxc:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
-                                                         Glyph="&#xE700;" />
-                                </muxc:AnimatedIcon.FallbackIconSource>
-                            </muxc:AnimatedIcon>
-                        </Border>
-
-                        <ContentPresenter x:Name="ContentPresenter"
-                                          Grid.Column="1"
-                                          Padding="4,0,0,0"
-                                          VerticalContentAlignment="Center"
-                                          Content="{TemplateBinding Content}"
-                                          FontSize="{TemplateBinding FontSize}" />
+                        <muxc:AnimatedIcon x:Name="Content"
+                                           Width="16"
+                                           Height="16"
+                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                           muxc:AnimatedIcon.State="Normal"
+                                           win:AutomationProperties.AccessibilityView="Raw">
+                            <animatedvisuals:AnimatedGlobalNavigationButtonVisualSource />
+                            <muxc:AnimatedIcon.FallbackIconSource>
+                                <muxc:FontIconSource FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}"
+                                                     FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
+                                                     Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
+                                                     MirroredWhenRightToLeft="True" />
+                            </muxc:AnimatedIcon.FallbackIconSource>
+                        </muxc:AnimatedIcon>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
