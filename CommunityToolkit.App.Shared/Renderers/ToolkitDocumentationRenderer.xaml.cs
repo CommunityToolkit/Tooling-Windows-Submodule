@@ -170,7 +170,7 @@ public sealed partial class ToolkitDocumentationRenderer : Page
         var path = metadata.FilePath;
 
         var fileUri = new Uri($"ms-appx:///SourceAssets/{(isSingleExperimentHead ? Path.GetFileName(path.Replace('\\', '/')) : path)}");
-
+      
         try
         {
             var file = await StorageFile.GetFileFromApplicationUriAsync(fileUri);

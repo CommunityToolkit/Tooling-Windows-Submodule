@@ -8,11 +8,15 @@ namespace CommunityToolkit.App.Shared.Helpers;
 
 public static class IconHelper
 {
+    internal const string SourceAssetsPrefix = "ms-appx:///SourceAssets/";
+    internal const string FallBackControlIconPath = "ms-appx:///Assets/DefaultControlIcon.png";
+
     public static IconElement? GetCategoryIcon(ToolkitSampleCategory category)
     {
         IconElement? iconElement = null;
         switch (category)
         {
+            case ToolkitSampleCategory.Layouts: iconElement = new FontIcon() { Glyph = "\uF58C" }; break;
             case ToolkitSampleCategory.Controls: iconElement = new FontIcon() { Glyph = "\ue73a" }; break;
             case ToolkitSampleCategory.Animations: iconElement = new FontIcon() { Glyph = "\ue945" }; break;
             case ToolkitSampleCategory.Extensions: iconElement = new FontIcon() { Glyph = "\ue95f" }; break;
@@ -22,23 +26,15 @@ public static class IconHelper
         return iconElement;
     }
 
-    public static string GetSubcategoryIcon(ToolkitSampleSubcategory subcategory)
+    public static string GetIconPath(string? IconPath)
     {
-        string imagePath = string.Empty;
-        switch (subcategory)
+        if (!string.IsNullOrEmpty(IconPath))
         {
-            case ToolkitSampleSubcategory.None: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
-            case ToolkitSampleSubcategory.Behaviors: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
-            case ToolkitSampleSubcategory.Controls: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
-            case ToolkitSampleSubcategory.Converters: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
-            case ToolkitSampleSubcategory.Input: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
-            case ToolkitSampleSubcategory.Layout: imagePath = "ms-appx:///Assets/ControlIcons/Layout.png"; break;
-            case ToolkitSampleSubcategory.Markup: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
-            case ToolkitSampleSubcategory.Math: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
-            case ToolkitSampleSubcategory.Media: imagePath = "ms-appx:///Assets/ControlIcons/Control.png"; break;
-            case ToolkitSampleSubcategory.StatusAndInfo: imagePath = "ms-appx:///Assets/ControlIcons/Status.png"; break;
-            case ToolkitSampleSubcategory.Triggers: imagePath = "ms-appx:///Assets/ControlIcons/Input.png"; break;
+            return SourceAssetsPrefix + IconPath;
         }
-        return imagePath;
+        else
+        {
+            return FallBackControlIconPath;
+        }
     }
 }

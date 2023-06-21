@@ -8,6 +8,7 @@ using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Immutable;
+using System.IO;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -29,6 +30,9 @@ public partial class ToolkitSampleMetadataGenerator
 
     private const string FrontMatterRegexSubcategoryExpression = @"^subcategory:\s*(?<subcategory>.*)$";
     private static readonly Regex FrontMatterRegexSubcategory = new Regex(FrontMatterRegexSubcategoryExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+    private const string FrontMatterRegexIconExpression = @"^icon:\s*(?<icon>.*)$";
+    private static readonly Regex FrontMatterRegexIcon = new Regex(FrontMatterRegexIconExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
     private const string FrontMatterRegexDiscussionIdExpression = @"^discussion-id:\s*(?<discussionid>.*)$";
     private static readonly Regex FrontMatterRegexDiscussionId = new Regex(FrontMatterRegexDiscussionIdExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -108,9 +112,11 @@ public partial class ToolkitSampleMetadataGenerator
                 var title = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexTitle, "title");
                 var description = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexDescription, "description");
                 var keywords = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexKeywords, "keywords");
+
                 //// TODO: Should generate the enum from these or something?
                 var category = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexCategory, "category");
                 var subcategory = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexSubcategory, "subcategory");
+                var icon = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexIcon, "icon");
 
                 // TODO: Should these just be optional?
                 var discussion = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexDiscussionId, "discussionid")?.Trim();
@@ -118,7 +124,7 @@ public partial class ToolkitSampleMetadataGenerator
 
                 // Check we have all the fields we expect to continue (errors will have been spit out otherwise already from the ParseYamlField method)
                 if (title == null || description == null || keywords == null ||
-                        category == null || subcategory == null || discussion == null || issue == null)
+                        category == null || subcategory == null || discussion == null || issue == null || icon == null)
                 {
                     return null;
                 }
@@ -150,6 +156,7 @@ public partial class ToolkitSampleMetadataGenerator
 
                 // Get the filepath we need to be able to load the markdown file in sample app.
                 var filepath = file.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                var iconpath = (filepath.Split(new string[] { @"\samples\", "/samples/" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() + "\\samples\\" + icon).Replace('\\', '/');
 
                 // Look for sample id tags
                 var matches = MarkdownRegexSampleTag.Matches(content);
@@ -204,6 +211,7 @@ public partial class ToolkitSampleMetadataGenerator
                     SampleIdReferences = sampleids.ToArray(),
                     DiscussionId = discussionId,
                     IssueId = issueId,
+                    Icon = iconpath,
                 };
             }
         }).OfType<ToolkitFrontMatter>().ToImmutableArray();
@@ -256,6 +264,6 @@ public static class ToolkitDocumentRegistry
         var categoryParam = $"{nameof(ToolkitSampleCategory)}.{metadata.Category}";
         var subcategoryParam = $"{nameof(ToolkitSampleSubcategory)}.{metadata.Subcategory}";
 
-        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }} }};"; // TODO: Add list of sample ids in document
+        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }} }};"; // TODO: Add list of sample ids in document
     }
 }

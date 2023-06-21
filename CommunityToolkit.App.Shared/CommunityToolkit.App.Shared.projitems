@@ -24,7 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\PackageProjectUrlAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\NavigateToUriAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\TitleBar.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Converters\SubcategoryToIconConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\StringToUriConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocOrSampleTemplateSelector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BackgroundHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\IconHelper.cs" />
@@ -109,11 +109,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Control.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Empty.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Input.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Status.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\ControlIcons\Layout.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppTitleBar.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppTitleBar.scale-125.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppTitleBar.scale-150.png" />

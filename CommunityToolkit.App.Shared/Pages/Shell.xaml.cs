@@ -5,7 +5,6 @@
 using CommunityToolkit.App.Shared.Renderers;
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using CommunityToolkit.App.Shared.Helpers;
-using Microsoft.UI.Xaml.Controls;
 
 namespace CommunityToolkit.App.Shared.Pages;
 
@@ -62,6 +61,7 @@ public sealed partial class Shell : Page
                 NavigationFrame.Navigate(typeof(SettingsPage));
             }
         }
+
         // Check if Getting Started page
         else if (selectedItem.Tag != null && selectedItem.Tag.GetType() == typeof(string))
         {
@@ -116,7 +116,6 @@ public sealed partial class Shell : Page
             }
             else if (navigationEventArgs.Parameter.GetType() == typeof(ToolkitFrontMatter))
             {
-
                 EnsureNavigationSelection(((ToolkitFrontMatter)navigationEventArgs.Parameter).FilePath);
             }
         }

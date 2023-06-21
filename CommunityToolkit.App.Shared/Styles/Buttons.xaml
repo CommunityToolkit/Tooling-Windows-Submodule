@@ -1,10 +1,9 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
                     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
                     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
                     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-
 
     <SolidColorBrush x:Key="SubtleButtonBackground"
                      Color="{ThemeResource SubtleFillColorTransparent}" />
@@ -342,10 +341,10 @@
     <Style x:Key="SubcategoryNavigationViewItemStyle"
            TargetType="muxc:NavigationViewItem">
         <Setter Property="FontFamily" Value="XamlAutoFontFamily" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="12" />
         <Setter Property="Padding" Value="30,0,0,0" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <!--<Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />-->
+        <!--<Setter Property="FontWeight" Value="SemiBold" />-->
+        <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
     </Style>
 
 
