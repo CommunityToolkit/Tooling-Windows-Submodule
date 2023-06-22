@@ -10,6 +10,11 @@ namespace CommunityToolkit.Tooling.SampleGen;
 public enum ToolkitSampleCategory : byte
 {
     /// <summary>
+    /// Various layouts and panels
+    /// </summary>
+    Layouts,
+    
+    /// <summary>
     /// Various UI controls that the user sees and interacts with.
     /// </summary>
     Controls,

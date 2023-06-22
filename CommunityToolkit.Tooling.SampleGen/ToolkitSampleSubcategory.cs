@@ -18,6 +18,11 @@ public enum ToolkitSampleSubcategory : byte
     None,
 
     /// <summary>
+    /// A sample that focuses on layout panels.
+    /// </summary>
+    Panel,
+
+    /// <summary>
     /// A sample that focuses on control layout.
     /// </summary>
     Layout,
@@ -66,5 +71,20 @@ public enum ToolkitSampleSubcategory : byte
     /// Samples that focus on XAML triggers.
     /// </summary>
     Triggers,
+
+    /// <summary>
+    /// Samples that focus on data helpers.
+    /// </summary>
+    Data,
+
+    /// <summary>
+    /// Samples that focus on system helpers.
+    /// </summary>
+    System,
+
+    /// <summary>
+    /// Samples that focus on helpers during development.
+    /// </summary>
+    Developer,
 }
 
