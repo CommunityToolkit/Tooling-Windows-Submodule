@@ -18,18 +18,19 @@ public partial class ToolkitSampleMetadataTests
     [TestMethod]
     public void SampleAttributeOnUnsupportedType()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+            {
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample
-                {{
-                }}
-            }}";
+                {
+                }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -40,28 +41,29 @@ public partial class ToolkitSampleMetadataTests
     [TestMethod]
     public void SampleOptionPaneAttributeOnUnsupportedType()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
+            {
                 [ToolkitSampleOptionsPane(sampleId: nameof(Sample))]
                 public partial class SampleOptionsPane
-                {{
-                }}
+                {
+                }
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -72,24 +74,25 @@ public partial class ToolkitSampleMetadataTests
     [TestMethod]
     public void SampleAttributeValid()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
+            {
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 

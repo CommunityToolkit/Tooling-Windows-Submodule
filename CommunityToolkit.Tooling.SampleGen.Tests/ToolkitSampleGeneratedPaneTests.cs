@@ -18,31 +18,32 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOption_GeneratesWithoutDiagnostics()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleBoolOption(""Test"", false, Title = ""Toggle y"")]
-                [ToolkitSampleMultiChoiceOption(""TextFontFamily"", ""Segoe UI"", ""Arial"", ""Consolas"", Title = ""Font family"")]
+            {
+                [ToolkitSampleBoolOption("Test", false, Title = "Toggle y")]
+                [ToolkitSampleMultiChoiceOption("TextFontFamily", "Segoe UI", "Arial", "Consolas", Title = "Font family")]
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: ")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
+                {
                     public Sample()
-                    {{
+                    {
                         var x = this.Test;
                         var y = this.TextFontFamily;
-                    }}
-                }}
-            }}
+                    }
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleOptionGenerator>(SAMPLE_ASM_NAME);
 
@@ -109,44 +110,45 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOption_GeneratesProperty_DuplicatePropNamesAcrossSampleClasses()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleBoolOption(""Test"", false, Title = ""Toggle y"")]
-                [ToolkitSampleMultiChoiceOption(""TextFontFamily"", ""Segoe UI"", ""Arial"", ""Consolas"", Title = ""Font family"")]
+            {
+                [ToolkitSampleBoolOption("Test", false, Title = "Toggle y")]
+                [ToolkitSampleMultiChoiceOption("TextFontFamily", "Segoe UI", "Arial", "Consolas", Title = "Font family")]
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
+                {
                     public Sample()
-                    {{
+                    {
                         var x = this.Test;
                         var y = this.TextFontFamily;
-                    }}
-                }}
+                    }
+                }
 
-                [ToolkitSampleBoolOption(""Test"", false, Title = ""Toggle y"")]
-                [ToolkitSampleMultiChoiceOption(""TextFontFamily"", ""Segoe UI"", ""Arial"", ""Consolas"", Title = ""Font family"")]
+                [ToolkitSampleBoolOption("Test", false, Title = "Toggle y")]
+                [ToolkitSampleMultiChoiceOption("TextFontFamily", "Segoe UI", "Arial", "Consolas", Title = "Font family")]
 
-                [ToolkitSample(id: nameof(Sample2), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample2), "Test Sample", description: "")]
                 public partial class Sample2 : Windows.UI.Xaml.Controls.UserControl
-                {{
+                {
                     public Sample2()
-                    {{
+                    {
                         var x = this.Test;
                         var y = this.TextFontFamily;
-                    }}
-                }}
-            }}
+                    }
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleOptionGenerator>(SAMPLE_ASM_NAME);
 
@@ -184,24 +186,25 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOptionWithBadName(string name)
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
-                [ToolkitSampleBoolOption(""{name}"", false, Title =  ""Toggle visibility"")]
+            {
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
+                [ToolkitSampleBoolOption("{name}", false, Title =  "Toggle visibility")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -211,25 +214,26 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOptionWithConflictingPropertyName()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleBoolOption(""IsVisible"", false, Title =  ""Toggle x"")]
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+            {
+                [ToolkitSampleBoolOption("IsVisible", false, Title =  "Toggle x")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                    public string IsVisible {{ get; set; }}
-                }}
-            }}
+                {
+                    public string IsVisible { get; set; }
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -239,29 +243,30 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOptionWithConflictingInheritedPropertyName()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleBoolOption(""IsVisible"", false, Title =  ""Toggle x"")]
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+            {
+                [ToolkitSampleBoolOption("IsVisible", false, Title =  "Toggle x")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Base
-                {{
-                }}
+                {
+                }
 
                 public class Base : Windows.UI.Xaml.Controls.UserControl
-                {{
-                    public string IsVisible {{ get; set; }}
-                }}
-            }}
+                {
+                    public string IsVisible { get; set; }
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -271,27 +276,28 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOptionWithDuplicateName()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleBoolOption(""test"", false, Title =  ""Toggle x"")]
-                [ToolkitSampleBoolOption(""test"", false, Title =  ""Toggle y"")]
-                [ToolkitSampleMultiChoiceOption(""TextFontFamily"", ""Segoe UI"", ""Arial"", Title = ""Text foreground"")]
+            {
+                [ToolkitSampleBoolOption("test", false, Title =  "Toggle x")]
+                [ToolkitSampleBoolOption("test", false, Title =  "Toggle y")]
+                [ToolkitSampleMultiChoiceOption("TextFontFamily", "Segoe UI", "Arial", Title = "Text foreground")]
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -301,32 +307,33 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOptionWithDuplicateName_AllowedBetweenSamples()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleBoolOption(""test"", false, Title =  ""Toggle y"")]
+            {
+                [ToolkitSampleBoolOption("test", false, Title =  "Toggle y")]
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
+                {
+                }
 
-                [ToolkitSampleBoolOption(""test"", false, Title =  ""Toggle y"")]
+                [ToolkitSampleBoolOption("test", false, Title =  "Toggle y")]
 
-                [ToolkitSample(id: nameof(Sample2), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample2), "Test Sample", description: "")]
                 public partial class Sample2 : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -336,19 +343,20 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void SampleGeneratedOptionAttributeOnUnsupportedType()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleMultiChoiceOption(""TextFontFamily"", ""Segoe UI"", ""Arial"", ""Consolas"", Title = ""Font family"")]
-                [ToolkitSampleBoolOption(""Test"", false, Title =  ""Toggle visibility"")]
+            {
+                [ToolkitSampleMultiChoiceOption("TextFontFamily", "Segoe UI", "Arial", "Consolas", Title = "Font family")]
+                [ToolkitSampleBoolOption("Test", false, Title =  "Toggle visibility")]
                 public partial class Sample
-                {{
-                }}
-            }}";
+                {
+                }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 
@@ -358,25 +366,26 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneMultipleChoiceOptionWithNoChoices()
     {
-        var source = $@"
+        var source = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
-                [ToolkitSampleMultiChoiceOption(""TextFontFamily"", Title = ""Font family"")]
+            {
+                [ToolkitSampleMultiChoiceOption("TextFontFamily", Title = "Font family")]
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
         var result = source.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME);
 

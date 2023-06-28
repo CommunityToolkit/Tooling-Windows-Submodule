@@ -14,24 +14,25 @@ namespace CommunityToolkit.Tooling.SampleGen.Tests;
 public partial class ToolkitSampleMetadataTests
 {
     // We currently need at least one sample to test the document registry, so we'll have this for the base cases to share.
-    private static readonly string SimpleSource = $@"
+    private static readonly string SimpleSource = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
+            {
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
     [TestMethod]
     public void MissingFrontMatterSection()
@@ -42,7 +43,7 @@ public partial class ToolkitSampleMetadataTests
             ";
 
         var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
-        
+
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
@@ -106,7 +107,7 @@ Without any front matter.
 ";
 
         var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
-        
+
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownSampleIdNotFound, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
@@ -130,7 +131,7 @@ issue-id: 0
 Without any sample.";
 
         var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
-        
+
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.DocumentationHasNoSamples, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
@@ -153,7 +154,7 @@ issue-id: 0
 # This is some test documentation...
 Which is valid.
 > [!SAMPLE Sample]";
-        
+
 
         var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
@@ -180,7 +181,7 @@ issue-id: 0
 Without an invalid discussion id.";
 
         var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
-        
+
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
     }
@@ -204,7 +205,7 @@ issue-id: https://github.com/1234
 Without an invalid discussion id.";
 
         var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
-        
+
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
     }
