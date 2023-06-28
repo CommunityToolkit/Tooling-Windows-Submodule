@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-
 using Windows.ApplicationModel.Core;
 
 namespace CommunityToolkit.App.Shared.Controls;
@@ -11,11 +10,17 @@ namespace CommunityToolkit.App.Shared.Controls;
 [TemplateVisualState(Name = BackButtonCollapsedState, GroupName = BackButtonStates)]
 [TemplateVisualState(Name = PaneButtonVisibleState, GroupName = PaneButtonStates)]
 [TemplateVisualState(Name = PaneButtonCollapsedState, GroupName = PaneButtonStates)]
+[TemplateVisualState(Name = WindowActivatedState, GroupName = ActivationStates)]
+[TemplateVisualState(Name = WindowDeactivatedState, GroupName = ActivationStates)]
+[TemplateVisualState(Name = StandardState, GroupName = DisplayModeStates)]
+[TemplateVisualState(Name = TallState, GroupName = DisplayModeStates)]
 [TemplatePart(Name = PartBackButton, Type = typeof(Button))]
 [TemplatePart(Name = PartPaneButton, Type = typeof(Button))]
 [TemplatePart(Name = PartDragRegionPresenter, Type = typeof(Grid))]
 public partial class TitleBar : Control
 {
+    private const string PartLeftPaddingColumn = "LeftPaddingColumn";
+    private const string PartRightPaddingColumn = "RightPaddingColumn";
     private const string PartDragRegionPresenter = "PART_DragRegion";
     private const string PartBackButton = "PART_BackButton";
     private const string PartPaneButton = "PART_PaneButton";
@@ -28,6 +33,13 @@ public partial class TitleBar : Control
     private const string PaneButtonCollapsedState = "PaneButtonCollapsed";
     private const string PaneButtonStates = "PaneButtonStates";
 
+    private const string WindowActivatedState = "Activated";
+    private const string WindowDeactivatedState = "Deactivated";
+    private const string ActivationStates = "WindowActivationStates";
+
+    private const string StandardState = "Standard";
+    private const string TallState = "Tall";
+    private const string DisplayModeStates = "DisplayModeStates";
 
     private Grid? _dragRegion;
     private TitleBar? _titleBar;
@@ -44,7 +56,6 @@ public partial class TitleBar : Control
 
     protected override void OnApplyTemplate()
     {
-
         _titleBar = (TitleBar)this;
 
         if ((Button)_titleBar.GetTemplateChild(PartBackButton) is Button backButton)
@@ -60,8 +71,6 @@ public partial class TitleBar : Control
         }
         _dragRegion = (Grid)_titleBar.GetTemplateChild(PartDragRegionPresenter);
         Update();
-
-
         SetTitleBar();
         base.OnApplyTemplate();
     }
@@ -85,9 +94,6 @@ public partial class TitleBar : Control
     {
         PaneButtonClick?.Invoke(this, new RoutedEventArgs());
     }
-
-
-
     private void Update()
     {
         VisualStateManager.GoToState(this, IsBackButtonVisible ? BackButtonVisibleState : BackButtonCollapsedState, true);
@@ -96,28 +102,12 @@ public partial class TitleBar : Control
 
     private void SetTitleBar()
     {
-#if WINAPPSDK && !HAS_UNO
-        Window window = App.currentWindow;
-        window.ExtendsContentIntoTitleBar = true;
-        window.SetTitleBar(_dragRegion);
-        // TO DO: BACKGROUND IS NOT TRANSPARENT
-#endif
 #if WINDOWS_UWP && !HAS_UNO
-        Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-        Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += this.TitleBar_LayoutMetricsChanged;
-        Window.Current.SetTitleBar(_dragRegion);
-        // NOT SUPPORTED IN UNO WASM
+        SetUWPTitleBar();
 #endif
-    }
 
-    private void TitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
-    {
-        if (_titleBar != null)
-        {
-            ColumnDefinition Left = (ColumnDefinition)_titleBar.GetTemplateChild("LeftPaddingColumn");
-            ColumnDefinition Right = (ColumnDefinition)_titleBar.GetTemplateChild("RightPaddingColumn");
-            Left.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayLeftInset);
-            Right.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayRightInset);
-        }
+#if WINAPPSDK
+        SetWASDKTitleBar();
+#endif
     }
 }

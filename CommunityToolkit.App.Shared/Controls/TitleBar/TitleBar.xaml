@@ -1,112 +1,61 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
-                    xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
-                    xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
                     xmlns:local="using:CommunityToolkit.App.Shared.Controls"
                     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
                     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 
+    <x:Double x:Key="TitleBarCompactHeight">32</x:Double>
+    <x:Double x:Key="TitleBarTallHeight">48</x:Double>
 
-    <ResourceDictionary.ThemeDictionaries>
-        <ResourceDictionary x:Key="Default">
-            <StaticResource x:Key="TitleBarForegroundBrush"
-                            ResourceKey="TextFillColorPrimaryBrush" />
-            <StaticResource x:Key="TitleBarDeactivatedForegroundBrush"
-                            ResourceKey="TextFillColorTertiaryBrush" />
+    <Style BasedOn="{StaticResource DefaultTitleBarStyle}"
+           TargetType="local:TitleBar" />
 
-            <!--  These colors cannot have an alpha channel, so they are hardcoded opaque versions of TextFill colors  -->
-            <Color x:Key="TitleBarButtonForegroundColor">#FFFFFF</Color>
-            <!--  TextFillColorPrimary over SolidBackgroundFillColorBase  -->
-            <Color x:Key="TitleBarButtonHoverForegroundColor">#FFFFFF</Color>
-            <!--  TextFillColorPrimary over SolidBackgroundFillColorBase  -->
-            <Color x:Key="TitleBarButtonPressedForegroundColor">#CFCFCF</Color>
-            <!--  TextFillColorSecondary over SolidBackgroundFillColorBase  -->
-            <Color x:Key="TitleBarButtonInactiveForegroundColor">#717171</Color>
-            <!--  TextFillColorTertiary over SolidBackgroundFillColorBase  -->
-
-            <StaticResource x:Key="TitleBarButtonBackgroundColor"
-                            ResourceKey="SubtleFillColorTransparent" />
-            <StaticResource x:Key="TitleBarButtonHoverBackgroundColor"
-                            ResourceKey="SubtleFillColorSecondary" />
-            <StaticResource x:Key="TitleBarButtonPressedBackgroundColor"
-                            ResourceKey="SubtleFillColorTertiary" />
-
-            <x:Double x:Key="TitleBarCompactHeight">32</x:Double>
-            <x:Double x:Key="TitleBarExpandedHeight">48</x:Double>
-        </ResourceDictionary>
-
-        <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="TitleBarForegroundBrush"
-                            ResourceKey="TextFillColorPrimaryBrush" />
-            <StaticResource x:Key="TitleBarDeactivatedForegroundBrush"
-                            ResourceKey="TextFillColorTertiaryBrush" />
-
-            <!--  These colors cannot have an alpha channel, so they are hardcoded opaque versions of TextFill colors  -->
-            <Color x:Key="TitleBarButtonForegroundColor">#191919</Color>
-            <!--  TextFillColorPrimary over SolidBackgroundFillColorBase  -->
-            <Color x:Key="TitleBarButtonHoverForegroundColor">#191919</Color>
-            <!--  TextFillColorPrimary over SolidBackgroundFillColorBase  -->
-            <Color x:Key="TitleBarButtonPressedForegroundColor">#606060</Color>
-            <!--  TextFillColorSecondary over SolidBackgroundFillColorBase  -->
-            <Color x:Key="TitleBarButtonInactiveForegroundColor">#9b9b9b</Color>
-            <!--  TextFillColorTertiary over SolidBackgroundFillColorBase  -->
-
-            <StaticResource x:Key="TitleBarButtonBackgroundColor"
-                            ResourceKey="SubtleFillColorTransparent" />
-            <StaticResource x:Key="TitleBarButtonHoverBackgroundColor"
-                            ResourceKey="SubtleFillColorSecondary" />
-            <StaticResource x:Key="TitleBarButtonPressedBackgroundColor"
-                            ResourceKey="SubtleFillColorTertiary" />
-
-            <x:Double x:Key="TitleBarCompactHeight">32</x:Double>
-            <x:Double x:Key="TitleBarExpandedHeight">48</x:Double>
-        </ResourceDictionary>
-
-        <ResourceDictionary x:Key="HighContrast">
-            <StaticResource x:Key="TitleBarForegroundBrush"
-                            ResourceKey="TextFillColorPrimaryBrush" />
-            <StaticResource x:Key="TitleBarDeactivatedForegroundBrush"
-                            ResourceKey="TextFillColorTertiaryBrush" />
-
-            <StaticResource x:Key="TitleBarButtonForegroundColor"
-                            ResourceKey="TextFillColorPrimary" />
-            <StaticResource x:Key="TitleBarButtonHoverForegroundColor"
-                            ResourceKey="TextFillColorPrimary" />
-            <StaticResource x:Key="TitleBarButtonPressedForegroundColor"
-                            ResourceKey="TextFillColorSecondary" />
-            <StaticResource x:Key="TitleBarButtonInactiveForegroundColor"
-                            ResourceKey="TextFillColorTertiary" />
-
-            <StaticResource x:Key="TitleBarButtonBackgroundColor"
-                            ResourceKey="SubtleFillColorTransparent" />
-            <StaticResource x:Key="TitleBarButtonHoverBackgroundColor"
-                            ResourceKey="SubtleFillColorSecondary" />
-            <StaticResource x:Key="TitleBarButtonPressedBackgroundColor"
-                            ResourceKey="SubtleFillColorTertiary" />
-
-            <x:Double x:Key="TitleBarCompactHeight">32</x:Double>
-            <x:Double x:Key="TitleBarExpandedHeight">48</x:Double>
-        </ResourceDictionary>
-    </ResourceDictionary.ThemeDictionaries>
-
-
-    <!--  THIS XAML IS FROM WINUI TITLEBAR EXPERIMENT  -->
-    <Style TargetType="local:TitleBar">
-        <Setter Property="Height" Value="{ThemeResource TitleBarExpandedHeight}" />
+    <Style x:Key="DefaultTitleBarStyle"
+           TargetType="local:TitleBar">
+        <Setter Property="MinHeight" Value="{ThemeResource TitleBarCompactHeight}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:TitleBar">
-                    <Grid Height="{TemplateBinding Height}"
-                          Background="Transparent">
+                    <Grid x:Name="PART_RootGrid"
+                          Height="{TemplateBinding MinHeight}"
+                          Padding="4,0,4,0"
+                          VerticalAlignment="Stretch"
+                          Background="Green">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition x:Name="LeftPaddingColumn"
                                               Width="0" />
-                            <ColumnDefinition Width="*" />
+                            <!--  0: Back button  -->
+                            <ColumnDefinition x:Name="BackButtonColumn"
+                                              Width="Auto" />
+                            <!--  1: Menu button  -->
+                            <ColumnDefinition x:Name="MenuButtonColumn"
+                                              Width="Auto" />
+                            <!--  2: Icon  -->
+                            <ColumnDefinition x:Name="IconColumn"
+                                              Width="Auto" />
+                            <!--  3: Title  -->
+                            <ColumnDefinition x:Name="TitleColumn"
+                                              Width="Auto" />
+                            <!--  4: Subtitle  -->
+                            <ColumnDefinition x:Name="SubtitleColumn"
+                                              Width="Auto" />
+                            <!--  4: LeftDragColumn  -->
+                            <ColumnDefinition x:Name="LeftDragColumn"
+                                              Width="*" />
+                            <!--  5: Content  -->
+                            <ColumnDefinition x:Name="ContentColumn"
+                                              Width="Auto" />
+                            <!--  5: Content  -->
+                            <ColumnDefinition x:Name="RightDragColumn"
+                                              Width="*" />
+                            <ColumnDefinition x:Name="FooterColumn"
+                                              Width="Auto" />
+                            <!--  5: Content  -->
+
                             <ColumnDefinition x:Name="RightPaddingColumn"
                                               Width="0" />
                         </Grid.ColumnDefinitions>
-
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="BackButtonStates">
                                 <VisualState x:Name="BackButtonVisible" />
@@ -147,83 +96,82 @@
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup x:Name="WindowActivationStates">
+                                <VisualState x:Name="Activated" />
+                                <VisualState x:Name="Deactivated">
+                                    <VisualState.Setters>
+                                        <Setter Target="PART_TitleText.Foreground" Value="{ThemeResource TextFillColorDisabledBrush}" />
+                                        <Setter Target="PART_SubTitleText.Foreground" Value="{ThemeResource TextFillColorDisabledBrush}" />
+                                        <Setter Target="PART_BackButton.IsEnabled" Value="False" />
+                                        <Setter Target="PART_PaneButton.IsEnabled" Value="False" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="DisplayModeStates">
+                                <VisualState x:Name="Standard" />
+                                <VisualState x:Name="Tall">
+                                    <VisualState.Setters>
+                                        <Setter Target="PART_RootGrid.MinHeight" Value="{ThemeResource TitleBarTallHeight}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
+                        <Viewbox x:Name="PART_Icon"
+                                 Grid.Column="3"
+                                 MaxWidth="16"
+                                 MaxHeight="16"
+                                 Margin="8,0,8,0"
+                                 VerticalAlignment="Center">
+                            <Image Source="{TemplateBinding Icon}" />
+                        </Viewbox>
 
-                        <Grid Grid.Column="1" Padding="4,0,4,0">
-                            <Grid.ColumnDefinitions>
-                                <!--  0: Back button  -->
-                                <ColumnDefinition Width="Auto" />
-                                <!--  1: Menu button  -->
-                                <ColumnDefinition Width="Auto" />
-                                <!--  2: Icon  -->
-                                <ColumnDefinition Width="Auto" />
-                                <!--  3: Title  -->
-                                <ColumnDefinition Width="Auto" />
-                                <!--  4: Subtitle  -->
-                                <ColumnDefinition Width="Auto" />
-                                <!--  5: Content  -->
-                                <ColumnDefinition Width="*" />
-                                <!--  6: Footer  -->
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="PART_TitleText"
+                                   Grid.Column="4"
+                                   MinWidth="48"
+                                   Margin="8,0,0,1"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Text="{TemplateBinding Title}"
+                                   TextTrimming="CharacterEllipsis"
+                                   TextWrapping="NoWrap" />
+                        <TextBlock x:Name="PART_SubTitleText"
+                                   Grid.Column="5"
+                                   MinWidth="48"
+                                   Margin="4,0,0,1"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Text="{TemplateBinding Subtitle}"
+                                   TextTrimming="CharacterEllipsis"
+                                   TextWrapping="NoWrap" />
+                        <Grid x:Name="PART_DragRegion"
+                              Grid.Column="3"
+                              Grid.ColumnSpan="8"
+                              Background="Transparent" />
+                        <Button x:Name="PART_BackButton"
+                                Grid.Column="1"
+                                Style="{ThemeResource TitleBarBackButtonStyle}"
+                                ToolTipService.ToolTip="Back" />
 
-                            <Viewbox x:Name="PART_Icon"
-                                     Grid.Column="2"
-                                     MaxWidth="16"
-                                     MaxHeight="16"
-                                     Margin="8,0,8,0"
-                                     VerticalAlignment="Center">
-                                <Image Source="{TemplateBinding Icon}" />
-                            </Viewbox>
+                        <Button x:Name="PART_PaneButton"
+                                Grid.Column="2"
+                                Style="{StaticResource TitleBarPaneToggleButtonStyle}"
+                                ToolTipService.ToolTip="Back" />
 
-                            <TextBlock x:Name="PART_TitleText"
-                                       Grid.Column="3"
-                                       MinWidth="48"
-                                       Margin="8,0,0,1"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       Foreground="{ThemeResource TitleBarForegroundBrush}"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
-                                       Text="{TemplateBinding Title}"
-                                       TextTrimming="CharacterEllipsis"
-                                       TextWrapping="NoWrap" />
-                            <TextBlock x:Name="PART_SubTitleText"
-                                       Grid.Column="4"
-                                       MinWidth="48"
-                                       Margin="4,0,0,1"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
-                                       Text="{TemplateBinding Subtitle}"
-                                       TextTrimming="CharacterEllipsis"
-                                       TextWrapping="NoWrap" />
-                            <Grid x:Name="PART_DragRegion"
-                                  Grid.Column="2"
-                                  Grid.ColumnSpan="8"
-                                  Background="Transparent" />
-                            <Button x:Name="PART_BackButton"
-                                    Grid.Column="0"
-                                    Style="{ThemeResource TitleBarBackButtonStyle}"
-                                    ToolTipService.ToolTip="Back" />
-
-                            <Button x:Name="PART_PaneButton"
-                                    Grid.Column="1"
-                                    Style="{StaticResource TitleBarPaneToggleButtonStyle}"
-                                    ToolTipService.ToolTip="Back" />
-
-                            <ContentPresenter x:Name="PART_ContentPresenter"
-                                              Grid.Column="5"
-                                              Margin="4,0,0,0"
-                                              VerticalAlignment="Center"
-                                              HorizontalContentAlignment="Stretch"
-                                              Content="{TemplateBinding Content}" />
-                            <ContentPresenter x:Name="PART_Footer"
-                                              Grid.Column="6"
-                                              Margin="40,0,0,0"
-                                              HorizontalContentAlignment="Right"
-                                              Content="{TemplateBinding Footer}" />
-                        </Grid>
+                        <ContentPresenter x:Name="PART_ContentPresenter"
+                                          Grid.Column="7"
+                                          Margin="4,0,0,0"
+                                          VerticalAlignment="Center"
+                                          HorizontalContentAlignment="Stretch"
+                                          Content="{TemplateBinding Content}" />
+                        <ContentPresenter x:Name="PART_Footer"
+                                          Grid.Column="9"
+                                          Margin="0,0,8,0"
+                                          HorizontalContentAlignment="Right"
+                                          Content="{TemplateBinding Footer}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

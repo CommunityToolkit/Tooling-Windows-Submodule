@@ -20,6 +20,10 @@ public sealed partial class Shell : Page
     {
         this.InitializeComponent();
         Current = this;
+
+#if WINAPPSDK
+appTitleBar.Window = App.currentWindow;
+#endif
     }
 
     /// <summary>

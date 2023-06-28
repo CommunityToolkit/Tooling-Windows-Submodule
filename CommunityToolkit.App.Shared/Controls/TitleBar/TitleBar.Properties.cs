@@ -20,7 +20,13 @@ public partial class TitleBar : Control
 
     public static readonly DependencyProperty IsPaneButtonVisibleProperty = DependencyProperty.Register(nameof(IsPaneButtonVisible), typeof(bool), typeof(TitleBar), new PropertyMetadata(false, IsPaneButtonVisibleChanged));
 
-    
+    public static readonly DependencyProperty ConfigureTitleBarProperty = DependencyProperty.Register(nameof(ConfigureTitleBar), typeof(bool), typeof(TitleBar), new PropertyMetadata(true, ConfigureTitleBarChanged));
+
+    public static readonly DependencyProperty DisplayModeProperty = DependencyProperty.Register(nameof(DisplayMode), typeof(DisplayMode), typeof(TitleBar), new PropertyMetadata(DisplayMode.Standard, DisplayModeChanged));
+
+#if WINAPPSDK
+   public static readonly DependencyProperty WindowProperty = DependencyProperty.Register(nameof(Window), typeof(Window), typeof(TitleBar), new PropertyMetadata(null));
+#endif
 
     public ImageSource Icon
     {
@@ -52,6 +58,12 @@ public partial class TitleBar : Control
         set => SetValue(FooterProperty, value);
     }
 
+    public DisplayMode DisplayMode
+    {
+        get => (DisplayMode)GetValue(DisplayModeProperty);
+        set => SetValue(DisplayModeProperty, value);
+    }
+
     public bool IsBackButtonVisible
     {
         get => (bool)GetValue(IsBackButtonVisibleProperty);
@@ -64,12 +76,43 @@ public partial class TitleBar : Control
         set => SetValue(IsPaneButtonVisibleProperty, value);
     }
 
+    public bool ConfigureTitleBar
+    {
+        get => (bool)GetValue(ConfigureTitleBarProperty);
+        set => SetValue(ConfigureTitleBarProperty, value);
+    }
+
+#if WINAPPSDK
+    public Window Window
+    {
+        get => (Window)GetValue(WindowProperty);
+        set => SetValue(WindowProperty, value);
+    }
+#endif
+
     private static void IsBackButtonVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         ((TitleBar)d).Update();
     }
+
     private static void IsPaneButtonVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         ((TitleBar)d).Update();
     }
+
+    private static void ConfigureTitleBarChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        ((TitleBar)d).SetTitleBar();
+    }
+
+    private static void DisplayModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        ((TitleBar)d).SetTitleBar();
+    }
+}
+
+public enum DisplayMode
+{
+    Standard,
+    Tall
 }
