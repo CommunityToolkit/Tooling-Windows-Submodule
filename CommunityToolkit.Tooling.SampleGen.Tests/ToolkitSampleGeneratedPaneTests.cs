@@ -28,7 +28,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 [ToolkitSampleBoolOption("Test", false, Title = "Toggle y")]
                 [ToolkitSampleMultiChoiceOption("TextFontFamily", "Segoe UI", "Arial", "Consolas", Title = "Font family")]
 
-                [ToolkitSample(id: nameof(Sample), "Test Sample", description: ")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
                 {
                     public Sample()
@@ -120,7 +120,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 [ToolkitSampleBoolOption("Test", false, Title = "Toggle y")]
                 [ToolkitSampleMultiChoiceOption("TextFontFamily", "Segoe UI", "Arial", "Consolas", Title = "Font family")]
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: "")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
                 {
                     public Sample()
@@ -186,7 +186,7 @@ public partial class ToolkitSampleGeneratedPaneTests
     [TestMethod]
     public void PaneOptionWithBadName(string name)
     {
-        var source = """
+        var source = $$"""
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
@@ -194,7 +194,7 @@ public partial class ToolkitSampleGeneratedPaneTests
             namespace MyApp
             {
                 [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
-                [ToolkitSampleBoolOption("{name}", false, Title =  "Toggle visibility")]
+                [ToolkitSampleBoolOption("{{name}}", false, Title =  "Toggle visibility")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
                 {
                 }
