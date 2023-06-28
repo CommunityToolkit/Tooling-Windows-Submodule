@@ -23,7 +23,7 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
     {
         var classes = context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (s, _) => s is ClassDeclarationSyntax c && c.AttributeLists.Count > 0 || s is MethodDeclarationSyntax m && m.AttributeLists.Count > 0,
+                static (s, _) => s is ClassDeclarationSyntax { AttributeLists.Count: > 0 } or MethodDeclarationSyntax { AttributeLists.Count: > 0 }
                 static (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
             .Where(static m => m is not null)
             .Select(static (x, _) => x!);
