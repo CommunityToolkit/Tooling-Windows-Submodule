@@ -5,7 +5,7 @@
 namespace CommunityToolkit.Tooling.SampleGen.Attributes;
 
 /// <summary>
-/// Represents a boolean sample option.
+/// Generates a property and multi-choice option in the sample option pane that can be used to update it.
 /// </summary>
 /// <remarks>
 /// Using this attribute will automatically generate an <see cref="INotifyPropertyChanged"/>-enabled property

@@ -23,7 +23,7 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
     {
         var classes = context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (s, _) => s is ClassDeclarationSyntax c && c.AttributeLists.Count > 0,
+                static (s, _) => s is ClassDeclarationSyntax { AttributeLists.Count: > 0 } or MethodDeclarationSyntax { AttributeLists.Count: > 0 },
                 static (ctx, _) => ctx.SemanticModel.GetDeclaredSymbol(ctx.Node))
             .Where(static m => m is not null)
             .Select(static (x, _) => x!);
@@ -36,16 +36,16 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
             .Select((x, _) =>
             {
                 if (x.Item2.TryReconstructAs<ToolkitSampleBoolOptionAttribute>() is ToolkitSampleBoolOptionAttribute boolOptionAttribute)
-                    return (Attribute: (ToolkitSampleOptionBaseAttribute)boolOptionAttribute, ContainingClassSymbol: x.Item1, Type: typeof(ToolkitSampleBoolOptionMetadataViewModel));
+                    return (Attribute: (ToolkitSampleOptionBaseAttribute)boolOptionAttribute, AttachedSymbol: x.Item1, Type: typeof(ToolkitSampleBoolOptionMetadataViewModel));
 
                 if (x.Item2.TryReconstructAs<ToolkitSampleMultiChoiceOptionAttribute>() is ToolkitSampleMultiChoiceOptionAttribute multiChoiceOptionAttribute)
-                    return (Attribute: (ToolkitSampleOptionBaseAttribute)multiChoiceOptionAttribute, ContainingClassSymbol: x.Item1, Type: typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel));
+                    return (Attribute: (ToolkitSampleOptionBaseAttribute)multiChoiceOptionAttribute, AttachedSymbol: x.Item1, Type: typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel));
 
-                if(x.Item2.TryReconstructAs<ToolkitSampleNumericOptionAttribute>() is ToolkitSampleNumericOptionAttribute numericOptionAttribute)
-                    return (Attribute: (ToolkitSampleOptionBaseAttribute)numericOptionAttribute, ContainingClassSymbol: x.Item1, Type: typeof(ToolkitSampleNumericOptionMetadataViewModel));
+                if (x.Item2.TryReconstructAs<ToolkitSampleNumericOptionAttribute>() is ToolkitSampleNumericOptionAttribute numericOptionAttribute)
+                    return (Attribute: (ToolkitSampleOptionBaseAttribute)numericOptionAttribute, AttachedSymbol: x.Item1, Type: typeof(ToolkitSampleNumericOptionMetadataViewModel));
 
                 if (x.Item2.TryReconstructAs<ToolkitSampleTextOptionAttribute>() is ToolkitSampleTextOptionAttribute textOptionAttribute)
-                    return (Attribute: (ToolkitSampleOptionBaseAttribute)textOptionAttribute, ContainingClassSymbol: x.Item1, Type: typeof(ToolkitSampleTextOptionMetadataViewModel));
+                    return (Attribute: (ToolkitSampleOptionBaseAttribute)textOptionAttribute, AttachedSymbol: x.Item1, Type: typeof(ToolkitSampleTextOptionMetadataViewModel));
 
                 return default;
             })
@@ -53,37 +53,62 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
 
         context.RegisterSourceOutput(sampleAttributeOptions, (ctx, data) =>
         {
-            if (_handledContainingClasses.Add(data.ContainingClassSymbol))
+            var format = new SymbolDisplayFormat(
+                    globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.OmittedAsContaining,
+                    typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+                    propertyStyle: SymbolDisplayPropertyStyle.NameOnly,
+                    memberOptions: SymbolDisplayMemberOptions.IncludeContainingType
+                );
+
+            var containingClass = data.AttachedSymbol.Kind switch
             {
-                if (data.ContainingClassSymbol is ITypeSymbol typeSym && !typeSym.AllInterfaces.Any(x => x.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
+                SymbolKind.Method => data.AttachedSymbol.ContainingSymbol,
+                SymbolKind.NamedType => data.AttachedSymbol,
+                _ => throw new NotSupportedException("Only methods and classes are supported here."),
+            };
+
+            var name = data.AttachedSymbol.Kind switch
+            {
+                SymbolKind.Method => $"{data.AttachedSymbol.ToDisplayString(format)}.CommandProperty.g",
+                SymbolKind.NamedType => $"{data.AttachedSymbol.ToDisplayString(format)}.Property.{data.Attribute.Name}.g",
+                _ => throw new NotSupportedException("Only methods and classes are supported here."),
+            };
+
+            // Generate property container and INPC
+            if (this._handledContainingClasses.Add(containingClass))
+            {
+                if (containingClass is ITypeSymbol typeSym && !typeSym.AllInterfaces.Any(x => x.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
                 {
-                    var inpcImpl = BuildINotifyPropertyChangedImplementation(data.ContainingClassSymbol);
-                    ctx.AddSource($"{data.ContainingClassSymbol}.NotifyPropertyChanged.g", inpcImpl);
+                    var inpcImpl = BuildINotifyPropertyChangedImplementation(containingClass);
+                    ctx.AddSource($"{containingClass}.NotifyPropertyChanged.g", inpcImpl);
                 }
 
-                var propertyContainerSource = BuildGeneratedPropertyMetadataContainer(data.ContainingClassSymbol);
-                ctx.AddSource($"{data.ContainingClassSymbol}.GeneratedPropertyContainer.g", propertyContainerSource);
+                ctx.AddSource($"{containingClass.ToDisplayString(format)}.GeneratedPropertyContainer.g", BuildGeneratedPropertyMetadataContainer(containingClass));
             }
 
-            var name = $"{data.ContainingClassSymbol}.Property.{data.Attribute.Name}.g";
-
-            if (_handledPropertyNames.Add(name))
+            // Generate property
+            if (this._handledPropertyNames.Add(name))
             {
-                var dependencyPropertySource = BuildProperty(data.ContainingClassSymbol, data.Attribute.Name, data.Attribute.TypeName, data.Type);
+                var dependencyPropertySource = data.AttachedSymbol.Kind switch
+                {
+                    SymbolKind.NamedType => BuildProperty(containingClassSymbol: data.AttachedSymbol, data.Attribute.Name, data.Attribute.TypeName, data.Type),
+                    _ => throw new NotSupportedException("Only methods and classes are supported here."),
+                };
+
                 ctx.AddSource(name, dependencyPropertySource);
             }
         });
 
     }
 
-    private static string BuildINotifyPropertyChangedImplementation(ISymbol containingClassSymbol)
+    private static string BuildINotifyPropertyChangedImplementation(ISymbol attachedSymbol)
     {
         return $@"#nullable enable
 using System.ComponentModel;
 
-namespace {containingClassSymbol.ContainingNamespace}
+namespace {attachedSymbol.ContainingNamespace}
 {{
-    public partial class {containingClassSymbol.Name} : {nameof(System.ComponentModel.INotifyPropertyChanged)}
+    public partial class {attachedSymbol.Name} : {nameof(System.ComponentModel.INotifyPropertyChanged)}
     {{
 		public event PropertyChangedEventHandler? PropertyChanged;
     }}
@@ -91,15 +116,15 @@ namespace {containingClassSymbol.ContainingNamespace}
 ";
     }
 
-    private static string BuildGeneratedPropertyMetadataContainer(ISymbol containingClassSymbol)
+    private static string BuildGeneratedPropertyMetadataContainer(ISymbol attachedSymbol)
     {
         return $@"#nullable enable
 using System.ComponentModel;
 using System.Collections.Generic;
 
-namespace {containingClassSymbol.ContainingNamespace}
+namespace {attachedSymbol.ContainingNamespace}
 {{
-    public partial class {containingClassSymbol.Name} : {typeof(IToolkitSampleGeneratedOptionPropertyContainer).Namespace}.{nameof(IToolkitSampleGeneratedOptionPropertyContainer)}
+    public partial class {attachedSymbol.Name} : {typeof(IToolkitSampleGeneratedOptionPropertyContainer).Namespace}.{nameof(IToolkitSampleGeneratedOptionPropertyContainer)}
     {{
         private IEnumerable<{typeof(IGeneratedToolkitSampleOptionViewModel).FullName}>? _generatedPropertyMetadata;
 
