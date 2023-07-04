@@ -5,7 +5,6 @@
       xmlns:controls="using:CommunityToolkit.App.Shared.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:metadata="using:CommunityToolkit.Tooling.SampleGen.Metadata"
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
       xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       mc:Ignorable="d">
@@ -18,15 +17,17 @@
                            Title="Toolkit Labs Gallery"
                            BackButtonClick="TitleBar_BackButtonClick"
                            DisplayMode="Tall"
-                           Icon="ms-appx:///Assets/AppTitleBar.png"
                            IsBackButtonVisible="True"
                            IsPaneButtonVisible="True"
                            PaneButtonClick="TitleBar_PaneButtonClick"
-                           Subtitle="Preview">
+                           Subtitle=" Preview">
+            <controls:TitleBar.Icon>
+                <BitmapIcon ShowAsMonochrome="False"
+                            UriSource="ms-appx:///Assets/AppTitleBar.png" />
+            </controls:TitleBar.Icon>
             <controls:TitleBar.Content>
                 <!--  See AutoSuggestBox issue for WASM https://github.com/unoplatform/uno/issues/7778  -->
                 <win:AutoSuggestBox x:Name="searchBox"
-                                    MinWidth="360"
                                     win:AutomationProperties.Name="Search"
                                     ItemTemplate="{StaticResource ControlItemAutoSuggestBoxTemplate}"
                                     PlaceholderText="Search Labs"

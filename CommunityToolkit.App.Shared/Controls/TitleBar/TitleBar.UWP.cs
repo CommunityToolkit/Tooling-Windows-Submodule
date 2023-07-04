@@ -9,28 +9,39 @@ using Windows.UI;
 
 namespace CommunityToolkit.App.Shared.Controls;
 
+[TemplatePart(Name = nameof(PART_DragRegion), Type = typeof(Grid))]
+
 public partial class TitleBar : Control
 {
+    Grid? PART_DragRegion;
+
     private void SetUWPTitleBar()
     {
-        if (ConfigureTitleBar)
+        if (AutoConfigureCustomTitleBar)
         {
             CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
             CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged -= this.TitleBar_LayoutMetricsChanged;
             CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += this.TitleBar_LayoutMetricsChanged;
             Window.Current.Activated -= this.Current_Activated;
             Window.Current.Activated += this.Current_Activated;
-            Window.Current.SetTitleBar(_dragRegion);
+       
             ApplicationView.GetForCurrentView().TitleBar.ButtonBackgroundColor = Colors.Transparent;
             ApplicationView.GetForCurrentView().TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+            Window.Current.SetTitleBar(PART_DragRegion);
+            PART_DragRegion = GetTemplateChild(nameof(PART_DragRegion)) as Grid;
         }
         else
         {
-            CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
-            Window.Current.Activated -= this.Current_Activated;
-            CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged -= this.TitleBar_LayoutMetricsChanged;
-            Window.Current.SetTitleBar(null);
+            ResetUWPTitleBar();
         }
+    }
+
+    private void ResetUWPTitleBar()
+    {
+        CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+        Window.Current.Activated -= this.Current_Activated;
+        CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged -= this.TitleBar_LayoutMetricsChanged;
+        Window.Current.SetTitleBar(null);
     }
 
     private void Current_Activated(object sender, Windows.UI.Core.WindowActivatedEventArgs e)
@@ -47,13 +58,8 @@ public partial class TitleBar : Control
 
     private void TitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
     {
-        if (_titleBar != null)
-        {
-            ColumnDefinition Left = (ColumnDefinition)_titleBar.GetTemplateChild(PartLeftPaddingColumn);
-            ColumnDefinition Right = (ColumnDefinition)_titleBar.GetTemplateChild(PartRightPaddingColumn);
-            Left.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayLeftInset);
-            Right.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayRightInset);
-        }
+        PART_LeftPaddingColumn!.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayLeftInset);
+        PART_RightPaddingColumn!.Width = new GridLength(CoreApplication.GetCurrentView().TitleBar.SystemOverlayRightInset);
     }
 }
 #endif

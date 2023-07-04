@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Windows.ApplicationModel.Core;
+using Windows.UI.WindowManagement;
 
 namespace CommunityToolkit.App.Shared.Controls;
 
@@ -14,14 +15,17 @@ namespace CommunityToolkit.App.Shared.Controls;
 [TemplateVisualState(Name = WindowDeactivatedState, GroupName = ActivationStates)]
 [TemplateVisualState(Name = StandardState, GroupName = DisplayModeStates)]
 [TemplateVisualState(Name = TallState, GroupName = DisplayModeStates)]
+[TemplateVisualState(Name = IconVisibleState, GroupName = IconStates)]
+[TemplateVisualState(Name = IconCollapsedState, GroupName = IconStates)]
+[TemplateVisualState(Name = WideState, GroupName = ReflowStates)]
+[TemplateVisualState(Name = NarrowState, GroupName = ReflowStates)]
 [TemplatePart(Name = PartBackButton, Type = typeof(Button))]
 [TemplatePart(Name = PartPaneButton, Type = typeof(Button))]
-[TemplatePart(Name = PartDragRegionPresenter, Type = typeof(Grid))]
+[TemplatePart(Name = nameof(PART_LeftPaddingColumn), Type = typeof(ColumnDefinition))]
+[TemplatePart(Name = nameof(PART_RightPaddingColumn), Type = typeof(ColumnDefinition))]
+
 public partial class TitleBar : Control
 {
-    private const string PartLeftPaddingColumn = "LeftPaddingColumn";
-    private const string PartRightPaddingColumn = "RightPaddingColumn";
-    private const string PartDragRegionPresenter = "PART_DragRegion";
     private const string PartBackButton = "PART_BackButton";
     private const string PartPaneButton = "PART_PaneButton";
 
@@ -37,17 +41,20 @@ public partial class TitleBar : Control
     private const string WindowDeactivatedState = "Deactivated";
     private const string ActivationStates = "WindowActivationStates";
 
+    private const string IconVisibleState = "IconVisible";
+    private const string IconCollapsedState = "IconCollapsed";
+    private const string IconStates = "IconStates";
+
     private const string StandardState = "Standard";
     private const string TallState = "Tall";
     private const string DisplayModeStates = "DisplayModeStates";
 
-    private Grid? _dragRegion;
-    private TitleBar? _titleBar;
-  
-   
+    private const string WideState = "Wide";
+    private const string NarrowState = "Narrow";
+    private const string ReflowStates = "ReflowStates";
 
-    public event EventHandler<RoutedEventArgs>? BackButtonClick;
-    public event EventHandler<RoutedEventArgs>? PaneButtonClick;
+    ColumnDefinition? PART_LeftPaddingColumn;
+    ColumnDefinition? PART_RightPaddingColumn;
 
     public TitleBar()
     {
@@ -56,58 +63,103 @@ public partial class TitleBar : Control
 
     protected override void OnApplyTemplate()
     {
-        _titleBar = (TitleBar)this;
-
-        if ((Button)_titleBar.GetTemplateChild(PartBackButton) is Button backButton)
+        PART_LeftPaddingColumn = GetTemplateChild(nameof(PART_LeftPaddingColumn)) as ColumnDefinition;
+        PART_RightPaddingColumn = GetTemplateChild(nameof(PART_RightPaddingColumn)) as ColumnDefinition;
+        Configure();
+        if (GetTemplateChild(PartBackButton) is Button backButton)
         {
             backButton.Click -= BackButton_Click;
             backButton.Click += BackButton_Click;
         }
 
-        if ((Button)_titleBar.GetTemplateChild(PartPaneButton) is Button paneButton)
+        if (GetTemplateChild(PartPaneButton) is Button paneButton)
         {
             paneButton.Click -= PaneButton_Click;
             paneButton.Click += PaneButton_Click;
         }
-        _dragRegion = (Grid)_titleBar.GetTemplateChild(PartDragRegionPresenter);
+
+     
+        SizeChanged -= this.TitleBar_SizeChanged;
+        SizeChanged += this.TitleBar_SizeChanged;
+    
         Update();
-        SetTitleBar();
         base.OnApplyTemplate();
+    }
+
+    private void TitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.NewSize.Width <= CompactStateBreakpoint)
+        {
+            if (Content != null || Footer != null)
+            {
+                VisualStateManager.GoToState(this, NarrowState, true);
+            }
+        }
+        else
+        {
+            VisualStateManager.GoToState(this, WideState, true);
+        }
+        
+#if WINAPPSDK
+        UpdateRegionToSize();
+#endif
     }
 
     private void BackButton_Click(object sender, RoutedEventArgs e)
     {
-        OnBackButtonClicked();
+        BackButtonClick?.Invoke(this, new RoutedEventArgs());
     }
 
     private void PaneButton_Click(object sender, RoutedEventArgs e)
     {
-        OnPaneButtonClicked();
-    }
-
-    private void OnBackButtonClicked()
-    {
-        BackButtonClick?.Invoke(this, new RoutedEventArgs());
-    }
-
-    private void OnPaneButtonClicked()
-    {
         PaneButtonClick?.Invoke(this, new RoutedEventArgs());
     }
+
     private void Update()
     {
+        if (Icon != null)
+        {
+            VisualStateManager.GoToState(this, IconVisibleState, true);
+        }
+        else
+        {
+            VisualStateManager.GoToState(this, IconCollapsedState, true);
+        }
         VisualStateManager.GoToState(this, IsBackButtonVisible ? BackButtonVisibleState : BackButtonCollapsedState, true);
         VisualStateManager.GoToState(this, IsPaneButtonVisible ? PaneButtonVisibleState : PaneButtonCollapsedState, true);
+
+        if (DisplayMode == DisplayMode.Tall)
+        {
+            VisualStateManager.GoToState(this, TallState, true);
+        }
+        else
+        {
+            VisualStateManager.GoToState(this, StandardState, true);
+        }
     }
 
-    private void SetTitleBar()
+
+    private void Configure()
     {
 #if WINDOWS_UWP && !HAS_UNO
         SetUWPTitleBar();
 #endif
-
 #if WINAPPSDK
-        SetWASDKTitleBar();
+    SetWASDKTitleBar();
 #endif
     }
+
+#if WINDOWS_UWP && !HAS_UNO
+    public void Reset()
+    {
+        ResetUWPTitleBar();
+    }
+#endif
+
+#if WINAPPSDK
+    public void Reset()
+    {
+          ResetWASDKTitleBar();
+    }
+#endif
 }
