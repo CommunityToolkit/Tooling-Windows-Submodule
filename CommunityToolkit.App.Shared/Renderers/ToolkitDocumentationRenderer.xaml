@@ -3,6 +3,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:behaviors="using:CommunityToolkit.App.Shared.Behaviors"
+      xmlns:converters="using:CommunityToolkit.WinUI.Converters"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:interactions="using:Microsoft.Xaml.Interactions.Core"
       xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
@@ -12,7 +13,7 @@
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
       xmlns:renderer="using:CommunityToolkit.App.Shared.Renderers"
       xmlns:wasm="http://uno.ui/wasm"
-      xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+      xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       mc:Ignorable="d wasm">
 
     <Page.Resources>
@@ -34,7 +35,11 @@
         <local:DocOrSampleTemplateSelector x:Key="DocOrSampleTemplateSelector"
                                            Document="{StaticResource DocumentTemplate}"
                                            Sample="{StaticResource SampleTemplate}" />
-        <converters:DoubleToVisibilityConverter x:Name="doubleToVisibilityConverter" GreaterThan="1" TrueValue="Visible" FalseValue="Collapsed" NullValue="Collapsed"/>
+        <converters:DoubleToVisibilityConverter x:Name="doubleToVisibilityConverter"
+                                                FalseValue="Collapsed"
+                                                GreaterThan="1"
+                                                NullValue="Collapsed"
+                                                TrueValue="Visible" />
     </Page.Resources>
 
     <Grid>
@@ -90,7 +95,7 @@
 
         <!--  Header grid  -->
         <Grid x:Name="HeaderGrid"
-              Margin="40,24,40,40"
+              Margin="40,24,40,24"
               VerticalAlignment="Top"
               ColumnSpacing="8">
             <Grid.ColumnDefinitions>
@@ -112,6 +117,7 @@
             <TextBlock Grid.Row="1"
                        Margin="0,8,0,0"
                        HorizontalAlignment="Left"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                        Text="{x:Bind Metadata.Description, Mode=OneWay}"
                        TextWrapping="WrapWholeWords" />
 
@@ -162,10 +168,10 @@
                       MinWidth="160"
                       HorizontalAlignment="Right"
                       VerticalAlignment="Bottom"
-                      Visibility="{x:Bind Samples.Count, Converter={StaticResource doubleToVisibilityConverter}}"
                       ItemsSource="{x:Bind Samples, Mode=OneWay}"
                       SelectedIndex="0"
-                      SelectionChanged="SampleSelectionBox_SelectionChanged">
+                      SelectionChanged="SampleSelectionBox_SelectionChanged"
+                      Visibility="{x:Bind Samples.Count, Converter={StaticResource doubleToVisibilityConverter}}">
                 <ComboBox.Header>
                     <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Style="{StaticResource CaptionTextBlockStyle}"
@@ -183,7 +189,7 @@
                           Grid.ColumnSpan="2"
                           Margin="0,16,0,0"
                           IsClosable="False"
-                          IsOpen="False">
+                          Visibility="Collapsed">
                 <muxc:InfoBar.ActionButton>
                     <HyperlinkButton Content="Learn how you can use this experiment in your app"
                                      NavigateUri="https://aka.ms/wct/wiki/previewpackages" />
@@ -192,3 +198,4 @@
         </Grid>
     </Grid>
 </Page>
+
