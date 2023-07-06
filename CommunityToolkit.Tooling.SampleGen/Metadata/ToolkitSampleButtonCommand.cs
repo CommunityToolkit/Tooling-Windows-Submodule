@@ -19,7 +19,9 @@ public class ToolkitSampleButtonCommand : ICommand
     }
 
     /// <inheritdoc />
+#pragma warning disable CS0067
     public event EventHandler? CanExecuteChanged;
+#pragma warning restore CS0067
 
     /// <inheritdoc />
     public bool CanExecute(object parameter)
