@@ -12,7 +12,7 @@
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
       xmlns:renderer="using:CommunityToolkit.App.Shared.Renderers"
       xmlns:wasm="http://uno.ui/wasm"
-      xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:converters="using:CommunityToolkit.WinUI.Converters"
       mc:Ignorable="d wasm">
 
     <Page.Resources>
@@ -34,6 +34,7 @@
         <local:DocOrSampleTemplateSelector x:Key="DocOrSampleTemplateSelector"
                                            Document="{StaticResource DocumentTemplate}"
                                            Sample="{StaticResource SampleTemplate}" />
+        <converters:DoubleToVisibilityConverter x:Name="doubleToVisibilityConverter" GreaterThan="1" TrueValue="Visible" FalseValue="Collapsed" NullValue="Collapsed"/>
     </Page.Resources>
 
     <Grid>
@@ -90,7 +91,12 @@
         <!--  Header grid  -->
         <Grid x:Name="HeaderGrid"
               Margin="40,24,40,40"
-              VerticalAlignment="Top">
+              VerticalAlignment="Top"
+              ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -109,75 +115,75 @@
                        Text="{x:Bind Metadata.Description, Mode=OneWay}"
                        TextWrapping="WrapWholeWords" />
 
-            <Grid Grid.Row="2"
-                  Margin="0,16,0,0"
-                  ColumnSpacing="8">
-
-                <StackPanel x:Name="ButtonPanel"
-                            x:Load="{x:Bind renderer:ToolkitDocumentationRenderer.IsProjectPathValid()}"
-                            Orientation="Horizontal"
-                            Spacing="8">
-                    <Button Visibility="{x:Bind renderer:ToolkitDocumentationRenderer.IsIdValid(Metadata.DiscussionId), Mode=OneWay}">
-                        <StackPanel Orientation="Horizontal">
-                            <FontIcon FontSize="14"
-                                      Glyph="&#xE8F2;" />
-                            <TextBlock Margin="8,0,0,0"
-                                       Text="Discussion" />
-                        </StackPanel>
-                        <interactivity:Interaction.Behaviors>
-                            <interactions:EventTriggerBehavior EventName="Click">
-                                <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('discussions', Metadata.DiscussionId), Mode=OneWay}" />
-                            </interactions:EventTriggerBehavior>
-                        </interactivity:Interaction.Behaviors>
-                    </Button>
-                    <Button Visibility="{x:Bind renderer:ToolkitDocumentationRenderer.IsIdValid(Metadata.IssueId), Mode=OneWay}">
-                        <StackPanel Orientation="Horizontal">
-                            <PathIcon Margin="-3"
-                                      VerticalAlignment="Center"
-                                      Data="{StaticResource GithubIcon}">
-                                <PathIcon.RenderTransform>
-                                    <CompositeTransform ScaleX="0.65"
-                                                        ScaleY="0.65"
-                                                        TranslateX="-5"
-                                                        TranslateY="5" />
-                                </PathIcon.RenderTransform>
-                            </PathIcon>
-                            <TextBlock Margin="-4,0,0,0"
-                                       Text="Tracking Issue" />
-                        </StackPanel>
-                        <interactivity:Interaction.Behaviors>
-                            <interactions:EventTriggerBehavior EventName="Click">
-                                <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('issues', Metadata.IssueId), Mode=OneWay}" />
-                            </interactions:EventTriggerBehavior>
-                        </interactivity:Interaction.Behaviors>
-                    </Button>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal"
-                            Spacing="8">
-                    <TextBlock VerticalAlignment="Center"
+            <StackPanel x:Name="ButtonPanel"
+                        Grid.Row="2"
+                        Margin="0,16,0,0"
+                        x:Load="{x:Bind renderer:ToolkitDocumentationRenderer.IsProjectPathValid()}"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                <Button Visibility="{x:Bind renderer:ToolkitDocumentationRenderer.IsIdValid(Metadata.DiscussionId), Mode=OneWay}">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon FontSize="14"
+                                  Glyph="&#xE8F2;" />
+                        <TextBlock Margin="8,0,0,0"
+                                   Text="Discussion" />
+                    </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <interactions:EventTriggerBehavior EventName="Click">
+                            <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('discussions', Metadata.DiscussionId), Mode=OneWay}" />
+                        </interactions:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </Button>
+                <Button Visibility="{x:Bind renderer:ToolkitDocumentationRenderer.IsIdValid(Metadata.IssueId), Mode=OneWay}">
+                    <StackPanel Orientation="Horizontal">
+                        <PathIcon Margin="-3"
+                                  VerticalAlignment="Center"
+                                  Data="{StaticResource GithubIcon}">
+                            <PathIcon.RenderTransform>
+                                <CompositeTransform ScaleX="0.65"
+                                                    ScaleY="0.65"
+                                                    TranslateX="-5"
+                                                    TranslateY="5" />
+                            </PathIcon.RenderTransform>
+                        </PathIcon>
+                        <TextBlock Margin="-4,0,0,0"
+                                   Text="Tracking Issue" />
+                    </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <interactions:EventTriggerBehavior EventName="Click">
+                            <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('issues', Metadata.IssueId), Mode=OneWay}" />
+                        </interactions:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </Button>
+            </StackPanel>
+            <ComboBox x:Name="SampleSelectionBox"
+                      Grid.RowSpan="2"
+                      Grid.Column="1"
+                      MinWidth="160"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Bottom"
+                      Visibility="{x:Bind Samples.Count, Converter={StaticResource doubleToVisibilityConverter}}"
+                      ItemsSource="{x:Bind Samples, Mode=OneWay}"
+                      SelectedIndex="0"
+                      SelectionChanged="SampleSelectionBox_SelectionChanged">
+                <ComboBox.Header>
+                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Style="{StaticResource CaptionTextBlockStyle}"
-                               Text="Sample:" />
-                    <ComboBox x:Name="SampleSelectionBox"
-                              MinWidth="160"
-                              ItemsSource="{x:Bind Samples, Mode=OneWay}"
-                              SelectedIndex="0"
-                              SelectionChanged="SampleSelectionBox_SelectionChanged">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="metadata:ToolkitSampleMetadata">
-                                <TextBlock Text="{Binding DisplayName, Mode=OneWay}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
-            </Grid>
+                               Text="Go to sample:" />
+                </ComboBox.Header>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="metadata:ToolkitSampleMetadata">
+                        <TextBlock Text="{Binding DisplayName, Mode=OneWay}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
             <muxc:InfoBar Title="Experimental"
                           Grid.Row="3"
+                          Grid.ColumnSpan="2"
                           Margin="0,16,0,0"
                           IsClosable="False"
-                          IsOpen="True">
+                          IsOpen="False">
                 <muxc:InfoBar.ActionButton>
                     <HyperlinkButton Content="Learn how you can use this experiment in your app"
                                      NavigateUri="https://aka.ms/wct/wiki/previewpackages" />

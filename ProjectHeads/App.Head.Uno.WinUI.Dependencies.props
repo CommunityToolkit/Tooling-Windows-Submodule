@@ -4,5 +4,6 @@
     <ItemGroup>
         <!--<PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.Markdown" Version="7.1.100-dev.15.g12261e2626" />-->
         <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.3.1-uno.2" />
+        <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.0.0-beta.1" />
     </ItemGroup>
 </Project>
