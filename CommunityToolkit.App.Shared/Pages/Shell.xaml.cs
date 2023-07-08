@@ -19,6 +19,9 @@ public sealed partial class Shell : Page
     public Shell()
     {
         this.InitializeComponent();
+#if WINAPPSDK
+ appTitleBar.Window = App.currentWindow;
+#endif
         Current = this;
     }
 
@@ -73,14 +76,6 @@ public sealed partial class Shell : Page
             if (selectedMetadata is null)
                 return;
             NavigationFrame.Navigate(typeof(ToolkitDocumentationRenderer), selectedMetadata);
-        }
-    }
-
-    private void TitleBar_BackButtonClick(object sender, RoutedEventArgs e)
-    {
-        if (NavigationFrame.CanGoBack)
-        {
-            NavigationFrame.GoBack();
         }
     }
 
@@ -185,6 +180,19 @@ public sealed partial class Shell : Page
         else
         {
             return;
+        }
+    }
+
+    private void TitleBar_PaneButtonClick(object sender, RoutedEventArgs e)
+    {
+        NavView.IsPaneOpen = !NavView.IsPaneOpen;
+    }
+
+    private void TitleBar_BackButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (NavigationFrame.CanGoBack)
+        {
+            NavigationFrame.GoBack();
         }
     }
 #endif
