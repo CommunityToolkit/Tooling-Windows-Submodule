@@ -8,9 +8,6 @@ Param (
     [Parameter(HelpMessage = "The path to the template used to generate the props file.")]
     [string]$templatePath = "$PSScriptRoot/MultiTargetAwareProjectReference.props.template",
 
-    [Parameter(HelpMessage = "The path to the props file that contains the default MultiTarget values.")] 
-    [string[]]$multiTargetFallbackPropsPath = @("$PSScriptRoot/Defaults.props"),
-
     [Parameter(HelpMessage = "The placeholder text to replace when inserting the project file name into the template.")] 
     [string]$projectFileNamePlaceholder = "[ProjectFileName]",
 
@@ -33,15 +30,50 @@ Set-Location $preWorkingDir;
 # Insert csproj file name.
 $csprojFileName = [System.IO.Path]::GetFileName($relativeProjectPath);
 $templateContents = $templateContents -replace [regex]::escape($projectFileNamePlaceholder), $csprojFileName;
-$projectName = (Get-Item (Split-Path -Parent $projectPath)).Name;
 
 # Insert project directory
 $projectDirectoryRelativeToRoot = [System.IO.Path]::GetDirectoryName($relativeProjectPath).TrimStart('.').TrimStart('\');
 $templateContents = $templateContents -replace [regex]::escape($projectRootPlaceholder), "$projectDirectoryRelativeToRoot";
 
 # Load multitarget preferences for project
-$multiTargets = & $PSScriptRoot\GetMultiTargets.ps1 -ComponentName $projectName -ErrorAction Stop;
-    
+# Folder layout is expected to match the Community Toolkit.
+$projectName = (Get-Item (Split-Path -Parent (Split-Path -Parent $projectPath))).Name;
+$componentPath = "$PSScriptRoot/../../components/$projectName";
+
+$srcPath = Resolve-Path "$componentPath\src";
+$samplePath = Resolve-Path "$componentPath\samples";
+
+# Uses the <MultiTarget> values from the source library project as the fallback for the sample project.
+# This behavior also implemented in TargetFramework evaluation. 
+$multiTargetFallbackPropsPaths = @()
+
+if($projectPath.ToLower().Contains('sample')) {
+    $multiTargetFallbackPropsPaths += @("$samplePath/MultiTarget.props", "$srcPath/MultiTarget.props")
+} else {
+    $multiTargetFallbackPropsPaths += @("$srcPath/MultiTarget.props")
+}
+
+$multiTargetFallbackPropsPaths += @("$PSScriptRoot/Defaults.props")
+
+# Load first available default
+$fileContents = "";
+foreach ($fallbackPath in $multiTargetFallbackPropsPaths) {
+    if (Test-Path $fallbackPath) {
+        $fileContents = Get-Content $fallbackPath -ErrorAction Stop;
+        break;
+    }
+}
+
+# Parse file contents
+$regex = Select-String -Pattern '<MultiTarget>(.+?)<\/MultiTarget>' -InputObject $fileContents;
+
+if ($null -eq $regex -or $null -eq $regex.Matches -or $null -eq $regex.Matches.Groups -or $regex.Matches.Groups.Length -lt 2) {
+    Write-Error "Couldn't get MultiTarget property from $path";
+    exit(-1);
+}
+
+$multiTargets = $regex.Matches.Groups[1].Value;
+
 $templateContents = $templateContents -replace [regex]::escape("[IntendedTargets]"), $multiTargets;
 $multiTargets = $multiTargets.Split(';');
 
