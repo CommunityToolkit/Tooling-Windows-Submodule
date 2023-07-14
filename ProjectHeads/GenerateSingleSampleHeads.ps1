@@ -52,10 +52,8 @@ dotnet new --install "$PSScriptRoot/SingleComponent" --force
 Push-Location $componentPath
 
 # Copy and rename projects
-dotnet new ct-tooling-heads -n $componentName
-
-# Rename folder from component name (dotnet tooling default) to 'heads'
-Rename-Item -Path "$componentName" -NewName $headsFolderName -Force
+# Set output folder to 'heads' instead of default
+dotnet new ct-tooling-heads -n $componentName -o $headsFolderName
 
 # Remove template, as just for script
 dotnet new --uninstall "$PSScriptRoot/SingleComponent"
