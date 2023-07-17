@@ -39,6 +39,7 @@ public sealed partial class App : Application
         currentWindow = new Window();
         currentWindow.Title = "Toolkit Labs Gallery";
         currentWindow.AppWindow.SetIcon("Assets/Icon.ico");
+        currentWindow.SystemBackdrop = new MicaBackdrop();
 #if ALL_SAMPLES
         currentWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
         currentWindow.AppWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;

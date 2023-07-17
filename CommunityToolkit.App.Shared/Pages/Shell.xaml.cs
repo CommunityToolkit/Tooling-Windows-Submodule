@@ -5,6 +5,7 @@
 using CommunityToolkit.App.Shared.Renderers;
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using CommunityToolkit.App.Shared.Helpers;
+using Microsoft.UI.Xaml.Controls;
 
 namespace CommunityToolkit.App.Shared.Pages;
 
@@ -20,7 +21,9 @@ public sealed partial class Shell : Page
     {
         this.InitializeComponent();
 #if WINAPPSDK
- appTitleBar.Window = App.currentWindow;
+        appTitleBar.Window = App.currentWindow;
+#else
+        BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
 #endif
         Current = this;
     }
@@ -31,7 +34,6 @@ public sealed partial class Shell : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         samplePages = e.Parameter as IEnumerable<ToolkitFrontMatter>;
-        BackgroundHelper.SetBackground(this);
         SetupNavigationMenu();
         base.OnNavigatedTo(e); 
     }
@@ -149,8 +151,6 @@ public sealed partial class Shell : Page
         }
     }
 
-//// See AutoSuggestBox issue for WASM https://github.com/unoplatform/uno/issues/7778
-#if !HAS_UNO
     private void searchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
     {
         if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
@@ -182,7 +182,6 @@ public sealed partial class Shell : Page
             return;
         }
     }
-#endif
 
     private void TitleBar_PaneButtonClick(object sender, RoutedEventArgs e)
     {
