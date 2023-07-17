@@ -7,7 +7,7 @@ namespace CommunityToolkit.Tooling.SampleGen.Attributes;
 /// <summary>
 /// Registers a control as the options panel for a toolkit sample.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class ToolkitSampleOptionsPaneAttribute : Attribute
 {
     /// <summary>
