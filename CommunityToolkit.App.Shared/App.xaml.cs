@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Windows.UI;
+
 namespace CommunityToolkit.App.Shared;
 
 /// <summary>
@@ -35,6 +37,12 @@ public sealed partial class App : Application
     {
 #if WINAPPSDK
         currentWindow = new Window();
+        currentWindow.Title = "Toolkit Labs Gallery";
+        currentWindow.AppWindow.SetIcon("Assets/Icon.ico");
+#if ALL_SAMPLES
+        currentWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+        currentWindow.AppWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+#endif
 #endif
 
         // Do not repeat app initialization when the Window already has content,

@@ -5,12 +5,6 @@
 #if WINAPPSDK
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using WinRT.Interop;
 
 namespace CommunityToolkit.App.Shared.Controls;
 
@@ -25,8 +19,7 @@ namespace CommunityToolkit.App.Shared.Controls;
 
 public partial class TitleBar : Control
 {
-    private AppWindow? appWindow;
-     ColumnDefinition? PART_ButtonsHolderColumn;
+    ColumnDefinition? PART_ButtonsHolderColumn;
     ColumnDefinition? PART_IconColumn;
     ColumnDefinition? PART_TitleColumn;
     ColumnDefinition? PART_LeftDragColumn;
@@ -44,14 +37,19 @@ public partial class TitleBar : Control
         }
         if (AutoConfigureCustomTitleBar)
         {
-            appWindow = GetAppWindow();
-            appWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            Window.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 
             this.Window.Activated -= Window_Activated;
             this.Window.Activated += Window_Activated;
 
-            appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
-            appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+            if (Window.Content is FrameworkElement rootElement)
+            {
+                UpdateCaptionButtons(rootElement);
+                rootElement.ActualThemeChanged += (s, e) =>
+                {
+                    UpdateCaptionButtons(rootElement);
+                };
+            }
 
             // Set the width of padding columns in the UI.
             PART_ButtonsHolderColumn = GetTemplateChild(nameof(PART_ButtonsHolderColumn)) as ColumnDefinition;
@@ -64,30 +62,41 @@ public partial class TitleBar : Control
             PART_TitleHolder = GetTemplateChild(nameof(PART_TitleHolder)) as StackPanel;
 
             // Get caption button occlusion information.
-            int CaptionButtonOcclusionWidthRight = appWindow.TitleBar.RightInset;
-            int CaptionButtonOcclusionWidthLeft = appWindow.TitleBar.LeftInset;
+            int CaptionButtonOcclusionWidthRight = Window.AppWindow.TitleBar.RightInset;
+            int CaptionButtonOcclusionWidthLeft = Window.AppWindow.TitleBar.LeftInset;
             PART_LeftPaddingColumn!.Width = new GridLength(CaptionButtonOcclusionWidthLeft);
             PART_RightPaddingColumn!.Width = new GridLength(CaptionButtonOcclusionWidthRight);
 
+            if (DisplayMode == DisplayMode.Tall)
+            {
+                // Choose a tall title bar to provide more room for interactive elements 
+                // like search box or person picture controls.
+                Window.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
+            }
+            else
+            {
+                Window.AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
+            }
+            // Recalculate the drag region for the custom title bar 
+            // if you explicitly defined new draggable areas.
+            SetDragRegionForCustomTitleBar();
+        }
+    }
 
-                if (DisplayMode == DisplayMode.Tall)
-                {
-                    // Choose a tall title bar to provide more room for interactive elements 
-                    // like search box or person picture controls.
-                    appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
-                }
-                else
-                {
-                    appWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
-                }
-                // Recalculate the drag region for the custom title bar 
-                // if you explicitly defined new draggable areas.
-                SetDragRegionForCustomTitleBar(appWindow);
-                }
-                else
-                {
-                       ResetWASDKTitleBar();
-                }
+    private void UpdateCaptionButtons(FrameworkElement rootElement)
+    {
+        Window.AppWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+        Window.AppWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+        if (rootElement.ActualTheme == ElementTheme.Dark)
+        {
+            Window.AppWindow.TitleBar.ButtonForegroundColor = Colors.White;
+            Window.AppWindow.TitleBar.ButtonInactiveForegroundColor = Colors.DarkGray;
+        }
+        else
+        {
+            Window.AppWindow.TitleBar.ButtonForegroundColor = Colors.Black;
+            Window.AppWindow.TitleBar.ButtonInactiveForegroundColor = Colors.DarkGray;
+        }
     }
 
     private void ResetWASDKTitleBar()
@@ -98,14 +107,10 @@ public partial class TitleBar : Control
             // TO DO: Throw exception that window has not been set? 
         }
 
-           appWindow = GetAppWindow();
-           appWindow.TitleBar.ResetToDefault();
-    }
-
-    private void UpdateRegionToSize()
-    {
-            // Update drag region if the size of the title bar changes.
-            SetDragRegionForCustomTitleBar(appWindow!);
+        Window.AppWindow.TitleBar.ExtendsContentIntoTitleBar = false;
+        this.Window.Activated -= Window_Activated;
+        SizeChanged -= this.TitleBar_SizeChanged;
+        Window.AppWindow.TitleBar.ResetToDefault();
     }
 
     private void Window_Activated(object sender, WindowActivatedEventArgs args)
@@ -120,13 +125,14 @@ public partial class TitleBar : Control
         }
     }
 
-    private void SetDragRegionForCustomTitleBar(AppWindow appWindow)
+    private void SetDragRegionForCustomTitleBar()
     {
-    if (appWindow != null)
-    {            double scaleAdjustment = GetScaleAdjustment();
+        if (AutoConfigureCustomTitleBar && Window != null && PART_RightPaddingColumn != null && PART_LeftPaddingColumn != null)
+        {
+            double scaleAdjustment = GetScaleAdjustment();
 
-            PART_RightPaddingColumn!.Width = new GridLength(appWindow.TitleBar.RightInset / scaleAdjustment);
-            PART_LeftPaddingColumn!.Width = new GridLength(appWindow.TitleBar.LeftInset / scaleAdjustment);
+            PART_RightPaddingColumn.Width = new GridLength(Window.AppWindow.TitleBar.RightInset / scaleAdjustment);
+            PART_LeftPaddingColumn.Width = new GridLength(Window.AppWindow.TitleBar.LeftInset / scaleAdjustment);
 
             List<Windows.Graphics.RectInt32> dragRectsList = new();
 
@@ -157,45 +163,8 @@ public partial class TitleBar : Control
 
             Windows.Graphics.RectInt32[] dragRects = dragRectsList.ToArray();
 
-            appWindow.TitleBar.SetDragRectangles(dragRects);
-            }
-    }
-
-
-    private AppWindow GetAppWindow()
-    {
-        IntPtr hWnd = WindowNative.GetWindowHandle(this.Window);
-        WindowId wndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
-        return AppWindow.GetFromWindowId(wndId);
-    }
-
-    [DllImport("Shcore.dll", SetLastError = true)]
-    internal static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
-
-    internal enum Monitor_DPI_Type : int
-    {
-        MDT_Effective_DPI = 0,
-        MDT_Angular_DPI = 1,
-        MDT_Raw_DPI = 2,
-        MDT_Default = MDT_Effective_DPI
-    }
-
-    private double GetScaleAdjustment()
-    {
-        IntPtr hWnd = WindowNative.GetWindowHandle(this.Window);
-        WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
-        DisplayArea displayArea = DisplayArea.GetFromWindowId(wndId, DisplayAreaFallback.Primary);
-        IntPtr hMonitor = Win32Interop.GetMonitorFromDisplayId(displayArea.DisplayId);
-
-        // Get DPI.
-        int result = GetDpiForMonitor(hMonitor, Monitor_DPI_Type.MDT_Default, out uint dpiX, out uint _);
-        if (result != 0)
-        {
-            throw new Exception("Could not get DPI for monitor.");
+            Window.AppWindow.TitleBar.SetDragRectangles(dragRects);
         }
-
-        uint scaleFactorPercent = (uint)(((long)dpiX * 100 + (96 >> 1)) / 96);
-        return scaleFactorPercent / 100.0;
     }
 }
 #endif

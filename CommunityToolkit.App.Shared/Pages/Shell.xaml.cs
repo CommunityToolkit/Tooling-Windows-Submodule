@@ -182,6 +182,7 @@ public sealed partial class Shell : Page
             return;
         }
     }
+#endif
 
     private void TitleBar_PaneButtonClick(object sender, RoutedEventArgs e)
     {
@@ -195,5 +196,4 @@ public sealed partial class Shell : Page
             NavigationFrame.GoBack();
         }
     }
-#endif
 }

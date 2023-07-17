@@ -26,7 +26,6 @@
                             UriSource="ms-appx:///Assets/AppTitleBar.png" />
             </controls:TitleBar.Icon>
             <controls:TitleBar.Content>
-                <!--  See AutoSuggestBox issue for WASM https://github.com/unoplatform/uno/issues/7778  -->
                 <win:AutoSuggestBox x:Name="searchBox"
                                     win:AutomationProperties.Name="Search"
                                     ItemTemplate="{StaticResource ControlItemAutoSuggestBoxTemplate}"
@@ -36,9 +35,6 @@
                                     TextChanged="searchBox_TextChanged"
                                     UpdateTextOnSelect="False" />
             </controls:TitleBar.Content>
-            <controls:TitleBar.Footer>
-                <Button Content="Click" />
-            </controls:TitleBar.Footer>
         </controls:TitleBar>
         <muxc:NavigationView x:Name="NavView"
                              Grid.Row="1"
@@ -50,6 +46,6 @@
             <Frame x:Name="NavigationFrame"
                    Navigated="NavigationFrameOnNavigated" />
         </muxc:NavigationView>
-
+        <!--  See AutoSuggestBox issue for WASM https://github.com/unoplatform/uno/issues/7778  -->
     </Grid>
 </Page>
