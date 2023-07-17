@@ -17,11 +17,11 @@ New-Item -ItemType Directory -Force -Path $projectPropsOutputDir -ErrorAction Si
 foreach ($projectPath in Get-ChildItem -Directory -Path "$PSScriptRoot/../../components/*") {
   $srcPath = Resolve-Path "$($projectPath.FullName)\src";
   $srcProjectPath = Get-ChildItem -File "$srcPath\*.csproj";
-  $sampleProjectPath = "$($projectPath.FullName)\samples\*.csproj";
+  $sampleProjectPath = Get-ChildItem -File "$($projectPath.FullName)\samples\*.csproj" -ErrorAction SilentlyContinue;
 
   # Generate <ProjectReference>s for sample project
   # Use source project MultiTarget as first fallback.
-  if (Test-Path $sampleProjectPath) {
+  if ($null -ne $sampleProjectPath -and (Test-Path $sampleProjectPath)) {
     & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $sampleProjectPath -outputPath "$projectPropsOutputDir/$($sampleProjectPath.BaseName).props" -MultiTarget $MultiTarget
   }
 
