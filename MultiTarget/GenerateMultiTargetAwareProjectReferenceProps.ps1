@@ -41,7 +41,7 @@ $projectName = (Get-Item (Split-Path -Parent (Split-Path -Parent $projectPath)))
 $componentPath = "$PSScriptRoot/../../components/$projectName";
 
 $srcPath = Resolve-Path "$componentPath\src";
-$samplePath = Resolve-Path "$componentPath\samples";
+$samplePath = "$componentPath\samples";
 
 # Uses the <MultiTarget> values from the source library project as the fallback for the sample project.
 # This behavior also implemented in TargetFramework evaluation. 

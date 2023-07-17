@@ -4,7 +4,7 @@ Param (
 
   [Parameter(HelpMessage = "Only projects that support these targets will have references generated for use by deployable heads.")]
   [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
-  )
+)
 
 $preWorkingDir = $pwd;
 Set-Location $PSScriptRoot;
@@ -17,13 +17,13 @@ New-Item -ItemType Directory -Force -Path $projectPropsOutputDir -ErrorAction Si
 foreach ($projectPath in Get-ChildItem -Directory -Path "$PSScriptRoot/../../components/*") {
   $srcPath = Resolve-Path "$($projectPath.FullName)\src";
   $srcProjectPath = Get-ChildItem -File "$srcPath\*.csproj";
-
-  $samplePath = Resolve-Path "$($projectPath.FullName)\samples";
-  $sampleProjectPath = Get-ChildItem -File "$samplePath\*.csproj";
+  $sampleProjectPath = "$($projectPath.FullName)\samples\*.csproj";
 
   # Generate <ProjectReference>s for sample project
   # Use source project MultiTarget as first fallback.
-  & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $sampleProjectPath -outputPath "$projectPropsOutputDir/$($sampleProjectPath.BaseName).props" -MultiTarget $MultiTarget
+  if (Test-Path $sampleProjectPath) {
+    & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $sampleProjectPath -outputPath "$projectPropsOutputDir/$($sampleProjectPath.BaseName).props" -MultiTarget $MultiTarget
+  }
 
   # Generate <ProjectReference>s for src project
   & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $srcProjectPath -outputPath "$projectPropsOutputDir/$($srcProjectPath.BaseName).props" -MultiTarget $MultiTarget
