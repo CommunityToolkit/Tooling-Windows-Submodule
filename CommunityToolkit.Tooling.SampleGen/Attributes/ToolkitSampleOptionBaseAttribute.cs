@@ -24,7 +24,7 @@ public abstract class ToolkitSampleOptionBaseAttribute : Attribute
     /// <summary>
     /// A name that you can bind to in your XAML.
     /// </summary>
-    public string Name { get; }
+    public string Name { get; internal set; }
 
     /// <summary>
     /// The default state.

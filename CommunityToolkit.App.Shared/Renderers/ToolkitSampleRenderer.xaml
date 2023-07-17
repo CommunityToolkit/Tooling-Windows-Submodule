@@ -97,9 +97,10 @@
                 <ScrollViewer x:Name="OptionsScrollViewer"
                               Grid.Row="0"
                               Grid.Column="0"
-                              MinWidth="256"
+                              MinWidth="286"
                               Padding="16">
                     <ContentControl x:Name="OptionsControl"
+                                    HorizontalContentAlignment="Stretch"
                                     Content="{x:Bind SampleOptionsPaneInstance, Mode=OneWay}" />
                 </ScrollViewer>
                 <Grid x:Name="FixedOptionsBar"

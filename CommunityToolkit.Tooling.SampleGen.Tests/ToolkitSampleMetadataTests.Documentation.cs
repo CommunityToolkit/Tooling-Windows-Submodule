@@ -7,30 +7,32 @@ using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
 public partial class ToolkitSampleMetadataTests
 {
     // We currently need at least one sample to test the document registry, so we'll have this for the base cases to share.
-    private static readonly string SimpleSource = $@"
+    private static readonly string SimpleSource = """
             using System.ComponentModel;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
 
             namespace MyApp
-            {{
+            {
 
-                [ToolkitSample(id: nameof(Sample), ""Test Sample"", description: """")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
-                {{
-                }}
-            }}
+                {
+                }
+            }
 
             namespace Windows.UI.Xaml.Controls
-            {{
-                public class UserControl {{ }}
-            }}";
+            {
+                public class UserControl { }
+            }
+            """;
 
     [TestMethod]
     public void MissingFrontMatterSection()
@@ -40,7 +42,10 @@ public partial class ToolkitSampleMetadataTests
             Without any front matter.
             ";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown, DiagnosticDescriptors.MarkdownYAMLFrontMatterException.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [DataRow(1, DisplayName = "Title")]
@@ -76,7 +81,11 @@ Without any front matter.";
         lines.RemoveAt(removeline);
         markdown = String.Join('\n', lines);
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown, DiagnosticDescriptors.MarkdownYAMLFrontMatterMissingField.Id, DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id); // We won't see the sample reference as we bail out when the front matter fails to be complete...
+        var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        // We won't see the sample reference as we bail out when the front matter fails to be complete
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterMissingField, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -100,9 +109,10 @@ icon: assets/icon.png
 Without any front matter.
 ";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown,
-            DiagnosticDescriptors.MarkdownSampleIdNotFound.Id,
-            DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownSampleIdNotFound, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -124,9 +134,10 @@ icon: assets/icon.png
 # This is some test documentation...
 Without any sample.";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown,
-            DiagnosticDescriptors.DocumentationHasNoSamples.Id,
-            DiagnosticDescriptors.SampleNotReferencedInMarkdown.Id);
+        var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.DocumentationHasNoSamples, DiagnosticDescriptors.SampleNotReferencedInMarkdown);
     }
 
     [TestMethod]
@@ -149,7 +160,11 @@ icon: assets/icon.png
 Which is valid.
 > [!SAMPLE Sample]";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(SimpleSource, markdown);
+
+        var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre();
     }
 
     [TestMethod]
@@ -171,9 +186,10 @@ icon: assets/icon.png
 # This is some test documentation...
 Without an invalid discussion id.";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(string.Empty, markdown,
-            DiagnosticDescriptors.MarkdownYAMLFrontMatterException.Id,
-            DiagnosticDescriptors.DocumentationHasNoSamples.Id);
+        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
     }
 
     [TestMethod]
@@ -195,8 +211,9 @@ icon: assets/icon.png
 # This is some test documentation...
 Without an invalid discussion id.";
 
-        VerifyGeneratedDiagnostics<ToolkitSampleMetadataGenerator>(string.Empty, markdown,
-            DiagnosticDescriptors.MarkdownYAMLFrontMatterException.Id,
-            DiagnosticDescriptors.DocumentationHasNoSamples.Id);
+        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
     }
 }

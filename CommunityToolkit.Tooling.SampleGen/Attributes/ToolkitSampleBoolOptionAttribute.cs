@@ -23,7 +23,6 @@ public sealed class ToolkitSampleBoolOptionAttribute : ToolkitSampleOptionBaseAt
     public ToolkitSampleBoolOptionAttribute(string bindingName, bool defaultState)
         : base(bindingName, defaultState)
     {
- 
     }
 
     /// <summary>

@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOTNET_VERSION: ${{ '6.0.x' }}
+  DOTNET_VERSION: ${{ '7.0.x' }}
   ENABLE_DIAGNOSTICS: false
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
@@ -64,7 +64,7 @@ jobs:
 
       - name: dotnet build
         working-directory: ./
-        run: dotnet build /bl CommunityToolkit.Tooling.sln
+        run: dotnet build /bl CommunityToolkit.Tooling.sln -p:Configuration=Release
 
       # Run tests
       - name: Install Testspace Module
@@ -73,7 +73,7 @@ jobs:
           domain: ${{ github.repository_owner }}
 
       - name: Run tests against Source Generators
-        run: dotnet test --logger "trx;LogFileName=sourceGeneratorTestResults.trx"
+        run: dotnet test --logger "trx;LogFileName=sourceGeneratorTestResults.trx" -p:Configuration=Release
 
       - name: Create test reports
         run: |
