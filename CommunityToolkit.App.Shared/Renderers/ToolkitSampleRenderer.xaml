@@ -9,6 +9,7 @@
       xmlns:renderer="using:CommunityToolkit.App.Shared.Renderers"
       xmlns:wasm="http://uno.ui/wasm"
       xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      ActualThemeChanged="ToolkitSampleRenderer_ActualThemeChanged"
       Loaded="ToolkitSampleRenderer_Loaded"
       mc:Ignorable="d wasm">
 
@@ -224,6 +225,23 @@
 
                         <PivotItem Header="XAML">
                             <ScrollViewer>
+                                <RichTextBlock x:Name="XAMLCodeRenderer"
+                                               wasm:IsTextSelectionEnabled="True"
+                                               win:IsTextSelectionEnabled="True"
+                                               Style="{StaticResource CaptionTextBlockStyle}" />
+                            </ScrollViewer>
+                        </PivotItem>
+                        <PivotItem Header="C#">
+                            <ScrollViewer>
+                                <RichTextBlock x:Name="CSharpCodeRenderer"
+                                               wasm:IsTextSelectionEnabled="True"
+                                               win:IsTextSelectionEnabled="True"
+                                               Style="{StaticResource CaptionTextBlockStyle}" />
+                            </ScrollViewer>
+                        </PivotItem>
+
+                        <!--<PivotItem Header="XAML">
+                            <ScrollViewer>
                                 <TextBlock wasm:IsTextSelectionEnabled="True"
                                            win:IsTextSelectionEnabled="True"
                                            Style="{StaticResource CaptionTextBlockStyle}"
@@ -237,7 +255,7 @@
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Text="{x:Bind CSharpCode, Mode=OneWay}" />
                             </ScrollViewer>
-                        </PivotItem>
+                        </PivotItem>-->
                     </Pivot>
                 </Grid>
             </muxc:Expander>

@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using CommunityToolkit.Tooling.SampleGen.Attributes;
+#if !HAS_UNO
+using ColorCode;
+#endif
 using CommunityToolkit.Tooling.SampleGen.Metadata;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 
 #if WINAPPSDK
@@ -154,6 +154,7 @@ public sealed partial class ToolkitSampleRenderer : Page
 
         XamlCode = await GetMetadataFileContents(Metadata, "xaml");
         CSharpCode = await GetMetadataFileContents(Metadata, "xaml.cs");
+        RenderCode();
 
         var sampleControlInstance = (UIElement)Metadata.SampleControlFactory();
 
@@ -307,5 +308,35 @@ public sealed partial class ToolkitSampleRenderer : Page
     private void CodeBtn_OnClick(object sender, RoutedEventArgs e)
     {
         SourcecodeExpander.IsExpanded = !SourcecodeExpander.IsExpanded;
+    }
+
+    private void RenderCode()
+    {
+#if !HAS_UNO
+        RichTextBlockFormatter codeFormatter = new RichTextBlockFormatter(ActualTheme);
+
+        if (XamlCode is not null)
+        {
+            XAMLCodeRenderer.Blocks?.Clear();
+            codeFormatter.FormatRichTextBlock(XamlCode, Languages.FindById("xaml"), XAMLCodeRenderer);
+        }
+
+        if (CSharpCode is not null)
+        {
+            CSharpCodeRenderer.Blocks?.Clear();
+            codeFormatter.FormatRichTextBlock(CSharpCode, Languages.FindById("c#"), CSharpCodeRenderer);
+        }
+#endif
+
+#if !WINAPPSDK
+        var paragraph = new Windows.UI.Xaml.Documents.Paragraph();
+        paragraph.Inlines.Add(new Windows.UI.Xaml.Documents.Run { Text = XamlCode });
+        XAMLCodeRenderer.Blocks.Add(paragraph);
+#endif
+    }
+
+    private void ToolkitSampleRenderer_ActualThemeChanged(FrameworkElement sender, object args)
+    {
+        RenderCode();
     }
 }
