@@ -1,27 +1,10 @@
 Param (
     [Parameter(HelpMessage = "The WinUI version to use when building an Uno head.", Mandatory = $true)]
     [ValidateSet('2', '3')]
-    [string]$winUIMajorVersion,
-    
-    [Parameter(HelpMessage = "Disables suppressing changes to the affected files in git, allowing changes to be committed.")] 
-    [switch]$allowGitChanges = $false
+    [string]$winUIMajorVersion
 )
 
-# Suppress git warning "core.useBuiltinFSMonitor will be deprecated soon; use core.fsmonitor instead"
-& git config advice.useCoreFSMonitorConfig false;
-
-function SupressOrAllowChanges([string] $filePath) {
-    if ($allowGitChanges.IsPresent) {
-        git update-index --no-assume-unchanged $filePath
-    }
-    else {
-        git update-index --assume-unchanged $filePath
-    }
-}
-
 function ApplyWinUISwap([string] $filePath) {
-    SupressOrAllowChanges $filePath;
-
     $fileContents = Get-Content -Path $filePath;
     
     if ($winUIMajorVersion -eq "3") {
@@ -42,17 +25,10 @@ function ApplyWinUISwap([string] $filePath) {
     Write-Output "Updated $(Resolve-Path -Relative $filePath)"
 }
 
-Write-Output "Switching to WinUI $winUIMajorVersion";
+Write-Output "Switching Uno to WinUI $winUIMajorVersion";
 
 ApplyWinUISwap $PSScriptRoot/../ProjectHeads/App.Head.Uno.props
 ApplyWinUISwap $PSScriptRoot/PackageReferences/Uno.props
 ApplyWinUISwap $PSScriptRoot/WinUI.TargetVersion.props
 
-if ($allowGitChanges.IsPresent) {
-    Write-Warning "Changes to the default Uno package settings in Labs can now be committed.`r`nRun this command again without -allowGitChanges to disable committing further changes.";
-}
-else {
-    Write-Output "Changes to the default Uno package settings in Labs are now suppressed.`r`nTo switch branches, run `"git reset --hard`" with a clean working tree.";
-}
-
-Write-Output "Done, switched to WinUI $winUIMajorVersion"
+Write-Output "Done. Please close and regenerate your solution. Do not commit these changes to the tooling repository."
