@@ -4,6 +4,7 @@
   <ItemGroup>
     <!--<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Markdown" Version="7.1.11" />-->
     <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Uwp.Managed" Version="2.3.1-uno.2" />
+    <PackageReference Include="Uno.ColorCode.UWP" Version="2.1.0-uno.36" />
   </ItemGroup>
 </Project>
 

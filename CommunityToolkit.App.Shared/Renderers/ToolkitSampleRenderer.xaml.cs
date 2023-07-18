@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if !HAS_UNO
 using ColorCode;
-#endif
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Windows.Storage;
 
@@ -142,6 +140,7 @@ public sealed partial class ToolkitSampleRenderer : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        System.Diagnostics.Debug.WriteLine("OnNavigatedTo");
         Metadata = (ToolkitSampleMetadata)e.Parameter;
     }
 
@@ -151,9 +150,11 @@ public sealed partial class ToolkitSampleRenderer : Page
         {
             return;
         }
-
+        System.Diagnostics.Debug.WriteLine("LoadData");
         XamlCode = await GetMetadataFileContents(Metadata, "xaml");
         CSharpCode = await GetMetadataFileContents(Metadata, "xaml.cs");
+
+        System.Diagnostics.Debug.WriteLine("Going into RenderCode");
         RenderCode();
 
         var sampleControlInstance = (UIElement)Metadata.SampleControlFactory();
@@ -312,9 +313,9 @@ public sealed partial class ToolkitSampleRenderer : Page
 
     private void RenderCode()
     {
-#if !HAS_UNO
+        System.Diagnostics.Debug.WriteLine("RenderCode");
         RichTextBlockFormatter codeFormatter = new RichTextBlockFormatter(ActualTheme);
-
+        System.Diagnostics.Debug.WriteLine("RenderCode2");
         if (XamlCode is not null)
         {
             XAMLCodeRenderer.Blocks?.Clear();
@@ -326,13 +327,12 @@ public sealed partial class ToolkitSampleRenderer : Page
             CSharpCodeRenderer.Blocks?.Clear();
             codeFormatter.FormatRichTextBlock(CSharpCode, Languages.FindById("c#"), CSharpCodeRenderer);
         }
-#endif
-
-#if !WINAPPSDK
-        var paragraph = new Windows.UI.Xaml.Documents.Paragraph();
-        paragraph.Inlines.Add(new Windows.UI.Xaml.Documents.Run { Text = XamlCode });
-        XAMLCodeRenderer.Blocks.Add(paragraph);
-#endif
+        System.Diagnostics.Debug.WriteLine("RenderCode3");
+        //#if !WINAPPSDK
+        //        var paragraph = new Windows.UI.Xaml.Documents.Paragraph();
+        //        paragraph.Inlines.Add(new Windows.UI.Xaml.Documents.Run { Text = XamlCode });
+        //        XAMLCodeRenderer.Blocks.Add(paragraph);
+        //#endif
     }
 
     private void ToolkitSampleRenderer_ActualThemeChanged(FrameworkElement sender, object args)

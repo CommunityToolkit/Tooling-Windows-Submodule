@@ -227,16 +227,14 @@
                             <ScrollViewer>
                                 <RichTextBlock x:Name="XAMLCodeRenderer"
                                                wasm:IsTextSelectionEnabled="True"
-                                               win:IsTextSelectionEnabled="True"
-                                               Style="{StaticResource CaptionTextBlockStyle}" />
+                                               win:IsTextSelectionEnabled="True" />
                             </ScrollViewer>
                         </PivotItem>
                         <PivotItem Header="C#">
                             <ScrollViewer>
                                 <RichTextBlock x:Name="CSharpCodeRenderer"
                                                wasm:IsTextSelectionEnabled="True"
-                                               win:IsTextSelectionEnabled="True"
-                                               Style="{StaticResource CaptionTextBlockStyle}" />
+                                               win:IsTextSelectionEnabled="True"/>
                             </ScrollViewer>
                         </PivotItem>
 
