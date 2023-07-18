@@ -3,9 +3,10 @@
 
   <PropertyGroup>
     <TargetFramework>$(UwpTargetFramework)</TargetFramework>
+    <DependencyVariant>Uwp</DependencyVariant>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uwp.Dependencies.props" />
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.props" />
   <Import Project="$(MSBuildThisFileDirectory)\Head.Uwp.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uwp.Dependencies.props" />
 </Project>

@@ -1,4 +1,8 @@
 <Project>
+  <PropertyGroup>
+    <DependencyVariant>WinUI</DependencyVariant>
+  </PropertyGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.props" />
   <Import Project="$(MSBuildThisFileDirectory)\Head.WinAppSdk.props" />
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.WinAppSdk.Dependencies.props" />
