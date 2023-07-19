@@ -33,11 +33,11 @@
       EntryPoint="CommunityToolkit.App.Shared.App">
       <uap:VisualElements
         DisplayName="Windows Community Toolkit Gallery"
-        Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\Square44x44Logo.png"
+        Square150x150Logo="Assets\MedTile.png"
+        Square44x44Logo="Assets\AppList.png"
         Description="CommunityToolkit Samples"
         BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\WideTile.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square310x310Logo"/>
           </uap:ShowNameOnTiles>

@@ -43,7 +43,7 @@ public sealed partial class Shell : Page
     {
         if (samplePages is not null)
         {
-            NavView.MenuItems.Add(new MUXC.NavigationViewItem() { Content = "Get started", Icon = new SymbolIcon() { Symbol = Symbol.Home }, Tag = "GettingStarted" });
+            NavView.MenuItems.Add(new MUXC.NavigationViewItem() { Content = "Home", Icon = new SymbolIcon() { Symbol = Symbol.Home }, Tag = "GettingStarted" });
             NavView.MenuItems.Add(new MUXC.NavigationViewItemSeparator());
 
             // Populate menu with categories, subcategories and samples
