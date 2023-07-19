@@ -29,7 +29,7 @@
                 <AutoSuggestBox x:Name="searchBox"
                                 win:AutomationProperties.Name="Search"
                                 ItemTemplate="{StaticResource ControlItemAutoSuggestBoxTemplate}"
-                                PlaceholderText="Search Labs"
+                                PlaceholderText="Search the Toolkit.."
                                 QueryIcon="Find"
                                 QuerySubmitted="searchBox_QuerySubmitted"
                                 TextChanged="searchBox_TextChanged"
