@@ -24,23 +24,8 @@
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
     [ValidateSet('all', 'all-uwp', 'wasm', 'uwp', 'winappsdk', 'wpf', 'gtk', 'macos', 'ios', 'droid', 'netstandard')]
-    [string[]]$targets = @('uwp', 'winappsdk', 'wasm'), # default settings
-    
-    [Parameter(HelpMessage = "Disables suppressing changes to the TargetFrameworks file in git, allowing changes to be committed.")] 
-    [switch]$allowGitChanges = $false
+    [string[]]$targets = @('uwp', 'winappsdk', 'wasm') # default settings
 )
-
-# Suppress git warning "core.useBuiltinFSMonitor will be deprecated soon; use core.fsmonitor instead"
-& git config advice.useCoreFSMonitorConfig false;
-
-if ($allowGitChanges.IsPresent) {
-    Write-Warning "Changes to the default TargetFrameworks can now be committed. Run this command again without the -allowGitChanges flag to disable committing further changes.";
-    git update-index --no-assume-unchanged $PSScriptRoot/EnabledTargetFrameworks.props
-}
-else {
-    Write-Output "Changes to the default TargetFrameworks are now suppressed. To switch branches, run git reset --hard with a clean working tree.";
-    git update-index --assume-unchanged $PSScriptRoot/EnabledTargetFrameworks.props
-}
 
 $UwpTfm = "UwpTargetFramework";
 $WinAppSdkTfm = "WinAppSdkTargetFramework";
@@ -112,10 +97,14 @@ if ($targets.Contains("netstandard")) {
     $desiredTfmValues += $NetstandardTfm;
 }
 
+Write-Output "Setting enabled TargetFrameworks: $targets"
+
 $targetFrameworksToRemove = $allTargetFrameworks.Where({ -not $desiredTfmValues.Contains($_) })
 
 $targetFrameworksToRemoveRegexPartial = $targetFrameworksToRemove -join "|";
 
 $newFileContents = $fileContents -replace "<(?:$targetFrameworksToRemoveRegexPartial)>.+?>", '';
 
-Set-Content -Force -Path $PSScriptRoot/TargetFrameworks.props -Value $newFileContents;
+Set-Content -Force -Path $PSScriptRoot/EnabledTargetFrameworks.props -Value $newFileContents;
+
+Write-Output "Done. Please close and regenerate your solution. Do not commit these changes to the tooling repository."
