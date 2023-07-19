@@ -23,10 +23,13 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\PackageProjectUrlAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\NavigateToUriAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\NativeMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\TitleBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\TitleBar.UWP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\TitleBar.WASDK.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\TitleBar.Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\StringToUriConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocOrSampleTemplateSelector.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\BackgroundHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\IconHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\NavigationViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\GettingStartedPage.xaml.cs">

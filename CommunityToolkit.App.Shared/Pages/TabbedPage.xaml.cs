@@ -4,6 +4,7 @@
 
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using CommunityToolkit.App.Shared.Helpers;
+using Microsoft.UI.Xaml.Controls;
 
 #if !WINAPPSDK
 using Windows.UI.Xaml;
@@ -33,8 +34,11 @@ public sealed partial class TabbedPage : Page
     public TabbedPage()
     {
         this.InitializeComponent();
-
-        BackgroundHelper.SetBackground(this);
+#if WINAPPSDK
+        appTitleBar.Window = App.currentWindow;
+#else
+        BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
+#endif
     }
 
 

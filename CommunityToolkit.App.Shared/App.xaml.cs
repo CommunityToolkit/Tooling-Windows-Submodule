@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Windows.UI;
+
 namespace CommunityToolkit.App.Shared;
 
 /// <summary>
@@ -35,6 +37,13 @@ public sealed partial class App : Application
     {
 #if WINAPPSDK
         currentWindow = new Window();
+        currentWindow.Title = "Toolkit Labs Gallery";
+        currentWindow.AppWindow.SetIcon("Assets/Icon.ico");
+        currentWindow.SystemBackdrop = new MicaBackdrop();
+#if ALL_SAMPLES
+        currentWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+        currentWindow.AppWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+#endif
 #endif
 
         // Do not repeat app initialization when the Window already has content,
@@ -52,7 +61,6 @@ public sealed partial class App : Application
 #endif
             rootFrame.Navigate(typeof(AppLoadingView), e.Arguments);
 
-        SetTitleBar();
         // Ensure the current window is active
         currentWindow.Activate();
     }
@@ -65,14 +73,5 @@ public sealed partial class App : Application
     void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
     {
         throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
-    }
-
-    private void SetTitleBar()
-    {
-#if WINDOWS_UWP
-        var viewTitleBar = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
-        viewTitleBar.ButtonBackgroundColor = Windows.UI.Colors.Transparent;
-        viewTitleBar.ButtonInactiveBackgroundColor = Windows.UI.Colors.Transparent;
-#endif
     }
 }
