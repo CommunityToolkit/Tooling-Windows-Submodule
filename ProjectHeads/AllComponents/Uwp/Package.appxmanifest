@@ -14,7 +14,7 @@
   <mp:PhoneIdentity PhoneProductId="0b7f1f39-b49e-4d5a-b495-13c60832c27f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>CommunityToolkit Sample App</DisplayName>
+    <DisplayName>Windows Community Toolkit Gallery</DisplayName>
     <PublisherDisplayName>CommunityToolkit</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -32,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="CommunityToolkit.App.Shared.App">
       <uap:VisualElements
-        DisplayName="CommunityToolkit Sample App"
+        DisplayName="Windows Community Toolkit Gallery"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="CommunityToolkit Samples"

@@ -54,13 +54,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <controls:TitleBar x:Name="appTitleBar"
-                           Title="Toolkit Labs Gallery">
-            <controls:TitleBar.Icon>
-                <BitmapIcon ShowAsMonochrome="False"
-                            UriSource="ms-appx:///Assets/AppTitleBar.png" />
-            </controls:TitleBar.Icon>
-        </controls:TitleBar>
+        <controls:TitleBar Title="Windows Community Toolkit Gallery"
+                           VerticalAlignment="Top"
+                           Icon="ms-appx:///Assets/AppTitleBar.png" />
         <muxc:TabView Grid.Row="1"
                       VerticalAlignment="Stretch"
                       VerticalContentAlignment="Stretch"

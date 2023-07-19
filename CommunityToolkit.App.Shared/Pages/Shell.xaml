@@ -14,7 +14,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <controls:TitleBar x:Name="appTitleBar"
-                           Title="Toolkit Labs Gallery"
+                           Title="Windows Community Toolkit Gallery"
                            BackButtonClick="TitleBar_BackButtonClick"
                            DisplayMode="Tall"
                            IsBackButtonVisible="True"
