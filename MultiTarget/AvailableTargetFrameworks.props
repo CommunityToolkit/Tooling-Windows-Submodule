@@ -1,15 +1,15 @@
 <Project>
     <PropertyGroup>
         <UwpTargetFramework>uap10.0.17763</UwpTargetFramework>
-        <WinAppSdkTargetFramework>net7.0-windows10.0.19041.0</WinAppSdkTargetFramework>
+        <WinAppSdkTargetFramework>net6.0-windows10.0.19041.0</WinAppSdkTargetFramework>
         
         <WasmHeadTargetFramework>net7.0</WasmHeadTargetFramework>
         <LinuxHeadTargetFramework>net7.0</LinuxHeadTargetFramework>
         <WpfHeadTargetFramework>net7.0</WpfHeadTargetFramework>
         
-        <AndroidLibTargetFramework>net7.0-android</AndroidLibTargetFramework>
-        <MacOSLibTargetFramework>net7.0-maccatalyst</MacOSLibTargetFramework>
-        <iOSLibTargetFramework>net7.0-ios</iOSLibTargetFramework>
+        <AndroidLibTargetFramework>net6.0-android</AndroidLibTargetFramework>
+        <MacOSLibTargetFramework>net6.0-maccatalyst</MacOSLibTargetFramework>
+        <iOSLibTargetFramework>net6.0-ios</iOSLibTargetFramework>
 
         <!-- Used for comparison to current TargetFramework -->
         <LinuxLibTargetFramework>net7.0</LinuxLibTargetFramework>
