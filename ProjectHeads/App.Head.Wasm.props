@@ -14,7 +14,7 @@
     <!-- Change to `true` to enable profile-guided AOT generation. Once profile is generated, commit and revert this flag. -->
     <WasmShellGenerateAOTProfile Condition="!Exists('aot.profile')">false</WasmShellGenerateAOTProfile>
 
-     <!-- NOTE: Some components broken under InterpreterAndAot (linker issues?). FullAOT not building in WSL. -->
+    <!-- NOTE: Some components broken under InterpreterAndAot (linker issues?). FullAOT not building in WSL. -->
     <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
     <WasmShellMonoRuntimeExecutionMode Condition="'$(WasmShellGenerateAOTProfile)' == 'true'">Interpreter</WasmShellMonoRuntimeExecutionMode>
     <WasmShellMonoRuntimeExecutionMode Condition="Exists('aot.profile')">InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
@@ -31,6 +31,9 @@
 
     <!-- Xaml Trimming: https://platform.uno/docs/articles/features/resources-trimming.html -->
     <UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
+    <!-- JIT for Interpreter mode https://github.com/unoplatform/Uno.Wasm.Bootstrap/blob/main/doc/runtime-execution-modes.md#jiterpreter-mode -->
+    <WasmShellEnableJiterpreter Condition="'$(WasmShellMonoRuntimeExecutionMode)' == 'Interpreter'">true</WasmShellEnableJiterpreter>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
