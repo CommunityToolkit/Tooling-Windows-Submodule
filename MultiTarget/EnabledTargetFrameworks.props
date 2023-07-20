@@ -6,10 +6,6 @@
         <WasmHeadTargetFramework>net7.0</WasmHeadTargetFramework>
         <LinuxHeadTargetFramework>net7.0</LinuxHeadTargetFramework>
         <WpfHeadTargetFramework>net7.0</WpfHeadTargetFramework>
-        
-        
-        
-        
 
         <!-- Used for comparison to current TargetFramework -->
         <LinuxLibTargetFramework>net7.0</LinuxLibTargetFramework>
@@ -17,7 +13,7 @@
         <WpfLibTargetFramework>net7.0</WpfLibTargetFramework>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
-        
+        <NetStandardCommonTargetFramework>netstandard2.0</NetStandardCommonTargetFramework>
         <NetCoreCommonTargetFramework>net7.0</NetCoreCommonTargetFramework>
     </PropertyGroup>
 </Project>
