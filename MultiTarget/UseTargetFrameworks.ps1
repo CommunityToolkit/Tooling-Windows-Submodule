@@ -23,7 +23,7 @@
 #>
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
-    [ValidateSet('all', 'all-uwp', 'wasm', 'uwp', 'winappsdk', 'wpf', 'gtk', 'macos', 'ios', 'droid', 'netstandard')]
+    [ValidateSet('all', 'all-uwp', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
     [string[]]$targets = @('uwp', 'winappsdk', 'wasm') # default settings
 )
 
@@ -69,7 +69,7 @@ if ($targets.Contains("uwp")) {
     $desiredTfmValues += $UwpTfm;
 }
 
-if ($targets.Contains("winappsdk")) {
+if ($targets.Contains("wasdk")) {
     $desiredTfmValues += $WinAppSdkTfm;
 }
 
@@ -77,7 +77,7 @@ if ($targets.Contains("wpf")) {
     $desiredTfmValues += $WpfTfm;
 }
 
-if ($targets.Contains("gtk")) {
+if ($targets.Contains("linuxgtk")) {
     $desiredTfmValues += $GtkTfm;
 }
 
@@ -89,7 +89,7 @@ if ($targets.Contains("ios")) {
     $desiredTfmValues += $iOSTfm;
 }
 
-if ($targets.Contains("droid")) {
+if ($targets.Contains("android")) {
     $desiredTfmValues += $DroidTfm;
 }
 
