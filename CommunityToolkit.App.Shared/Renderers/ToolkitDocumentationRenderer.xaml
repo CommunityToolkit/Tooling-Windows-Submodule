@@ -17,6 +17,89 @@
       mc:Ignorable="d wasm">
 
     <Page.Resources>
+        <!--  Overriding the default Markdown styling to be inline with the default Windows typography / design guidelines  -->
+        <Style TargetType="renderer:MarkdownTextBlock">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="LinkForeground" Value="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+            <Setter Property="QuoteBackground" Value="Transparent" />
+            <Setter Property="QuoteForeground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="QuoteBorderBrush" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
+            <Setter Property="QuoteBorderThickness" Value="1, 0, 0, 0" />
+            <Setter Property="QuoteMargin" Value="12, 8, 0, 8" />
+            <Setter Property="QuotePadding" Value="12, 4, 0, 4" />
+            <Setter Property="CodeBackground" Value="{ThemeResource CardBackgroundFillColorSecondaryBrush}" />
+            <Setter Property="CodeBorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="CodeBorderThickness" Value="1" />
+            <Setter Property="CodeFontFamily" Value="Consolas" />
+            <Setter Property="CodeMargin" Value="0, 8, 0, 8" />
+            <Setter Property="CodePadding" Value="12, 10, 12, 8" />
+            <Setter Property="InlineCodeBorderThickness" Value="1" />
+            <Setter Property="InlineCodePadding" Value="4, 1, 4, 0" />
+            <Setter Property="InlineCodeMargin" Value="2,2,2,-4" />
+            <Setter Property="InlineCodeBackground" Value="{ThemeResource CardBackgroundFillColorSecondaryBrush}" />
+            <Setter Property="InlineCodeBorderBrush" Value="Transparent" />
+            <Setter Property="InlineCodeForeground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="InlineCodeFontFamily" Value="Consolas" />
+            <Setter Property="EmojiFontFamily" Value="Segoe UI Emoji" />
+            <!--  Title  -->
+            <Setter Property="Header1FontWeight" Value="SemiBold" />
+            <Setter Property="Header1FontSize" Value="28" />
+            <Setter Property="Header1Margin" Value="0, 16, 0, 4" />
+            <Setter Property="Header1Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <!--  Custom  -->
+            <Setter Property="Header2FontWeight" Value="SemiBold" />
+            <Setter Property="Header2FontSize" Value="24" />
+            <Setter Property="Header2Margin" Value="0, 16, 0, 4" />
+            <Setter Property="Header2Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <!--  Subtitle  -->
+            <Setter Property="Header3FontWeight" Value="SemiBold" />
+            <Setter Property="Header3FontSize" Value="20" />
+            <Setter Property="Header3Margin" Value="0, 16, 0, 0" />
+            <Setter Property="Header3Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <!--  Body Large Strong  -->
+            <Setter Property="Header4FontWeight" Value="SemiBold" />
+            <Setter Property="Header4FontSize" Value="18" />
+            <Setter Property="Header4Margin" Value="0, 16, 0, 0" />
+            <Setter Property="Header4Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <!--  Body Large  -->
+            <Setter Property="Header5FontWeight" Value="Normal" />
+            <Setter Property="Header5FontSize" Value="18" />
+            <Setter Property="Header5Margin" Value="0, 16, 0, 0" />
+            <Setter Property="Header5Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <!--  Body Strong  -->
+            <Setter Property="Header6FontWeight" Value="SemiBold" />
+            <Setter Property="Header6FontSize" Value="14" />
+            <Setter Property="Header6Margin" Value="0, 16, 0, 0" />
+            <Setter Property="Header6Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <Setter Property="HorizontalRuleBrush" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
+            <Setter Property="HorizontalRuleMargin" Value="0, 8, 0, 8" />
+            <Setter Property="HorizontalRuleThickness" Value="1" />
+            <Setter Property="ListMargin" Value="0, 4, 0, 4" />
+            <Setter Property="ListGutterWidth" Value="4" />
+            <Setter Property="ListBulletSpacing" Value="4" />
+            <Setter Property="ParagraphMargin" Value="0, 0, 0, 12" />
+            <Setter Property="ParagraphLineHeight" Value="20" />
+            <Setter Property="TableBorderBrush" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
+            <Setter Property="TableBorderThickness" Value="1" />
+            <Setter Property="TableCellPadding" Value="8, 4, 8, 4" />
+            <Setter Property="YamlBorderThickness" Value="1" />
+            <Setter Property="YamlBorderBrush" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
+            <Setter Property="TableMargin" Value="0, 8, 0, 8" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="renderer:MarkdownTextBlock">
+                        <Border x:Name="RootElement"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <DataTemplate x:Key="DocumentTemplate"
                       x:DataType="x:String">
             <renderer:MarkdownTextBlock wasm:IsTextSelectionEnabled="True"
@@ -28,7 +111,7 @@
 
         <DataTemplate x:Key="SampleTemplate"
                       x:DataType="metadata:ToolkitSampleMetadata">
-            <renderer:ToolkitSampleRenderer Margin="0,32,0,32"
+            <renderer:ToolkitSampleRenderer Margin="0,16,0,16"
                                             Metadata="{Binding}" />
         </DataTemplate>
 
