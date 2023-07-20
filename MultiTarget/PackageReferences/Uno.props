@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <CommonUnoPackageVersion>5.0.0-dev.1482</CommonUnoPackageVersion>
+        <CommonUnoPackageVersion>5.0.0-dev.1486</CommonUnoPackageVersion>
     </PropertyGroup>
 
     <!-- This file is modified by UseUnoWinUI.ps1 to switch between WinUI 2 and 3 under Uno Platform -->
@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true'">
-        <PackageReference Include="Uno.UI.RemoteControl" Version="" Condition="'$(Configuration)'=='Debug'" />
+        <PackageReference Include="Uno.UI.RemoteControl" Version="$(CommonUnoPackageVersion)" Condition="'$(Configuration)'=='Debug'" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(IsGtkHead)' == 'true'">
