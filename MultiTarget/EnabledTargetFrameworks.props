@@ -1,22 +1,23 @@
 <Project>
     <PropertyGroup>
-        <UwpTargetFramework>uap10.0.17763</UwpTargetFramework>
-        <WinAppSdkTargetFramework>net6.0-windows10.0.19041.0</WinAppSdkTargetFramework>
         
-        <WasmHeadTargetFramework>net5.0</WasmHeadTargetFramework>
-        <LinuxHeadTargetFramework>net5.0</LinuxHeadTargetFramework>
-        <WpfHeadTargetFramework>netcoreapp3.1</WpfHeadTargetFramework>
+        
+        
+        <WasmHeadTargetFramework>net7.0</WasmHeadTargetFramework>
+        <LinuxHeadTargetFramework>net7.0</LinuxHeadTargetFramework>
+        <WpfHeadTargetFramework>net7.0</WpfHeadTargetFramework>
         
         
         
         
 
         <!-- Used for comparison to current TargetFramework -->
-        <LinuxLibTargetFramework>netstandard2.0</LinuxLibTargetFramework>
-        <WasmLibTargetFramework>netstandard2.0</WasmLibTargetFramework>
-        <WpfLibTargetFramework>netstandard2.0</WpfLibTargetFramework>
+        <LinuxLibTargetFramework>net7.0</LinuxLibTargetFramework>
+        <WasmLibTargetFramework>net7.0</WasmLibTargetFramework>
+        <WpfLibTargetFramework>net7.0</WpfLibTargetFramework>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
-        <NetStandardCommonTargetFramework>netstandard2.0</NetStandardCommonTargetFramework>
+        
+        <NetCoreCommonTargetFramework>net7.0</NetCoreCommonTargetFramework>
     </PropertyGroup>
 </Project>

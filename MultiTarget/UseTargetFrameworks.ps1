@@ -29,9 +29,9 @@ Param (
 
 $UwpTfm = "UwpTargetFramework";
 $WinAppSdkTfm = "WinAppSdkTargetFramework";
-$WasmTfm = "NetStandardCommonTargetFramework";
-$WpfTfm = "NetStandardCommonTargetFramework";
-$GtkTfm = "NetStandardCommonTargetFramework";
+$WasmTfm = "NetCoreCommonTargetFramework";
+$WpfTfm = "NetCoreCommonTargetFramework";
+$GtkTfm = "NetCoreCommonTargetFramework";
 $macOSTfm = "MacOSLibTargetFramework";
 $iOSTfm = "iOSLibTargetFramework";
 $DroidTfm = "AndroidLibTargetFramework";
