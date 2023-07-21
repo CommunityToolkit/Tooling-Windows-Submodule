@@ -40,7 +40,18 @@
       </ItemGroup>
     </When>
   </Choose>
-
+  <Choose>
+    <When Condition="'$(ToolkitSettingsControlsSourceProject)' == ''">
+      <ItemGroup>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.0-beta.1"/>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="$(ToolkitSettingsControlsSourceProject)"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
   <ItemGroup Condition="'$(IsAllExperimentHead)' == 'true'">
     <!-- These are also included in the Samples props file, but added here to workaround https://github.com/unoplatform/uno/issues/2502 -->

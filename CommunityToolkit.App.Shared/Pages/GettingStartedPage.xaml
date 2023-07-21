@@ -103,7 +103,7 @@
                         </Button.Content>
                         <interactivity:Interaction.Behaviors>
                             <interactions:EventTriggerBehavior EventName="Click">
-                                <behaviors:NavigateToUriAction NavigateUri="https://aka.ms/toolkit/labs/windows" />
+                                <behaviors:NavigateToUriAction NavigateUri="https://aka.ms/toolkit/windows" />
                             </interactions:EventTriggerBehavior>
                         </interactivity:Interaction.Behaviors>
                     </Button>
@@ -121,7 +121,7 @@
                         </Button.Content>
                         <interactivity:Interaction.Behaviors>
                             <interactions:EventTriggerBehavior EventName="Click">
-                                <behaviors:NavigateToUriAction NavigateUri="https://aka.ms/toolkit/labs/windows" />
+                                <behaviors:NavigateToUriAction NavigateUri="https://aka.ms/wct/discord" />
                             </interactions:EventTriggerBehavior>
                         </interactivity:Interaction.Behaviors>
                     </Button>
