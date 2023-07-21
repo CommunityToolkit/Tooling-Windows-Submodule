@@ -15,7 +15,7 @@
     <WasmShellGenerateAOTProfile Condition="!Exists('aot.profile')">false</WasmShellGenerateAOTProfile>
 
     <!-- NOTE: Some components broken under InterpreterAndAot (linker issues?). FullAOT not building in WSL. -->
-    <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
+    <WasmShellMonoRuntimeExecutionMode>Interpreter</WasmShellMonoRuntimeExecutionMode>
     <WasmShellMonoRuntimeExecutionMode Condition="'$(WasmShellGenerateAOTProfile)' == 'true'">Interpreter</WasmShellMonoRuntimeExecutionMode>
     <WasmShellMonoRuntimeExecutionMode Condition="Exists('aot.profile')">InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
 
