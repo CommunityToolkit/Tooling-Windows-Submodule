@@ -207,7 +207,7 @@
                         x:Load="{x:Bind renderer:ToolkitDocumentationRenderer.IsProjectPathValid()}"
                         Orientation="Horizontal"
                         Spacing="8">
-                <Button>
+                <!--   <Button>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon FontSize="14"
                                   Glyph="&#xF000;" />
@@ -217,6 +217,19 @@
                     <interactivity:Interaction.Behaviors>
                         <interactions:EventTriggerBehavior EventName="Click">
                             <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('discussions', Metadata.DiscussionId), Mode=OneWay}" />
+                        </interactions:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </Button>-->
+                <Button>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                        <PathIcon VerticalAlignment="Center"
+                                  Data="{StaticResource GitHubIcon}" />
+                        <TextBlock Text="Source code" />
+                    </StackPanel>
+                    <interactivity:Interaction.Behaviors>
+                        <interactions:EventTriggerBehavior EventName="Click">
+                            <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('issues', Metadata.IssueId), Mode=OneWay}" />
                         </interactions:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>
@@ -259,19 +272,7 @@
                     </muxc:DropDownButton.Flyout>
 
                 </muxc:DropDownButton>
-                <Button>
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                        <PathIcon VerticalAlignment="Center"
-                                  Data="{StaticResource GitHubIcon}" />
-                        <TextBlock Text="Source code" />
-                    </StackPanel>
-                    <interactivity:Interaction.Behaviors>
-                        <interactions:EventTriggerBehavior EventName="Click">
-                            <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('issues', Metadata.IssueId), Mode=OneWay}" />
-                        </interactions:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </Button>
+
             </StackPanel>
             <ComboBox x:Name="SampleSelectionBox"
                       Grid.RowSpan="2"
