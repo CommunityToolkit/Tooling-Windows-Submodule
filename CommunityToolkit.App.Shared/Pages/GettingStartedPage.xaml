@@ -157,6 +157,12 @@
                                    Style="{StaticResource SubtitleTextBlockStyle}"
                                    Text="Overview" />
                     </GridView.Header>
+                    <win:GridView.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}"
+                               TargetType="GridViewItem">
+                            <Setter Property="Margin" Value="12,0,0,12" />
+                        </Style>
+                    </win:GridView.ItemContainerStyle>
                 </GridView>
             </Grid>
         </ScrollViewer>

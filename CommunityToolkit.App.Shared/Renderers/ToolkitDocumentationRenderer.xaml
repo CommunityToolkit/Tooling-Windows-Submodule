@@ -233,14 +233,14 @@
                         </interactions:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>
-                <muxc:DropDownButton>
+                <DropDownButton>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon FontSize="14"
                                   Glyph="&#xF158;" />
                         <TextBlock Margin="8,0,0,0"
                                    Text="Package info" />
                     </StackPanel>
-                    <muxc:DropDownButton.Flyout>
+                    <DropDownButton.Flyout>
                         <Flyout Placement="Bottom">
                             <StackPanel Orientation="Vertical"
                                         Spacing="4">
@@ -269,10 +269,8 @@
                                 </TextBlock>
                             </StackPanel>
                         </Flyout>
-                    </muxc:DropDownButton.Flyout>
-
-                </muxc:DropDownButton>
-
+                    </DropDownButton.Flyout>
+                </DropDownButton>
             </StackPanel>
             <ComboBox x:Name="SampleSelectionBox"
                       Grid.RowSpan="2"

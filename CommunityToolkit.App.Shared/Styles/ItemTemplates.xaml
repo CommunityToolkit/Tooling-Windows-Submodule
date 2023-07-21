@@ -38,7 +38,7 @@
         <Grid x:Name="controlRoot"
               Width="360"
               Height="90"
-              Margin="8,0,0,8"
+              Margin="0"
               Padding="8"
               Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
               BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
