@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 #if WINDOWS_WINAPPSDK
+#pragma warning disable CA1060 // Move pinvokes to native methods class
 using System.Runtime.InteropServices;
 using WinRT.Interop;
 using Microsoft.UI;
@@ -10,7 +11,6 @@ using Microsoft.UI.Windowing;
 
 namespace CommunityToolkit.App.Shared.Controls;
 
-#pragma warning disable CA1060 // Move pinvokes to native methods class
 public partial class TitleBar : Control
 {
     [DllImport("Shcore.dll", SetLastError = true)]
@@ -42,5 +42,5 @@ public partial class TitleBar : Control
         return scaleFactorPercent / 100.0;
     }
 }
-#endif
 #pragma warning restore CA1060
+#endif
