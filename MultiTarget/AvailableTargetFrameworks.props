@@ -7,7 +7,7 @@
         <LinuxHeadTargetFramework>net7.0</LinuxHeadTargetFramework>
         <WpfHeadTargetFramework>net7.0</WpfHeadTargetFramework>
         
-        <AndroidLibTargetFramework>net7.0-android30.0</AndroidLibTargetFramework>
+        <AndroidLibTargetFramework>net7.0-android</AndroidLibTargetFramework>
         <MacOSLibTargetFramework>net7.0-macos</MacOSLibTargetFramework>
         <iOSLibTargetFramework>net7.0-ios</iOSLibTargetFramework>
 
