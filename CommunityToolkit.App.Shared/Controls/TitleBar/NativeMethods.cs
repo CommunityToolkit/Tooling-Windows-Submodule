@@ -3,7 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 #if WINDOWS_WINAPPSDK
-#pragma warning disable CA1060 // Move pinvokes to native methods class
+#pragma warning disable CA1060
+
 using System.Runtime.InteropServices;
 using WinRT.Interop;
 using Microsoft.UI;
