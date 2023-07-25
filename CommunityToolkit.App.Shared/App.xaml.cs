@@ -35,7 +35,7 @@ public sealed partial class App : Application
     /// <param name="e">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
-#if WINAPPSDK
+#if WINDOWS_WINAPPSDK
         currentWindow = new Window();
         currentWindow.Title = "Toolkit Labs Gallery";
         currentWindow.AppWindow.SetIcon("Assets/Icon.ico");

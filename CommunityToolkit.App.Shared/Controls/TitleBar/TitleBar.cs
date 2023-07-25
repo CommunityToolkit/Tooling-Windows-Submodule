@@ -109,7 +109,7 @@ public partial class TitleBar : Control
             VisualStateManager.GoToState(this, WideState, true);
         }
 
-#if WINAPPSDK
+#if WINDOWS_WINAPPSDK
         SetDragRegionForCustomTitleBar();
 #endif
     }
@@ -129,7 +129,7 @@ public partial class TitleBar : Control
 #if WINDOWS_UWP && !HAS_UNO
         SetUWPTitleBar();
 #endif
-#if WINAPPSDK
+#if WINDOWS_WINAPPSDK
     SetWASDKTitleBar();
 #endif
     }
@@ -139,7 +139,7 @@ public partial class TitleBar : Control
 #if WINDOWS_UWP && !HAS_UNO
         ResetUWPTitleBar();
 #endif
-#if WINAPPSDK
+#if WINDOWS_WINAPPSDK
         ResetWASDKTitleBar();
 #endif
     }
@@ -185,7 +185,7 @@ public partial class TitleBar : Control
             VisualStateManager.GoToState(this, FooterCollapsedState, true);
         }
 
-#if WINAPPSDK
+#if WINDOWS_WINAPPSDK
         SetDragRegionForCustomTitleBar();
 #endif
     }
