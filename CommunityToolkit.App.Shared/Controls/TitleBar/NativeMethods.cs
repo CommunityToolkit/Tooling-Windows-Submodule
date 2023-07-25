@@ -12,8 +12,10 @@ namespace CommunityToolkit.App.Shared.Controls;
 
 public partial class TitleBar : Control
 {
+    #pragma warning disable CA1060 // Move pinvokes to native methods class
     [DllImport("Shcore.dll", SetLastError = true)]
     internal static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
+    #pragma warning restore CA1060
 
     internal enum Monitor_DPI_Type : int
     {
