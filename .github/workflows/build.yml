@@ -307,6 +307,7 @@ jobs:
     strategy:
       fail-fast: false # prevent one matrix pipeline from being cancelled if one fails, we want them both to run to completion.
       matrix:
+        repo: [Windows, Labs-Windows]
         platform: [WinUI2, WinUI3]
 
     env:
@@ -326,10 +327,10 @@ jobs:
         run: dotnet --info
 
       # Modified - Check out the main repo's repository first
-      - name: Checkout Main Repository
+      - name: Checkout ${{ matrix.repo }} Repository
         uses: actions/checkout@v3
         with:
-          repository: CommunityToolkit/Windows
+          repository: CommunityToolkit/${{ matrix.repo }}
           ref: main
 
       # Checks-out Current tooling changes as the submodule
