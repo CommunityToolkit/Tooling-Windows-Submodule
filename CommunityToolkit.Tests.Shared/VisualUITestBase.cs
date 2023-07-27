@@ -4,6 +4,7 @@
 
 using CommunityToolkit.Tests.Internal;
 using CommunityToolkit.WinUI;
+using System;
 
 namespace CommunityToolkit.Tests;
 
@@ -14,6 +15,8 @@ namespace CommunityToolkit.Tests;
 /// </summary>
 public class VisualUITestBase
 {
+    public TestContext? TestContext { get; set; }
+
     // Used by source generators to dispatch to the UI thread
     // Methods must be declared or interfaced for compatibility with the source generator's unit tests.
 
@@ -71,6 +74,9 @@ public class VisualUITestBase
     [TestInitialize]
     public virtual Task TestSetup() => EnqueueAsync(async () =>
     {
+        TestContext?.WriteLine("TC - Starting test: {0}", TestContext?.FullyQualifiedTestClassName ?? "Unknown");
+        Log.Comment("Starting test: {0}", TestContext?.FullyQualifiedTestClassName ?? "Unknown");
+
         // Make sure every test starts with a clean slate, even if it doesn't use LoadTestContentAsync.
         if (App.ContentRoot is FrameworkElement element)
             await UnloadTestContentAsync(element);
@@ -86,5 +92,8 @@ public class VisualUITestBase
             await UnloadTestContentAsync(element);
 
         Assert.IsNull(App.ContentRoot);
+
+        TestContext?.WriteLine("TC - Ended test: {0}", TestContext?.FullyQualifiedTestClassName ?? "Unknown");
+        Log.Comment("Ended test: {0}", TestContext?.FullyQualifiedTestClassName ?? "Unknown");
     });
 }
