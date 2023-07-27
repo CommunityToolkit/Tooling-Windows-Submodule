@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 #else
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -25,6 +26,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting.AppContainer;
+using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
 #endif
 
 namespace CommunityToolkit.Tests;
@@ -69,6 +71,16 @@ public sealed partial class App : Application
     public App()
     {
         this.InitializeComponent();
+        UnhandledException += this.OnUnhandledException;
+    }
+
+    private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        // Attempt to continue execution, should signal test runner somehow?
+        e.Handled = true;
+        var msg = $"APPLICATION EXCEPTION: {e.Message}\n{e.Exception.StackTrace}\nInner: {e.Exception?.InnerException?.Message}\n{e.Exception?.InnerException?.StackTrace}";
+        Log.Error(msg);
+        Debug.WriteLine(msg);
     }
 
     /// <summary>
