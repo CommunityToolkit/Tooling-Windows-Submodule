@@ -74,6 +74,20 @@
         <_Parameter1>$(PackageProjectUrl)</_Parameter1>
       </AssemblyAttributes>
       <Warning Text="The PackageProjectUrl property was not set." Condition="'$(PackageProjectUrl)' == ''" />
+
+      <!-- Add InternalsVisibleTo for tests -->
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>$(ToolkitComponentName).Tests.Uwp</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>$(ToolkitComponentName).Tests.WinAppSdk</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>CommunityToolkit.Tests.Uwp</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>CommunityToolkit.Tests.WinAppSdk</_Parameter1>
+      </AssemblyAttributes>
     </ItemGroup>
 
     <!-- Extra attributes specific to platforms -->
