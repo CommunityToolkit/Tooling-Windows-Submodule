@@ -6,8 +6,7 @@
   <Import Project="$(MSBuildThisFileDirectory)\Head.WinAppSdk.props"/>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.TestPlatform.TestHost">
-      <Version>17.1.0</Version>
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.1.0">
       <ExcludeAssets>build</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
