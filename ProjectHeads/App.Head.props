@@ -26,7 +26,7 @@
   <Choose>
     <When Condition="'$(ToolkitConvertersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.0-beta.1"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230801-preview"/>
       </ItemGroup>
     </When>
     <Otherwise>

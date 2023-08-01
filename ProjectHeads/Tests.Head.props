@@ -16,7 +16,7 @@
   <Choose>
     <When Condition="'$(ToolkitExtensionSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.0-beta.2"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230801-preview"/>
       </ItemGroup>
     </When>
     <Otherwise>
