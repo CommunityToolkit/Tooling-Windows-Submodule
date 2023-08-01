@@ -7,13 +7,8 @@
 
   <!-- Test Dependencies -->
   <ItemGroup>
-    <PackageReference Include="MSTest.TestAdapter">
-      <Version>2.2.10</Version>
-    </PackageReference>
-
-    <PackageReference Include="MSTest.TestFramework">
-      <Version>2.2.10</Version>
-    </PackageReference>
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.10"/>
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.10"/>
 
     <ProjectReference Include="$(ToolingDirectory)\CommunityToolkit.Tooling.TestGen\CommunityToolkit.Tooling.TestGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="True" />
   </ItemGroup>
@@ -21,7 +16,7 @@
   <Choose>
     <When Condition="'$(ToolkitExtensionSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.0-beta.2"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230801-preview"/>
       </ItemGroup>
     </When>
     <Otherwise>

@@ -7,6 +7,114 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
   <PropertyGroup>
+    <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$([System.DateTime]::UtcNow.ToString(yyMMdd))</Version>
+    <Version Condition="'$(PreviewVersion)' != ''">$(Version)-$(PreviewVersion)</Version>
     <PackageId Condition="'$(PackageId)' == ''">$(PackageIdPrefix).$(PackageIdVariant).$(ToolkitComponentName)</PackageId>
   </PropertyGroup>
+
+  <!-- Auto Generate our own Assembly Info -->
+    <PropertyGroup>
+    <!-- Turn-off .NET based AssemblyInfo.cs generator, see below -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <!-- https://stackoverflow.com/questions/10980249/msbuild-task-for-setting-custom-attribute-in-assemblyinfo-cs -->
+  <!-- https://gist.github.com/KirillOsenkov/f20cb84d37a89b01db63f8aafe03f19b -->
+  <Target Name="AddAssemblyAttributes" BeforeTargets="BeforeCompile">
+    <PropertyGroup>
+      <GeneratedAssemblyInfoPath>$(IntermediateOutputPath)AssemblyInfo.g.cs</GeneratedAssemblyInfoPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <!-- Add our own AssemblyInfo.cs standard attributes -->
+      <AssemblyAttributes Include="AssemblyTitle">
+        <_Parameter1>$(PackageId)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyDescription">
+        <_Parameter1>$(Description)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyCompany">
+        <_Parameter1>$(Company)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyProduct">
+        <_Parameter1>$(Product)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyCopyright">
+        <_Parameter1>$(Copyright)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyTrademark">
+        <_Parameter1></_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyCulture">
+        <_Parameter1></_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyConfiguration">
+        <_Parameter1>$(Configuration)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyVersion">
+        <!-- This should remain as Major.Minor as Assembly Version shouldn't change across small revisions -->
+        <_Parameter1>$(MajorVersion).$(MinorVersion).0.0</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyFileVersion">
+        <!-- TODO: We should include some build number in here to make it more unique, can't use same date as too large -->
+        <_Parameter1>$(MajorVersion).$(MinorVersion).0.0</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyInformationalVersion">
+        <_Parameter1>$(Version)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.InteropServices.ComVisible">
+        <_Parameter1>false</_Parameter1>
+        <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+      </AssemblyAttributes>
+
+      <!-- Add custom attributes, also see https://stackoverflow.com/questions/56835671/how-to-read-a-msbuild-property-in-a-given-project-in-runtime -->
+      <AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(SourceRevisionId)' != ''">
+        <_Parameter1>CommitHash</_Parameter1>
+        <_Parameter2>$(SourceRevisionId)</_Parameter2>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(PackageProjectUrl)' != ''">
+        <_Parameter1>RepositoryUrl</_Parameter1>
+        <_Parameter2>$(PackageProjectUrl)</_Parameter2>
+      </AssemblyAttributes>
+      <Warning Text="The PackageProjectUrl property was not set." Condition="'$(PackageProjectUrl)' == ''" />
+
+      <!-- Add InternalsVisibleTo for tests -->
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>$(ToolkitComponentName).Tests.Uwp</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>$(ToolkitComponentName).Tests.WinAppSdk</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>CommunityToolkit.Tests.Uwp</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>CommunityToolkit.Tests.WinAppSdk</_Parameter1>
+      </AssemblyAttributes>
+    </ItemGroup>
+
+    <ItemGroup Condition="'@(InternalsVisibleTo)' != ''">
+      <!-- Add any declared InternalsVisibleTo in source project, if any-->
+      <AssemblyAttributes Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>%(InternalsVisibleTo.Identity)</_Parameter1>
+      </AssemblyAttributes>
+    </ItemGroup>
+
+    <!-- Extra attributes specific to platforms -->
+    <ItemGroup Condition="'$(IsWinAppSdk)' == 'true'">
+      <AssemblyAttributes Include="System.Runtime.Versioning.TargetPlatformAttribute">
+        <_Parameter1>Windows10.0.19041.0</_Parameter1>        <!-- TODO: Grab from variable -->
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="System.Runtime.Versioning.SupportedOSPlatformAttribute">
+        <_Parameter1>Windows10.0.17763.0</_Parameter1>        <!-- TODO: Grab from variable -->
+      </AssemblyAttributes>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="$(GeneratedAssemblyInfoPath)" />
+    </ItemGroup>
+
+    <!-- Write out new auto-generated AssemblyInfo.g.cs file -->
+    <WriteCodeFragment Language="C#" OutputFile="$(GeneratedAssemblyInfoPath)" AssemblyAttributes="@(AssemblyAttributes)" />
+  </Target>
 </Project>

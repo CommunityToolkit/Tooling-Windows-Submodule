@@ -64,7 +64,7 @@ This may require a reboot.
 
 #### Updating NuGet Package
 
-Packages are manually versioned right now, [see this issue here](https://github.com/CommunityToolkit/Labs-Windows/issues/133). In order to update your NuGet package, update the `<Version>` tag in your library's `CommunityToolkit.WinUI.Controls.MyExperimentNameHere.csproj` file.
+Packages are automatically versioned right now by day. The first commit of the day will push a new package with that date stamp.
 
 #### WebAssembly Sample Project
 
