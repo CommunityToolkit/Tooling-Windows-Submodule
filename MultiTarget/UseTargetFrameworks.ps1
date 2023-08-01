@@ -8,8 +8,8 @@
     
     Note: Projects which rely on target platforms that are excluded will be unable to build.
 .PARAMETER targets
-    List of targets to set as TFM platforms to build for. This can also be 'all', 'all-uwp', or blank.
-    When run as blank, teh defaults (uwp, winappsdk, wasm) will be used.
+    List of targets to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property, as well as 'all', 'all-uwp', or blank.
+    When run as blank, the defaults (uwp, winappsdk, wasm) will be used.
     'all' and 'all-uwp' shouldn't be used with other targets or each other.
 .PARAMETER allowGitChanges
     Enabling this flag will allow changes to the props file to be checked into source control.
