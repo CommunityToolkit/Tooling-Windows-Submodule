@@ -31,7 +31,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <ProjectReference Include="$(ToolkitConvertersSourceProject)"/>
+        <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference auto-generated in tooling/MultiTarget/Generated -->
+        <!-- See: https://github.com/dotnet/msbuild/issues/2688 -->
+        <!--<ProjectReference Include="$(ToolkitConvertersSourceProject)"/>-->
       </ItemGroup>
     </Otherwise>
   </Choose>
