@@ -29,13 +29,13 @@ Param (
 
 $UwpTfm = "UwpTargetFramework";
 $WinAppSdkTfm = "WinAppSdkTargetFramework";
-$WasmTfm = "NetCoreCommonTargetFramework";
-$WpfTfm = "NetCoreCommonTargetFramework";
-$GtkTfm = "NetCoreCommonTargetFramework";
+$WasmTfm = "DotnetCommonTargetFramework";
+$WpfTfm = "DotnetCommonTargetFramework";
+$GtkTfm = "DotnetCommonTargetFramework";
 $macOSTfm = "MacOSLibTargetFramework";
 $iOSTfm = "iOSLibTargetFramework";
 $DroidTfm = "AndroidLibTargetFramework";
-$NetstandardTfm = "NetStandardCommonTargetFramework";
+$NetstandardTfm = "DotnetStandardCommonTargetFramework";
 
 $fileContents = Get-Content -Path $PSScriptRoot/AvailableTargetFrameworks.props
 

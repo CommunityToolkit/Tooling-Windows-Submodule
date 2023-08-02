@@ -46,7 +46,7 @@
     <IsDroid Condition="'$(IsDroid)' == '' AND '$(TargetFramework)' == '$(AndroidLibTargetFramework)' AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
     <IsMacOS Condition="'$(IsMacOS)' == '' AND '$(TargetFramework)' == '$(MacOSLibTargetFramework)' AND '$(MacOSLibTargetFramework)' != '' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
     <IsiOS Condition="'$(IsiOS)' == '' AND '$(TargetFramework)' == '$(iOSLibTargetFramework)' AND '$(iOSLibTargetFramework)' != '' AND '$(MultiTargetsiOS)' == 'true'">true</IsiOS>
-    <IsNetstandard Condition="'$(IsNetstandard)' == '' AND '$(TargetFramework)' == '$(NetStandardCommonTargetFramework)' AND '$(MultiTargetsNetstandard)' == 'true'">true</IsNetstandard>
+    <IsNetstandard Condition="'$(IsNetstandard)' == '' AND '$(TargetFramework)' == '$(DotnetStandardCommonTargetFramework)' AND '$(MultiTargetsNetstandard)' == 'true'">true</IsNetstandard>
 
     <IsUno Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true' OR '$(IsDroid)' == 'true' OR '$(IsMacOS)' == 'true' OR '$(IsiOS)' == 'true'">true</IsUno>
 
