@@ -1,8 +1,12 @@
 <Project>
+    <PropertyGroup>
+        <CommonUnoPackageVersion>4.9.45</CommonUnoPackageVersion>
+    </PropertyGroup>
+
     <!-- This file is modified by UseUnoWinUI.ps1 to switch between WinUI 2 and 3 under Uno Platform -->
     <!-- All Uno-based project heads and MultiTarget-enabled library projects need to reference this file, while native (UWP/WinAppSdk) heads don't. -->
     <ItemGroup Condition="'$(IsUno)' == 'true'">
-        <PackageReference Include="Uno.UI" Version="4.9.26" />
+        <PackageReference Include="Uno.UI" Version="$(CommonUnoPackageVersion)" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(IsUno)' == 'true'">
@@ -10,15 +14,15 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true'">
-        <PackageReference Include="Uno.UI.RemoteControl" Version="4.9.26" Condition="'$(Configuration)'=='Debug'" />
+        <PackageReference Include="Uno.UI.RemoteControl" Version="$(CommonUnoPackageVersion)" Condition="'$(Configuration)'=='Debug'" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(IsGtkHead)' == 'true'">
-        <PackageReference Include="Uno.UI.Skia.Gtk" Version="4.9.26" />
+        <PackageReference Include="Uno.UI.Skia.Gtk" Version="$(CommonUnoPackageVersion)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(IsWpfHead)' == 'true'">
-        <PackageReference Include="Uno.UI.Skia.Wpf" Version="4.9.26" />
+        <PackageReference Include="Uno.UI.Skia.Wpf" Version="$(CommonUnoPackageVersion)" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(IsWpfHead)' == 'true'">
@@ -35,6 +39,6 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsWasmHead)' == 'true'">
-        <PackageReference Include="Uno.UI.WebAssembly" Version="4.9.26" />
+        <PackageReference Include="Uno.UI.WebAssembly" Version="$(CommonUnoPackageVersion)" />
     </ItemGroup>
 </Project>

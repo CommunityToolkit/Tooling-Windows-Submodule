@@ -7,29 +7,67 @@
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uno.props" />
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- Linker: https://platform.uno/docs/articles/features/using-il-linker-webassembly.html-->
     <WasmShellILLinkerEnabled>true</WasmShellILLinkerEnabled>
+
+    <!-- Aot/Interpreter: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/runtime-execution-modes.html -->
+    <!-- Change to `true` to enable profile-guided AOT generation. Once profile is generated, commit and revert this flag. -->
+    <WasmShellGenerateAOTProfile Condition="!Exists('aot.profile')">false</WasmShellGenerateAOTProfile>
+
+    <!-- TODO: Some components broken under InterpreterAndAot (linker issues?). FullAOT not building. -->
+    <WasmShellMonoRuntimeExecutionMode>Interpreter</WasmShellMonoRuntimeExecutionMode>
+    <WasmShellMonoRuntimeExecutionMode Condition="'$(WasmShellGenerateAOTProfile)' == 'true'">Interpreter</WasmShellMonoRuntimeExecutionMode>
+    <WasmShellMonoRuntimeExecutionMode Condition="Exists('aot.profile')">InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
+
+    <!-- MultiThreading: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-threading.html -->
+    <WasmShellEnableThreads>true</WasmShellEnableThreads>
+    <WasmShellPThreadsPoolSize>8</WasmShellPThreadsPoolSize>
+
+    <!-- MultiThreading SharedArrayBuffer: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-additional-files.html -->
+    <WasmShellIndexHtmlPath>$(MSBuildProjectDirectory)\wwwroot\index.html</WasmShellIndexHtmlPath>
+
+    <!-- Pre-compression: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-pre-compression.html -->
+    <WasmShellCompressionLayoutMode>InPlace</WasmShellCompressionLayoutMode>
+
+    <!-- Xaml Trimming: https://platform.uno/docs/articles/features/resources-trimming.html -->
+    <UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
+    <!-- JIT for Interpreter mode https://github.com/unoplatform/Uno.Wasm.Bootstrap/blob/main/doc/runtime-execution-modes.md#jiterpreter-mode -->
+    <WasmShellEnableJiterpreter Condition="'$(WasmShellMonoRuntimeExecutionMode)' == 'Interpreter'">true</WasmShellEnableJiterpreter>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <WasmShellEnableAotProfile Condition="Exists('aot.profile')" Include="aot.profile" />
+    <WasmShellExtraEmccFlags Include="-lidbfs.js" />
+
+    <!-- https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-4gb.html -->
+    <WasmShellExtraEmccFlags Include="-s MAXIMUM_MEMORY=4GB"/>
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+
+    <!-- Debugger support https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/debugger-support.html -->
     <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+
     <!--
 		IL Linking is disabled in Debug configuration.
-		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
+		When building in Release, see 
 		-->
     <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+    <WasmShellMonoRuntimeExecutionMode>Interpreter</WasmShellMonoRuntimeExecutionMode>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.30.4" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.6.19" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="3.3.1" />
-    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="3.3.1" />
+    <PackageReference Include="Markdig" Version="0.31.0" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.6.0-dev.2" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.9.45" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.27" />
+    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.27" />
   </ItemGroup>
 
   <ItemGroup>
