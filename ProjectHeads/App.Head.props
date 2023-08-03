@@ -29,13 +29,16 @@
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230801-preview"/>
       </ItemGroup>
     </When>
-    <Otherwise>
+    <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference 
+        auto-generated in tooling/MultiTarget/Generated when building the all-up sample app -->
+    <!-- See: https://github.com/dotnet/msbuild/issues/2688 -->
+    <!-- TODO: We need to handle a case where a component itself references the converter package... -->
+    <!-- Only add Converters reference if we're in a single experiment that's not the Converters project itself -->
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Converters')) == 'false'">
       <ItemGroup>
-        <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference auto-generated in tooling/MultiTarget/Generated -->
-        <!-- See: https://github.com/dotnet/msbuild/issues/2688 -->
-        <!--<ProjectReference Include="$(ToolkitConvertersSourceProject)"/>-->
+        <ProjectReference Include="$(ToolkitConvertersSourceProject)"/>
       </ItemGroup>
-    </Otherwise>
+    </When>
   </Choose>
 
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
