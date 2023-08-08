@@ -19,11 +19,11 @@
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230801-preview"/>
       </ItemGroup>
     </When>
-    <Otherwise>
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
       <ItemGroup>
         <ProjectReference Include="$(ToolkitExtensionSourceProject)"/>
       </ItemGroup>
-    </Otherwise>
+    </When>
   </Choose>
 
   <!-- Global Usings -->
