@@ -7,6 +7,8 @@
     <IsUwp>true</IsUwp>
     <HasWinUI>true</HasWinUI>
     <WinUIMajorVersion>2</WinUIMajorVersion>
+
+    <IsSingleExperimentHead>true</IsSingleExperimentHead>
   </PropertyGroup>
 
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
