@@ -4,7 +4,6 @@
     <IsDeployableHead>true</IsDeployableHead>
     <IsWinAppSdk>true</IsWinAppSdk>
     <HasWinUI>true</HasWinUI>
-    <HasWinUI>true</HasWinUI>
     <WinUIMajorVersion>3</WinUIMajorVersion>
   </PropertyGroup>
 

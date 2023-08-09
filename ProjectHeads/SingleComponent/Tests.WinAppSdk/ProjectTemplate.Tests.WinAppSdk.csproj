@@ -5,6 +5,8 @@
     <IsWinAppSdk>true</IsWinAppSdk>
     <HasWinUI>true</HasWinUI>
     <WinUIMajorVersion>3</WinUIMajorVersion>
+
+    <IsSingleExperimentHead>true</IsSingleExperimentHead>
   </PropertyGroup>
 
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
