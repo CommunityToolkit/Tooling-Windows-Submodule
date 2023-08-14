@@ -39,6 +39,9 @@
 
         <!-- "This call site is reachable on all platforms" -->
         <NoWarn>$(NoWarn);CA1416;</NoWarn>
+
+        <!-- "XML comment 'End tag was not expected at this location.'" -->
+        <NoWarn>$(NoWarn);CS1570;</NoWarn>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsWasmHead)' == 'true'">
