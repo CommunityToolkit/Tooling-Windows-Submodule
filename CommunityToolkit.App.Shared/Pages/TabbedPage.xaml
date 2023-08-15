@@ -56,8 +56,12 @@
 
         <controls:TitleBar x:Name="appTitleBar"
                            Title="Windows Community Toolkit Gallery"
-                           VerticalAlignment="Top"
-                           Icon="ms-appx:///Assets/AppTitleBar.png" />
+                           VerticalAlignment="Top">
+            <controls:TitleBar.Icon>
+                <BitmapIcon ShowAsMonochrome="False"
+                            UriSource="ms-appx:///Assets/AppTitleBar.png" />
+            </controls:TitleBar.Icon>
+        </controls:TitleBar>
         <muxc:TabView Grid.Row="1"
                       VerticalAlignment="Stretch"
                       VerticalContentAlignment="Stretch"
