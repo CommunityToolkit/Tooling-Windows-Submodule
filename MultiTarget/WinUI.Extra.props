@@ -10,6 +10,11 @@
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsUno)' == 'true'">
+    <!-- Xaml Trimming: https://platform.uno/docs/articles/features/resources-trimming.html -->
+    <UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+  </PropertyGroup>
+
   <PropertyGroup>
     <!-- These suppressions are for references between generated assemblies and that VS can keep in the Error List once resolved -->
     <NoWarn>$(NoWarn);WMC1006;CS8034;</NoWarn>
