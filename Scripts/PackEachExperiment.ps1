@@ -1,8 +1,11 @@
 Param (
-    [Parameter(HelpMessage = "Extra properties to pass to the msbuild pack command")]
-    [string]$extraBuildProperties
+    [Parameter(HelpMessage = "Date of Build/Package")]
+    [string]$date,
+
+    [Parameter(HelpMessage = "Any postfix after build number")]
+    [string]$postfix
 )
 
 foreach ($experimentProjPath in Get-ChildItem -Recurse -Path '../../components/*/src/*.csproj') {
-  & msbuild.exe -t:pack /p:Configuration=Release /p:DebugType=Portable $experimentProjPath $extraBuildProperties
+  & msbuild.exe -t:pack /p:Configuration=Release /p:DebugType=Portable /p:DateForVersion=$date /p:PreviewVersion=$postfix $experimentProjPath
 }
