@@ -7,7 +7,8 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
   <PropertyGroup>
-    <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$([System.DateTime]::UtcNow.ToString(yyMMdd))</Version>
+    <DateForVersion Condition="'$(DateForVersion)' == ''">$([System.DateTime]::UtcNow.ToString(yyMMdd))</DateForVersion>
+    <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$(DateForVersion)</Version>
     <Version Condition="'$(PreviewVersion)' != ''">$(Version)-$(PreviewVersion)</Version>
     <PackageId Condition="'$(PackageId)' == ''">$(PackageIdPrefix).$(PackageIdVariant).$(ToolkitComponentName)</PackageId>
   </PropertyGroup>
