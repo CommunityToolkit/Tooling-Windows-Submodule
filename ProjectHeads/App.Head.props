@@ -43,7 +43,7 @@
   <Choose>
     <When Condition="'$(ToolkitSettingsControlsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.0-beta.1"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230801-preview"/>
       </ItemGroup>
     </When>
     <Otherwise>
