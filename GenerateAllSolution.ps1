@@ -33,8 +33,14 @@ Param (
 
 # Set up constant values
 $generatedSolutionFilePath = 'CommunityToolkit.AllComponents.sln'
-$platforms = '"Any CPU;x64;x86;ARM64"'
-$slngenConfig = "--folders true --collapsefolders true --ignoreMainProject"
+$platforms = 'Any CPU;x64;x86;ARM64'
+$slngenConfig = @(
+    '--folders'
+    'true'
+    '--collapsefolders'
+    'true'
+    '--ignoreMainProject'
+)
 
 # Remove previous file if it exists
 if (Test-Path -Path $generatedSolutionFilePath)
@@ -69,8 +75,11 @@ if ($IncludeHeads -ne 'uwp')
 
 if ($UseDiagnostics.IsPresent)
 {
-    $sdkoptions = " -d"
-    $diagnostics = '-bl:slngen.binlog --consolelogger:"ShowEventId;Summary;Verbosity=Detailed" '
+    $sdkoptions = "-d"
+    $diagnostics = @(
+        '-bl:slngen.binlog'
+        '--consolelogger:"ShowEventId;Summary;Verbosity=Detailed"'
+    )
 }
 else
 {
@@ -78,8 +87,21 @@ else
     $diagnostics = ""
 }
 
-$cmd = "dotnet$sdkoptions tool run slngen -o $generatedSolutionFilePath $slngenConfig $diagnostics--platform $platforms $($projects -Join ' ')"
+$cmd = 'dotnet'
+$arguments = @(
+    $sdkoptions
+    'tool'
+    'run'
+    'slngen'
+    '-o'
+    $generatedSolutionFilePath
+    $slngenConfig
+    $diagnostics
+    '--platform'
+    $platforms
+    $projects
+)
 
-Write-Output "Running Command: $cmd"
+Write-Output "Running Command: $cmd $arguments"
 
-Invoke-Expression $cmd
+&$cmd @arguments
