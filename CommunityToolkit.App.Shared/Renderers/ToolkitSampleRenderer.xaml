@@ -127,11 +127,13 @@
                             Height="32"
                             Padding="4"
                             HorizontalAlignment="Center"
+                            win:AutomationProperties.Name="Toggle theme"
                             Click="ThemeBtn_OnClick"
                             Style="{StaticResource SubtleButtonStyle}"
                             ToolTipService.ToolTip="Toggle theme">
                         <Button.Content>
-                            <FontIcon FontSize="16"
+                            <FontIcon win:AutomationProperties.AccessibilityView="Raw"
+                                      FontSize="16"
                                       Glyph="&#xE793;" />
                         </Button.Content>
                     </Button>
@@ -144,12 +146,14 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
                             wasm:Visibility="Collapsed"
+                            win:AutomationProperties.Name="Toggle right-to-left"
                             Click="FlowDirectionBtn_OnClick"
                             Style="{StaticResource SubtleButtonStyle}"
                             ToolTipService.ToolTip="Toggle right-to-left">
 
                         <Button.Content>
-                            <FontIcon FontSize="16"
+                            <FontIcon win:AutomationProperties.AccessibilityView="Raw"
+                                      FontSize="16"
                                       Glyph="&#xE1A0;" />
                         </Button.Content>
                     </Button>
@@ -160,11 +164,13 @@
                             Height="32"
                             Padding="4"
                             HorizontalAlignment="Center"
+                            win:AutomationProperties.Name="View code"
                             Click="CodeBtn_OnClick"
                             Style="{StaticResource AccentButtonStyle}"
                             ToolTipService.ToolTip="View code">
                         <Button.Content>
-                            <FontIcon FontSize="14"
+                            <FontIcon win:AutomationProperties.AccessibilityView="Raw"
+                                      FontSize="14"
                                       Glyph="&#xE943;" />
                         </Button.Content>
                     </Button>

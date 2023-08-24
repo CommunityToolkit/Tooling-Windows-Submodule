@@ -220,10 +220,11 @@
                         </interactions:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>-->
-                <Button>
+                <Button win:AutomationProperties.Name="Source code">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="8">
                         <PathIcon VerticalAlignment="Center"
+                                  win:AutomationProperties.AccessibilityView="Raw"
                                   Data="{StaticResource GitHubIcon}" />
                         <TextBlock Text="Source code" />
                     </StackPanel>
@@ -233,9 +234,10 @@
                         </interactions:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>
-                <DropDownButton>
+                <DropDownButton win:AutomationProperties.Name="Package info">
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon FontSize="14"
+                        <FontIcon win:AutomationProperties.AccessibilityView="Raw"
+                                  FontSize="14"
                                   Glyph="&#xF158;" />
                         <TextBlock Margin="8,0,0,0"
                                    Text="Package info" />
@@ -255,7 +257,6 @@
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Text="NuGet package" />
                                 <TextBlock IsTextSelectionEnabled="True">
-
                                     <Hyperlink FontFamily="Consolas"
                                                TextDecorations="None">
                                         CommunityToolkit.Uwp.Behaviors
@@ -278,6 +279,7 @@
                       MinWidth="160"
                       HorizontalAlignment="Right"
                       VerticalAlignment="Bottom"
+                      win:AutomationProperties.Name="Go to sample"
                       ItemsSource="{x:Bind Samples, Mode=OneWay}"
                       SelectedIndex="0"
                       SelectionChanged="SampleSelectionBox_SelectionChanged"

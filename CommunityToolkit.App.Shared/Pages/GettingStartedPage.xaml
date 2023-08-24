@@ -89,7 +89,7 @@
                 <StackPanel Margin="0,16,0,0"
                             Orientation="Vertical"
                             Spacing="8">
-                    <Button>
+                    <Button win:AutomationProperties.Name="Learn more on GitHub">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="10">
@@ -107,7 +107,7 @@
                             </interactions:EventTriggerBehavior>
                         </interactivity:Interaction.Behaviors>
                     </Button>
-                    <Button>
+                    <Button win:AutomationProperties.Name="Join us on Discord">
                         <Button.Content>
                             <StackPanel VerticalAlignment="Center"
                                         Orientation="Horizontal"
