@@ -52,6 +52,30 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
+  <Choose>
+    <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
+      <ItemGroup>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230801-preview"/>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="$(ToolkitExtensionsSourceProject)"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+   <Choose>
+    <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
+      <ItemGroup>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230801-preview"/>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="$(ToolkitTriggersSourceProject)"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
   <ItemGroup Condition="'$(IsAllExperimentHead)' == 'true'">
     <!-- These are also included in the Samples props file, but added here to workaround https://github.com/unoplatform/uno/issues/2502 -->
