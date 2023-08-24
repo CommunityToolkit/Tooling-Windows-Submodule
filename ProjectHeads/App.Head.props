@@ -26,7 +26,7 @@
   <Choose>
     <When Condition="'$(ToolkitConvertersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230801-preview"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
     <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference 
@@ -43,7 +43,7 @@
   <Choose>
     <When Condition="'$(ToolkitSettingsControlsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230801-preview"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
     <Otherwise>
@@ -55,7 +55,7 @@
   <Choose>
     <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230801-preview"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
     <Otherwise>
@@ -67,7 +67,7 @@
    <Choose>
     <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230801-preview"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
     <Otherwise>
