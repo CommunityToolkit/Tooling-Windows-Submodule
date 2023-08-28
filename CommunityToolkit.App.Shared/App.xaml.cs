@@ -37,7 +37,7 @@ public sealed partial class App : Application
     {
 #if WINDOWS_WINAPPSDK
         currentWindow = new Window();
-        currentWindow.Title = "Toolkit Labs Gallery";
+        currentWindow.Title = "Windows Community Toolkit Gallery";
         currentWindow.AppWindow.SetIcon("Assets/Icon.ico");
         currentWindow.SystemBackdrop = new MicaBackdrop();
 #if ALL_SAMPLES

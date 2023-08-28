@@ -26,7 +26,7 @@
   <Choose>
     <When Condition="'$(ToolkitConvertersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230801-preview"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
     <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference 
@@ -40,7 +40,42 @@
       </ItemGroup>
     </When>
   </Choose>
-
+  <Choose>
+    <When Condition="'$(ToolkitSettingsControlsSourceProject)' == ''">
+      <ItemGroup>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230823-rc"/>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('SettingsControls')) == 'false'">
+      <ItemGroup>
+        <ProjectReference Include="$(ToolkitSettingsControlsSourceProject)"/>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
+      <ItemGroup>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230823-rc"/>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
+      <ItemGroup>
+        <ProjectReference Include="$(ToolkitExtensionsSourceProject)"/>
+      </ItemGroup>
+    </When>
+  </Choose>
+   <Choose>
+    <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
+      <ItemGroup>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230823-rc"/>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Triggers')) == 'false'">
+      <ItemGroup>
+        <ProjectReference Include="$(ToolkitTriggersSourceProject)"/>
+      </ItemGroup>
+    </When>
+  </Choose>
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
   <ItemGroup Condition="'$(IsAllExperimentHead)' == 'true'">
     <!-- These are also included in the Samples props file, but added here to workaround https://github.com/unoplatform/uno/issues/2502 -->
