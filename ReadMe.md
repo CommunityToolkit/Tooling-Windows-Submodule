@@ -1,7 +1,7 @@
 
 # Community Toolkit Tooling
 
-![Windows Community Toolkit Labs Social Image](ToolkitLabsSocial.png)
+![Windows Community Toolkit Tooling image](CommunityToolkit-Tooling.png)
 
 This repository contains the tooling infrastructure for other Community Toolkit projects, like the [Windows Community Toolkit](https://aka.ms/toolkit/windows) and the [Windows Community Toolkit Labs](https://aka.ms/toolkit/labs/windows).
 
