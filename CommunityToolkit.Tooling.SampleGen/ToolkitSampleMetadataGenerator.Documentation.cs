@@ -19,6 +19,9 @@ public partial class ToolkitSampleMetadataGenerator
     private const string FrontMatterRegexTitleExpression = @"^title:\s*(?<title>.*)$";
     private static readonly Regex FrontMatterRegexTitle = new Regex(FrontMatterRegexTitleExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
+    private const string FrontMatterRegexAuthorExpression = @"^author:\s*(?<author>.*)$";
+    private static readonly Regex FrontMatterRegexAuthor = new Regex(FrontMatterRegexAuthorExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
     private const string FrontMatterRegexDescriptionExpression = @"^description:\s*(?<description>.*)$";
     private static readonly Regex FrontMatterRegexDescription = new Regex(FrontMatterRegexDescriptionExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
@@ -110,6 +113,7 @@ public partial class ToolkitSampleMetadataGenerator
 
                 // Grab all front matter fields using RegEx expressions.
                 var title = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexTitle, "title");
+                var author = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexAuthor, "author");
                 var description = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexDescription, "description");
                 var keywords = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexKeywords, "keywords");
 
@@ -204,6 +208,7 @@ public partial class ToolkitSampleMetadataGenerator
                 return new ToolkitFrontMatter()
                 {
                     Title = title!,
+                    Author = author!,
                     Description = description!,
                     Keywords = keywords!,
                     Category = categoryValue,

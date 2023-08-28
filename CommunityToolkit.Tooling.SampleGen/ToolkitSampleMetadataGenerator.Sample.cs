@@ -38,7 +38,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
         var assemblyName = context.CompilationProvider.Select((x, _) => x.Assembly.Name);
 
         // Only generate diagnostics (sample projects)
-        // Skip creating the registry for symbols in the executing assembly. This would place an incomplete registry in each sample project and cause compiler erorrs.
+        // Skip creating the registry for symbols in the executing assembly. This would place an incomplete registry in each sample project and cause compiler errors.
         Execute(symbolsInExecutingAssembly, skipRegistry: true);
 
         // Only generate the registry (project head)

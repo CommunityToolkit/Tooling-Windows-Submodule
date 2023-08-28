@@ -141,7 +141,7 @@ Without any sample.";
     }
 
     [TestMethod]
-    public void DocumentationValid()
+    public void DocumentationValidNoDiagnostics()
     {
         string markdown = @"---
 title: Canvas Layout
@@ -215,5 +215,52 @@ Without an invalid discussion id.";
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
+    }
+
+    [TestMethod]
+    public void DocumentationValidWithRegistry()
+    {
+        string markdown = @"---
+title: Canvas Layout
+author: mhawker
+description: A canvas-like VirtualizingLayout for use in an ItemsRepeater
+keywords: CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange
+dev_langs:
+    - csharp
+category: Controls
+subcategory: Layout
+discussion-id: 0
+issue-id: 0
+icon: assets/icon.png
+---
+# This is some test documentation...
+Which is valid.
+> [!SAMPLE Sample]";
+
+        var sampleProjectAssembly = SimpleSource.ToSyntaxTree()
+            .CreateCompilation("MyApp.Samples")
+            .ToMetadataReference();
+
+        var headCompilation = string.Empty
+            .ToSyntaxTree()
+            .CreateCompilation("MyApp.Head")
+            .AddReferences(sampleProjectAssembly);
+
+        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>(markdown);
+
+        result.AssertNoCompilationErrors();
+
+        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitDocumentRegistry.g.cs"), """
+        #nullable enable
+        namespace CommunityToolkit.Tooling.SampleGen;
+
+        public static class ToolkitDocumentRegistry
+        {
+            public static System.Collections.Generic.IEnumerable<CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter> Execute()
+            {
+                yield return new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter() { Title = "Canvas Layout", Author = "mhawker", Description = "A canvas-like VirtualizingLayout for use in an ItemsRepeater", Keywords = "CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange", Category = ToolkitSampleCategory.Controls, Subcategory = ToolkitSampleSubcategory.Layout, DiscussionId = 0, IssueId = 0, Icon = @"experiment/samples/assets/icon.png", FilePath = @"experiment\samples\documentation.md", SampleIdReferences = new string[] { "Sample" } };
+            }
+        }
+        """, "Unexpected code generated");
     }
 }
