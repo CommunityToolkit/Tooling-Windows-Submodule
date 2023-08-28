@@ -46,11 +46,11 @@
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
-    <Otherwise>
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('SettingsControls')) == 'false'">
       <ItemGroup>
         <ProjectReference Include="$(ToolkitSettingsControlsSourceProject)"/>
       </ItemGroup>
-    </Otherwise>
+    </When>
   </Choose>
   <Choose>
     <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
@@ -58,11 +58,11 @@
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
-    <Otherwise>
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
       <ItemGroup>
         <ProjectReference Include="$(ToolkitExtensionsSourceProject)"/>
       </ItemGroup>
-    </Otherwise>
+    </When>
   </Choose>
    <Choose>
     <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
@@ -70,11 +70,11 @@
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
-    <Otherwise>
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('ToolkitTriggersSourceProject')) == 'false'">
       <ItemGroup>
         <ProjectReference Include="$(ToolkitTriggersSourceProject)"/>
       </ItemGroup>
-    </Otherwise>
+    </When>
   </Choose>
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
   <ItemGroup Condition="'$(IsAllExperimentHead)' == 'true'">
