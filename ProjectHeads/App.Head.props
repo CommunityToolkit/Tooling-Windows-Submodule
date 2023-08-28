@@ -70,7 +70,7 @@
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230823-rc"/>
       </ItemGroup>
     </When>
-    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('ToolkitTriggersSourceProject')) == 'false'">
+    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Triggers')) == 'false'">
       <ItemGroup>
         <ProjectReference Include="$(ToolkitTriggersSourceProject)"/>
       </ItemGroup>
