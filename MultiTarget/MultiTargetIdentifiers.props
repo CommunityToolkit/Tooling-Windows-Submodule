@@ -42,7 +42,8 @@
     <IsGtk Condition="'$(IsGtk)' == '' AND ('$(IsGtkHead)' == 'true' or '$(IsGtkLib)' == 'true')">true</IsGtk>
 
     <IsUwp Condition="'$(IsUwp)' == '' AND '$(TargetFramework)' == '$(UwpTargetFramework)' AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
-    <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND '$(WinAppSdkTargetFramework.Contains($(TargetFramework)))' == 'true' AND '$(WinAppSdkTargetFramework)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
+    <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFramework.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFramework)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
+
     <IsDroid Condition="'$(IsDroid)' == '' AND '$(TargetFramework)' == '$(AndroidLibTargetFramework)' AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
     <IsMacOS Condition="'$(IsMacOS)' == '' AND '$(TargetFramework)' == '$(MacOSLibTargetFramework)' AND '$(MacOSLibTargetFramework)' != '' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
     <IsiOS Condition="'$(IsiOS)' == '' AND '$(TargetFramework)' == '$(iOSLibTargetFramework)' AND '$(iOSLibTargetFramework)' != '' AND '$(MultiTargetsiOS)' == 'true'">true</IsiOS>
