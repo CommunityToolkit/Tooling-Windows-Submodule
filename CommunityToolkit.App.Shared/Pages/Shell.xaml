@@ -19,8 +19,7 @@
                            DisplayMode="Tall"
                            IsBackButtonVisible="True"
                            IsPaneButtonVisible="True"
-                           PaneButtonClick="TitleBar_PaneButtonClick"
-                           Subtitle=" Preview">
+                           PaneButtonClick="TitleBar_PaneButtonClick">
             <controls:TitleBar.Icon>
                 <BitmapIcon ShowAsMonochrome="False"
                             UriSource="ms-appx:///Assets/AppTitleBar.png" />

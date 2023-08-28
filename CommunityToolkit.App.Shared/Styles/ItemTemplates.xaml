@@ -16,20 +16,8 @@
 
     <DataTemplate x:Key="ControlItemAutoSuggestBoxTemplate"
                   x:DataType="meta:ToolkitFrontMatter">
-        <Grid ColumnSpacing="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image Width="16">
-                <Image.Source>
-                    <BitmapImage DecodePixelHeight="16"
-                                 DecodePixelWidth="16"
-                                 UriSource="{Binding Icon}" />
-                </Image.Source>
-            </Image>
-            <TextBlock Grid.Column="1"
-                       Text="{Binding Title}" />
+        <Grid>
+            <TextBlock Text="{Binding Title}" />
         </Grid>
     </DataTemplate>
 

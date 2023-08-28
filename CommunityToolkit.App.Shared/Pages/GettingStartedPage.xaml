@@ -72,7 +72,7 @@
                         Orientation="Vertical"
                         Spacing="4">
                 <TextBlock FontWeight="SemiBold"
-                           Text="Version 8.0.0" />
+                           Text="Version 8.0" />
                 <TextBlock FontSize="36"
                            FontWeight="SemiBold">
                     <Run Text="Windows Community Toolkit" />
