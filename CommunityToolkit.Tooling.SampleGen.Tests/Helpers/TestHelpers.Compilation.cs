@@ -57,4 +57,18 @@ public static partial class TestHelpers
 
         return driver;
     }
+
+    internal static GeneratorDriver WithCsproj(this GeneratorDriver driver, params string[] csprojFilesToCreate)
+    {
+        foreach (var proj in csprojFilesToCreate)
+        {
+            if (!string.IsNullOrWhiteSpace(proj))
+            {
+                var text = new InMemoryAdditionalText(@"C:\pathtorepo\components\experiment\src\componentname.csproj", proj);
+                driver = driver.AddAdditionalTexts(ImmutableArray.Create<AdditionalText>(text));
+            }
+        }
+
+        return driver;
+    }
 }

@@ -25,4 +25,6 @@ public sealed class ToolkitFrontMatter : DocsFrontMatter
     public string? FilePath { get; set; }
     public string[]? SampleIdReferences { get; set; }
     public string? Icon { get; set; }
+    public string? ComponentName { get; set; }
+    public string? CsProjName { get; set; }
 }

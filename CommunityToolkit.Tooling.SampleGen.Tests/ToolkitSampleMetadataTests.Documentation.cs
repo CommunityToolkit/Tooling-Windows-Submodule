@@ -270,6 +270,14 @@ experimental: true
 Which is valid.
 > [!SAMPLE Sample]";
 
+        string csproj = """
+<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+  <PropertyGroup>
+    <ToolkitComponentName>Primitives</ToolkitComponentName>
+  </PropertyGroup>
+</Project>
+""";
+
         var sampleProjectAssembly = SimpleSource.ToSyntaxTree()
             .CreateCompilation("MyApp.Samples")
             .ToMetadataReference();
@@ -279,7 +287,7 @@ Which is valid.
             .CreateCompilation("MyApp.Head")
             .AddReferences(sampleProjectAssembly);
 
-        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>(markdown);
+        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>(markdown, csproj);
 
         result.AssertNoCompilationErrors();
 
@@ -291,7 +299,7 @@ Which is valid.
         {
             public static System.Collections.Generic.IEnumerable<CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter> Execute()
             {
-                yield return new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter() { Title = "Canvas Layout", Author = "mhawker", Description = "A canvas-like VirtualizingLayout for use in an ItemsRepeater", Keywords = "CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange", Category = ToolkitSampleCategory.Controls, Subcategory = ToolkitSampleSubcategory.Layout, DiscussionId = 0, IssueId = 0, Icon = @"experiment/samples/assets/icon.png", FilePath = @"experiment\samples\documentation.md", SampleIdReferences = new string[] { "Sample" }, IsExperimental = true };
+                yield return new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter() { ComponentName = "Primitives", Title = "Canvas Layout", Author = "mhawker", Description = "A canvas-like VirtualizingLayout for use in an ItemsRepeater", Keywords = "CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange", Category = ToolkitSampleCategory.Controls, Subcategory = ToolkitSampleSubcategory.Layout, DiscussionId = 0, IssueId = 0, Icon = @"experiment/samples/assets/icon.png", FilePath = @"experiment\samples\documentation.md", SampleIdReferences = new string[] { "Sample" }, IsExperimental = true, CsProjName = @"componentname.csproj" };
             }
         }
         """, "Unexpected code generated");
