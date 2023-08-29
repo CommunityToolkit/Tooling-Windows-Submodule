@@ -37,7 +37,6 @@
         </controls:TitleBar>
         <muxc:NavigationView x:Name="NavView"
                              Grid.Row="1"
-                             Margin="0,16,0,0"
                              IsBackButtonVisible="Collapsed"
                              IsPaneToggleButtonVisible="False"
                              ItemInvoked="NavView_ItemInvoked">
