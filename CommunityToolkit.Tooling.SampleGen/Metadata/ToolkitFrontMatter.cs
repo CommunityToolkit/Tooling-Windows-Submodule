@@ -19,6 +19,7 @@ public sealed class ToolkitFrontMatter : DocsFrontMatter
     public ToolkitSampleSubcategory Subcategory { get; set; }
     public int DiscussionId { get; set; }
     public int IssueId { get; set; }
+    public bool? IsExperimental { get; set; }
 
     //// Extra Metadata needed for Sample App
     public string? FilePath { get; set; }

@@ -46,6 +46,9 @@ public partial class ToolkitSampleMetadataGenerator
     private const string MarkdownRegexSampleTagExpression = @"^>\s*\[!SAMPLE\s*(?<sampleid>.*)\s*\]\s*$";
     private static readonly Regex MarkdownRegexSampleTag = new Regex(MarkdownRegexSampleTagExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
+    private const string FrontMatterRegexIsExperimentalExpression = @"^experimental:\s*(?<experimental>.*)$";
+    private static readonly Regex FrontMatterRegexIsExperimental = new Regex(FrontMatterRegexIsExperimentalExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
     private static void ReportDocumentDiagnostics(SourceProductionContext ctx, Dictionary<string, ToolkitSampleRecord> sampleMetadata, IEnumerable<AdditionalText> markdownFileData, IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData, ImmutableArray<ToolkitFrontMatter> docFrontMatter)
     {
         // Keep track of all sample ids and remove them as we reference them so we know if we have any unreferenced samples.
@@ -126,6 +129,8 @@ public partial class ToolkitSampleMetadataGenerator
                 var discussion = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexDiscussionId, "discussionid")?.Trim();
                 var issue = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexIssueId, "issueid")?.Trim();
 
+                var experimental = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexIsExperimental, "experimental", true)?.Trim();
+
                 // Check we have all the fields we expect to continue (errors will have been spit out otherwise already from the ParseYamlField method)
                 if (title == null || description == null || keywords == null ||
                         category == null || subcategory == null || discussion == null || issue == null || icon == null)
@@ -204,6 +209,18 @@ public partial class ToolkitSampleMetadataGenerator
                     return null;
                 }
 
+                bool isExperimental = false;
+                if (experimental != null && !bool.TryParse(experimental, out isExperimental))
+                {
+                    ctx.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.MarkdownYAMLFrontMatterException,
+                            Location.Create(file.Path, TextSpan.FromBounds(0, 1), new LinePositionSpan(LinePosition.Zero, LinePosition.Zero)),
+                            file.Path,
+                            "Can't parse optional experimental field, must be a boolean value like 'true' or 'false' or remove it."));
+                    return null;
+                }
+
                 // Finally, construct the complete object.
                 return new ToolkitFrontMatter()
                 {
@@ -218,16 +235,17 @@ public partial class ToolkitSampleMetadataGenerator
                     DiscussionId = discussionId,
                     IssueId = issueId,
                     Icon = iconpath,
+                    IsExperimental = isExperimental,
                 };
             }
         }).OfType<ToolkitFrontMatter>().ToImmutableArray();
     }
 
-    private string? ParseYamlField(ref SourceProductionContext ctx, string filepath, ref string content, Regex pattern, string captureGroupName)
+    private string? ParseYamlField(ref SourceProductionContext ctx, string filepath, ref string content, Regex pattern, string captureGroupName, bool optional = false)
     {
         var match = pattern.Match(content);
 
-        if (!match.Success)
+        if (!optional && !match.Success)
         {
             ctx.ReportDiagnostic(
                 Diagnostic.Create(
@@ -235,6 +253,10 @@ public partial class ToolkitSampleMetadataGenerator
                     Location.Create(filepath, TextSpan.FromBounds(0, 1), new LinePositionSpan(LinePosition.Zero, LinePosition.Zero)),
                     filepath,
                     captureGroupName));
+            return null;
+        }
+        else if (optional && !match.Success)
+        {
             return null;
         }
 
@@ -270,6 +292,6 @@ public static class ToolkitDocumentRegistry
         var categoryParam = $"{nameof(ToolkitSampleCategory)}.{metadata.Category}";
         var subcategoryParam = $"{nameof(ToolkitSampleSubcategory)}.{metadata.Subcategory}";
 
-        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }} }};"; // TODO: Add list of sample ids in document
+        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }}, IsExperimental = {metadata.IsExperimental.ToString().ToLowerInvariant()} }};"; // TODO: Add list of sample ids in document
     }
 }
