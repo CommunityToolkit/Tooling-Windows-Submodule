@@ -74,14 +74,14 @@
                                Text="About" />
 
                     <controls:SettingsExpander Description="© 2023. All rights reserved."
-                                               Header="Windows Community Toolkit Gallery">
+                                               Header="Windows Community Toolkit Gallery"
+                                               IsExpanded="True">
                         <controls:SettingsExpander.HeaderIcon>
                             <BitmapIcon ShowAsMonochrome="False"
                                         UriSource="ms-appx:///Assets/AppTitleBar.png" />
                         </controls:SettingsExpander.HeaderIcon>
                         <TextBlock win:IsTextSelectionEnabled="True"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                   Style="{StaticResource CaptionTextBlockStyle}"
                                    Text="Version 8.0.0" />
                         <controls:SettingsExpander.Items>
                             <controls:SettingsCard HorizontalContentAlignment="Left"
@@ -99,6 +99,19 @@
                                             Orientation="Vertical">
                                     <HyperlinkButton Content="ColorCode"
                                                      NavigateUri="https://aka.ms/colorcode" />
+                                </StackPanel>
+                            </controls:SettingsCard>
+                            <controls:SettingsCard HorizontalContentAlignment="Left"
+                                                   ContentAlignment="Vertical"
+                                                   Header="Useful links">
+                                <StackPanel Margin="-12,0,0,0"
+                                            Orientation="Vertical">
+                                    <HyperlinkButton Content="GitHub repository"
+                                                     NavigateUri="https://aka.ms/toolkit/windows" />
+                                    <HyperlinkButton Content="Documentation"
+                                                     NavigateUri="https://aka.ms/toolkit/docs" />
+                                    <HyperlinkButton Content="UWP Community Discord"
+                                                     NavigateUri="https://aka.ms/wct/discord" />
                                 </StackPanel>
                             </controls:SettingsCard>
                         </controls:SettingsExpander.Items>
