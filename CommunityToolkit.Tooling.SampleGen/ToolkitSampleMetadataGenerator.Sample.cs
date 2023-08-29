@@ -8,6 +8,7 @@ using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -33,6 +34,10 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
         var markdownFiles = context.AdditionalTextsProvider
             .Where(static file => file.Path.EndsWith(".md"))
+            .Collect();
+
+        var csprojFiles = context.AdditionalTextsProvider
+            .Where(static file => file.Path.EndsWith(".csproj"))
             .Collect();
 
         var assemblyName = context.CompilationProvider.Select((x, _) => x.Assembly.Name);
@@ -106,15 +111,30 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                 .Combine(toolkitSampleAttributeData)
                 .Combine(generatedPaneOptions)
                 .Combine(markdownFiles)
+                .Combine(csprojFiles)
                 .Combine(assemblyName);
 
+            // TODO: We can make this static if we could pass in our two boolean values as context, no idea how to do that...
             context.RegisterSourceOutput(all, (ctx, data) =>
             {
-                var toolkitSampleAttributeData = data.Left.Left.Left.Right.Where(x => x != default).Distinct();
-                var optionsPaneAttribute = data.Left.Left.Left.Left.Where(x => x != default).Distinct();
-                var generatedOptionPropertyData = data.Left.Left.Right.Where(x => x.Attribute is not null && x.Symbol is not null);
-                var markdownFileData = data.Left.Right.Where(x => x != default).Distinct();
-                var currentAssembly = data.Right;
+                var (((((optionsPaneAttributes, toolkitSampleAttributes), generatedPaneOptions), markdownFiles), csprojFiles), currentAssembly) = data;
+
+                var toolkitSampleAttributeData = toolkitSampleAttributes.Where(x => x != default).Distinct();
+                var optionsPaneAttributeData = optionsPaneAttributes.Where(x => x != default).Distinct();
+                var generatedOptionPropertyData = generatedPaneOptions.Where(x => x.Attribute is not null && x.Symbol is not null);
+
+                var markdownFileData = markdownFiles.Where(x => x != default).Distinct();
+                var csprojFileData = csprojFiles.Where(x => x != default).Distinct();
+
+                var markdownProjPairings = markdownFileData.Select<AdditionalText, (AdditionalText Document, AdditionalText? CsProj)>((docFile, _) =>
+                {
+                    // TODO: We use these splits a lot to extra path info, so we should probably make a helper function?
+                    var rootPathFile = docFile.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Split(new char[] { '/', '\\' }).FirstOrDefault();
+
+                    var csproj = csprojFileData.FirstOrDefault(csProjFile => csProjFile.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Split(new char[] { '/', '\\' }).FirstOrDefault() == rootPathFile);
+
+                    return (docFile, csproj);
+                });
 
                 var isExecutingInSampleProject = currentAssembly?.EndsWith(".Samples") ?? false;
 
@@ -129,16 +149,16 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                                 sample.Attribute.DisplayName,
                                 sample.Attribute.Description,
                                 sample.AttachedQualifiedTypeName,
-                                optionsPaneAttribute.FirstOrDefault(x => x.Item1?.SampleId == sample.Attribute.Id).Item2?.ToString(),
+                                optionsPaneAttributeData.FirstOrDefault(x => x.Item1?.SampleId == sample.Attribute.Id).Item2?.ToString(),
                                 generatedOptionPropertyData.Where(x => x.Symbol.Equals(sample.Symbol, SymbolEqualityComparer.Default)).Select(x => x.Item2)
                             )
                     );
 
-                var docFrontMatter = GatherDocumentFrontMatter(ctx, markdownFileData);
+                var docFrontMatter = GatherDocumentFrontMatter(ctx, markdownProjPairings);
 
                 if (isExecutingInSampleProject && !skipDiagnostics)
                 {
-                    ReportSampleDiagnostics(ctx, toolkitSampleAttributeData, optionsPaneAttribute, generatedOptionPropertyData);
+                    ReportSampleDiagnostics(ctx, toolkitSampleAttributeData, optionsPaneAttributeData, generatedOptionPropertyData);
                     ReportDocumentDiagnostics(ctx, sampleMetadata, markdownFileData, toolkitSampleAttributeData, docFrontMatter);
                 }
 

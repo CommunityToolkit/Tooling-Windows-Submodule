@@ -49,6 +49,9 @@ public partial class ToolkitSampleMetadataGenerator
     private const string FrontMatterRegexIsExperimentalExpression = @"^experimental:\s*(?<experimental>.*)$";
     private static readonly Regex FrontMatterRegexIsExperimental = new Regex(FrontMatterRegexIsExperimentalExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
+    private const string CsProjRegexComponentNameExpression = @"^\s*<ToolkitComponentName>(?<ToolkitComponentName>.*)<\/ToolkitComponentName>\s*$";
+    private static readonly Regex CsProjRegexComponentName = new Regex(CsProjRegexComponentNameExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
     private static void ReportDocumentDiagnostics(SourceProductionContext ctx, Dictionary<string, ToolkitSampleRecord> sampleMetadata, IEnumerable<AdditionalText> markdownFileData, IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData, ImmutableArray<ToolkitFrontMatter> docFrontMatter)
     {
         // Keep track of all sample ids and remove them as we reference them so we know if we have any unreferenced samples.
@@ -90,14 +93,16 @@ public partial class ToolkitSampleMetadataGenerator
         }
     }
 
-    private ImmutableArray<ToolkitFrontMatter> GatherDocumentFrontMatter(SourceProductionContext ctx, IEnumerable<AdditionalText> data)
+    private static ImmutableArray<ToolkitFrontMatter> GatherDocumentFrontMatter(SourceProductionContext ctx, IEnumerable<(AdditionalText Document, AdditionalText? CsProj)> data)
     {
-        return data.Select(file =>
+        return data.Select(info =>
         {
+            var file = info.Document;
+
             // We have to manually parse the YAML here for now because of
             // https://github.com/dotnet/roslyn/issues/43903
 
-            var content = file.GetText()!.ToString();
+            var content = info.Document.GetText()!.ToString();
             var matter = content.Split(new[] { "---" }, StringSplitOptions.RemoveEmptyEntries);
 
             if (matter.Length <= 1)
@@ -221,6 +226,28 @@ public partial class ToolkitSampleMetadataGenerator
                     return null;
                 }
 
+                string? componentName = null;
+                string? csprojName = null;
+
+                // Get component name from csproj file (if we have one) and its filename, otherwise, use path data of doc file
+                if (info.CsProj != null)
+                {
+                    var text = info.CsProj.GetText()!.ToString();
+
+                    var match = CsProjRegexComponentName.Match(text);
+
+                    if (match.Success)
+                    {
+                        componentName = match.Groups["ToolkitComponentName"].Value.Trim();
+                    }
+
+                    csprojName = info.CsProj.Path.Split(new char[] { '/', '\\' }).LastOrDefault();
+                }
+                else
+                {
+                    componentName = filepath.Split(new char[] { '/', '\\' }).FirstOrDefault();
+                }
+
                 // Finally, construct the complete object.
                 return new ToolkitFrontMatter()
                 {
@@ -236,12 +263,14 @@ public partial class ToolkitSampleMetadataGenerator
                     IssueId = issueId,
                     Icon = iconpath,
                     IsExperimental = isExperimental,
+                    ComponentName = componentName,
+                    CsProjName = csprojName,
                 };
             }
         }).OfType<ToolkitFrontMatter>().ToImmutableArray();
     }
 
-    private string? ParseYamlField(ref SourceProductionContext ctx, string filepath, ref string content, Regex pattern, string captureGroupName, bool optional = false)
+    private static string? ParseYamlField(ref SourceProductionContext ctx, string filepath, ref string content, Regex pattern, string captureGroupName, bool optional = false)
     {
         var match = pattern.Match(content);
 
@@ -263,7 +292,7 @@ public partial class ToolkitSampleMetadataGenerator
         return match.Groups[captureGroupName].Value.Trim();
     }
 
-    private void CreateDocumentRegistry(SourceProductionContext ctx, ImmutableArray<ToolkitFrontMatter> matter)
+    private static void CreateDocumentRegistry(SourceProductionContext ctx, ImmutableArray<ToolkitFrontMatter> matter)
     {
         // TODO: Emit a better error that no documentation is here?
         if (matter.Length == 0)
@@ -292,6 +321,6 @@ public static class ToolkitDocumentRegistry
         var categoryParam = $"{nameof(ToolkitSampleCategory)}.{metadata.Category}";
         var subcategoryParam = $"{nameof(ToolkitSampleSubcategory)}.{metadata.Subcategory}";
 
-        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }}, IsExperimental = {metadata.IsExperimental.ToString().ToLowerInvariant()} }};"; // TODO: Add list of sample ids in document
+        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ ComponentName = ""{metadata.ComponentName}"", Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }}, IsExperimental = {metadata.IsExperimental.ToString().ToLowerInvariant()}, CsProjName = @""{metadata.CsProjName}"" }};"; // TODO: Add list of sample ids in document
     }
 }

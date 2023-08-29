@@ -19,13 +19,14 @@ public static partial class TestHelpers
         return RunSourceGenerator<TGenerator>(compilation, markdown);
     }
 
-    internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this Compilation compilation, string markdown = "")
+    internal static SourceGeneratorRunResult RunSourceGenerator<TGenerator>(this Compilation compilation, string markdown = "", string csproj = "")
         where TGenerator : class, IIncrementalGenerator, new()
     {
         // Create a driver for the source generator
         var driver = compilation
             .CreateSourceGeneratorDriver(new TGenerator())
-            .WithMarkdown(markdown);
+            .WithMarkdown(markdown)
+            .WithCsproj(csproj);
 
         // Update the original compilation using the source generator
         _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation generatorCompilation, out ImmutableArray<Diagnostic> postGeneratorCompilationDiagnostics);
