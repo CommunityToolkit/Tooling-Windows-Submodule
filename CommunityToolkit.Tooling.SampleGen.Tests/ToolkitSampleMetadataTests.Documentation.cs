@@ -263,7 +263,7 @@ category: Controls
 subcategory: Layout
 discussion-id: 0
 issue-id: 0
-icon: assets/icon.png
+icon: assets\icon.png
 experimental: true
 ---
 # This is some test documentation...
@@ -299,7 +299,7 @@ Which is valid.
         {
             public static System.Collections.Generic.IEnumerable<CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter> Execute()
             {
-                yield return new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter() { ComponentName = "Primitives", Title = "Canvas Layout", Author = "mhawker", Description = "A canvas-like VirtualizingLayout for use in an ItemsRepeater", Keywords = "CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange", Category = ToolkitSampleCategory.Controls, Subcategory = ToolkitSampleSubcategory.Layout, DiscussionId = 0, IssueId = 0, Icon = @"experiment/samples/assets/icon.png", FilePath = @"experiment\samples\documentation.md", SampleIdReferences = new string[] { "Sample" }, IsExperimental = true, CsProjName = @"componentname.csproj" };
+                yield return new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter() { ComponentName = "Primitives", Title = "Canvas Layout", Author = "mhawker", Description = "A canvas-like VirtualizingLayout for use in an ItemsRepeater", Keywords = "CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange", Category = ToolkitSampleCategory.Controls, Subcategory = ToolkitSampleSubcategory.Layout, DiscussionId = 0, IssueId = 0, Icon = @"assets/icon.png", FilePath = @"experiment\samples\documentation.md", SampleIdReferences = new string[] { "Sample" }, IsExperimental = true, CsProjName = @"componentname.csproj" };
             }
         }
         """, "Unexpected code generated");
