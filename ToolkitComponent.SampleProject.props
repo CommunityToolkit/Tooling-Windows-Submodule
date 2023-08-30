@@ -38,5 +38,6 @@
 
     <!-- Enable reading Markdown files from source generator -->
     <AdditionalFiles Include="**\*.md" Exclude="bin\**\*.md;obj\**\*.md" />
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)\..\src\*.csproj" />
   </ItemGroup>
 </Project>

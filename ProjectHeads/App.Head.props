@@ -94,6 +94,7 @@
 
     <!-- Include markdown files from all samples so the head can access them in the source generator -->
     <AdditionalFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
+    <AdditionalFiles Include="$(RepositoryDirectory)components\**\src\**\*.csproj" />
   </ItemGroup>
 
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
@@ -109,6 +110,7 @@
 
     <!-- Include markdown files from all samples so the head can access them in the source generator -->
     <AdditionalFiles Include="$(MSBuildProjectDirectory)\..\..\samples\*.md" Exclude="$(MSBuildProjectDirectory)\..\..\**\obj\**\*.md;$(MSBuildProjectDirectory)\..\..\**\bin\**\*.md"/>
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)\..\..\src\**\*.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
