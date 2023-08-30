@@ -156,7 +156,8 @@ public partial class ToolkitSampleMetadataGenerator
 
                 // Get the filepath we need to be able to load the markdown file in sample app.
                 var filepath = file.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-                var iconpath = (filepath.Split(new string[] { @"\samples\", "/samples/" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() + "\\samples\\" + icon).Replace('\\', '/');
+
+                var iconpath = icon.Replace('\\', '/');
 
                 // Look for sample id tags
                 var matches = MarkdownRegexSampleTag.Matches(content);
