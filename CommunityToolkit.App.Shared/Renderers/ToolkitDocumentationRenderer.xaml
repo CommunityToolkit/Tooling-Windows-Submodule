@@ -230,7 +230,7 @@
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
                         <interactions:EventTriggerBehavior EventName="Click">
-                            <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('issues', Metadata.IssueId), Mode=OneWay}" />
+                            <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToComponentUri(Metadata.ComponentName), Mode=OneWay}" />
                         </interactions:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>
@@ -251,21 +251,23 @@
                                            Text="Namespace" />
                                 <TextBlock FontFamily="Consolas"
                                            IsTextSelectionEnabled="True"
-                                           Text="CommunityToolkit.WinUI.Behaviors" />
+                                           Text="{x:Bind renderer:ToolkitDocumentationRenderer.ToPackageNamespace(Metadata.CsProjName), Mode=OneWay}" />
                                 <TextBlock Margin="0,24,0,0"
                                            Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Text="NuGet package" />
                                 <TextBlock IsTextSelectionEnabled="True">
                                     <Hyperlink FontFamily="Consolas"
+                                               NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToPackageUri('Uwp', Metadata.CsProjName), Mode=OneWay}"
                                                TextDecorations="None">
-                                        CommunityToolkit.Uwp.Behaviors
+                                        <Run Text="{x:Bind renderer:ToolkitDocumentationRenderer.ToPackageName('Uwp', Metadata.CsProjName), Mode=OneWay}" />
                                     </Hyperlink>
                                 </TextBlock>
                                 <TextBlock IsTextSelectionEnabled="True">
                                     <Hyperlink FontFamily="Consolas"
+                                               NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToPackageUri('WinUI', Metadata.CsProjName), Mode=OneWay}"
                                                TextDecorations="None">
-                                        CommunityToolkit.WinUI.Behaviors
+                                        <Run Text="{x:Bind renderer:ToolkitDocumentationRenderer.ToPackageName('WinUI', Metadata.CsProjName), Mode=OneWay}" />
                                     </Hyperlink>
                                 </TextBlock>
                             </StackPanel>
