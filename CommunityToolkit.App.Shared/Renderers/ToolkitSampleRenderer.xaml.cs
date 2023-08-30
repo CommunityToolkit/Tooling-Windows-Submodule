@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using CommunityToolkit.Tooling.SampleGen.Attributes;
+#if !HAS_UNO
+using ColorCode;
+#endif
 using CommunityToolkit.Tooling.SampleGen.Metadata;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 
 #if WINAPPSDK
@@ -152,8 +152,31 @@ public sealed partial class ToolkitSampleRenderer : Page
             return;
         }
 
-        XamlCode = await GetMetadataFileContents(Metadata, "xaml");
-        CSharpCode = await GetMetadataFileContents(Metadata, "xaml.cs");
+        XamlCode = (await GetMetadataFileContents(Metadata, "xaml"))?.Trim();
+        CSharpCode = (await GetMetadataFileContents(Metadata, "xaml.cs"))?.Trim();
+
+        // Remove Header License Comments from code samples for space
+        if (XamlCode?.StartsWith("<!--  Licensed") == true ||
+            XamlCode?.StartsWith("<!-- Licensed") == true)
+        {
+            var lines = XamlCode.Split(Environment.NewLine).Skip(1);
+            XamlCode = string.Join(Environment.NewLine, lines).Trim();
+        }
+
+        if (CSharpCode?.StartsWith("// Licensed") == true)
+        {
+            var lines = CSharpCode.Split(Environment.NewLine).Skip(3);
+            CSharpCode = string.Join(Environment.NewLine, lines).Trim();
+        }
+
+        // Remove namespace line as not relevant to sample
+        if (CSharpCode?.StartsWith("namespace") == true)
+        {
+            var lines = CSharpCode.Split(Environment.NewLine).Skip(1);
+            CSharpCode = string.Join(Environment.NewLine, lines).Trim();
+        }
+
+        RenderCode();
 
         var sampleControlInstance = (UIElement)Metadata.SampleControlFactory();
 
@@ -287,7 +310,6 @@ public sealed partial class ToolkitSampleRenderer : Page
         {
             ThemeBG.Visibility = Visibility.Collapsed;
         }
-
     }
 
     private void FlowDirectionBtn_OnClick(object sender, RoutedEventArgs e)
@@ -307,5 +329,37 @@ public sealed partial class ToolkitSampleRenderer : Page
     private void CodeBtn_OnClick(object sender, RoutedEventArgs e)
     {
         SourcecodeExpander.IsExpanded = !SourcecodeExpander.IsExpanded;
+    }
+
+    private void RenderCode()
+    {
+        // Uno doesn't support RichTextBlock, so we are using a normal TextBlock instead on WASM
+#if !HAS_UNO
+        RichTextBlockFormatter codeFormatter = new RichTextBlockFormatter(ActualTheme);
+#endif
+        if (XamlCode is not null)
+        {
+#if HAS_UNO
+            XAMLCodeRenderer.Text = XamlCode;
+#else
+            XAMLCodeRenderer.Blocks?.Clear();
+            codeFormatter.FormatRichTextBlock(XamlCode, Languages.FindById("xaml"), XAMLCodeRenderer);
+#endif
+        }
+
+        if (CSharpCode is not null)
+        {
+#if HAS_UNO
+            CSharpCodeRenderer.Text = CSharpCode;
+#else
+            CSharpCodeRenderer.Blocks?.Clear();
+            codeFormatter.FormatRichTextBlock(CSharpCode, Languages.CSharp, CSharpCodeRenderer);
+#endif
+        }
+    }
+
+    private void ToolkitSampleRenderer_ActualThemeChanged(FrameworkElement sender, object args)
+    {
+        RenderCode();
     }
 }
