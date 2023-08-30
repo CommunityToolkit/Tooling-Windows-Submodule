@@ -152,8 +152,29 @@ public sealed partial class ToolkitSampleRenderer : Page
             return;
         }
 
-        XamlCode = await GetMetadataFileContents(Metadata, "xaml");
-        CSharpCode = await GetMetadataFileContents(Metadata, "xaml.cs");
+        XamlCode = (await GetMetadataFileContents(Metadata, "xaml"))?.Trim();
+        CSharpCode = (await GetMetadataFileContents(Metadata, "xaml.cs"))?.Trim();
+
+        // Remove Header License Comments from code samples for space
+        if (XamlCode?.StartsWith("<!--  Licensed") == true ||
+            XamlCode?.StartsWith("<!-- Licensed") == true)
+        {
+            var lines = XamlCode.Split(Environment.NewLine).Skip(1);
+            XamlCode = string.Join(Environment.NewLine, lines).Trim();
+        }
+
+        if (CSharpCode?.StartsWith("// Licensed") == true)
+        {
+            var lines = CSharpCode.Split(Environment.NewLine).Skip(3);
+            CSharpCode = string.Join(Environment.NewLine, lines).Trim();
+        }
+
+        // Remove namespace line as not relevant to sample
+        if (CSharpCode?.StartsWith("namespace") == true)
+        {
+            var lines = CSharpCode.Split(Environment.NewLine).Skip(1);
+            CSharpCode = string.Join(Environment.NewLine, lines).Trim();
+        }
 
         RenderCode();
 
@@ -332,7 +353,7 @@ public sealed partial class ToolkitSampleRenderer : Page
             CSharpCodeRenderer.Text = CSharpCode;
 #else
             CSharpCodeRenderer.Blocks?.Clear();
-            codeFormatter.FormatRichTextBlock(CSharpCode, Languages.FindById("c#"), CSharpCodeRenderer);
+            codeFormatter.FormatRichTextBlock(CSharpCode, Languages.CSharp, CSharpCodeRenderer);
 #endif
         }
     }
