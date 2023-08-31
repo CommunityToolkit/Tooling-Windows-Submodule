@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="CommunityToolkit.Samples"
-    Publisher="CN=CommunityToolkit"
-    Version="1.0.0.0" />
+    Name="Microsoft.UWPCommunityToolkitSampleApp"
+    Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+    Version="8.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="0b7f1f39-b49e-4d5a-b495-13c60832c27f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Windows Community Toolkit Gallery</DisplayName>
-    <PublisherDisplayName>CommunityToolkit</PublisherDisplayName>
+    <DisplayName>Windows Community Toolkit Sample App</DisplayName>
+    <PublisherDisplayName>Microsoft Corporation</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
