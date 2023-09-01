@@ -1,4 +1,4 @@
-﻿<!--  Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information.  -->
+<!--  Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information.  -->
 <Page x:Class="CommunityToolkit.App.Shared.Renderers.ToolkitSampleRenderer"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -162,16 +162,16 @@
                             Grid.Row="2"
                             Width="32"
                             Height="32"
-                            Padding="4"
+                            Padding="0,0,0,2"
                             HorizontalAlignment="Center"
                             win:AutomationProperties.Name="View code"
                             Click="CodeBtn_OnClick"
                             Style="{StaticResource AccentButtonStyle}"
                             ToolTipService.ToolTip="View code">
                         <Button.Content>
-                            <FontIcon win:AutomationProperties.AccessibilityView="Raw"
-                                      FontSize="14"
-                                      Glyph="&#xE943;" />
+                            <PathIcon VerticalAlignment="Center"
+                                      win:AutomationProperties.AccessibilityView="Raw"
+                                      Data="{StaticResource CodeIcon}" />
                         </Button.Content>
                     </Button>
                 </Grid>
