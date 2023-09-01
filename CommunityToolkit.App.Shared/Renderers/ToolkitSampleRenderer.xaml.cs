@@ -280,7 +280,7 @@ public sealed partial class ToolkitSampleRenderer : Page
         if (isAllExperimentHead)
         {
             var sampleName = simpleAssemblyName.Replace(".Samples", "");
-            return $"SourceAssets/{sampleName}/samples/{folderPath}{type.Name}";
+            return $"SourceAssets/{sampleName}/samples/{type.Name}";
         }
 
         throw new InvalidOperationException("Unable to determine if running in a single or all experiment solution.");
