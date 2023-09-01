@@ -162,8 +162,8 @@ public sealed partial class Shell : Page
             }
             else
             {
-                var query = searchBox.Text;
-                searchBox.ItemsSource = samplePages?.Where(s => s!.Title!.ToLower().Contains(query) || s!.Keywords!.ToLower().Contains(query) || s!.Category!.ToString().ToLower().Contains(query) || s!.Subcategory!.ToString().ToLower().Contains(query)).ToArray(); ;
+                var query = searchBox.Text.ToLower();
+                searchBox.ItemsSource = samplePages?.Where(s => s!.Title!.ToLower().Contains(query) || s!.Description!.ToLower().Contains(query) || s!.Keywords!.ToLower().Contains(query) || s!.Category!.ToString().ToLower().Contains(query) || s!.Subcategory!.ToString().ToLower().Contains(query)).ToArray();
                 return;
             }
         }
