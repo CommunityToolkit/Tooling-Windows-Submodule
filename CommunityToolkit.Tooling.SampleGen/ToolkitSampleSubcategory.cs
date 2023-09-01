@@ -101,5 +101,10 @@ public enum ToolkitSampleSubcategory : byte
     /// Samples that focus on Text related controls or extensions.
     /// </summary>
     Text,
+
+    /// <summary>
+    /// Samples that focus on adding visual effects like animations
+    /// </summary>
+    Effects,
 }
 
