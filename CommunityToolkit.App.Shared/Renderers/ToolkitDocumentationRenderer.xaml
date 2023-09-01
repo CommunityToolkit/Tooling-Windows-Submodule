@@ -45,26 +45,26 @@
             <!--  Title  -->
             <Setter Property="Header1FontWeight" Value="SemiBold" />
             <Setter Property="Header1FontSize" Value="28" />
-            <Setter Property="Header1Margin" Value="0, 16, 0, 4" />
+            <Setter Property="Header1Margin" Value="0, 20, 0, 4" />
             <Setter Property="Header1Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
             <!--  Custom  -->
             <Setter Property="Header2FontWeight" Value="SemiBold" />
-            <Setter Property="Header2FontSize" Value="24" />
-            <Setter Property="Header2Margin" Value="0, 16, 0, 4" />
+            <Setter Property="Header2FontSize" Value="18" />
+            <Setter Property="Header2Margin" Value="0, 20, 0, 0" />
             <Setter Property="Header2Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
             <!--  Subtitle  -->
             <Setter Property="Header3FontWeight" Value="SemiBold" />
-            <Setter Property="Header3FontSize" Value="20" />
+            <Setter Property="Header3FontSize" Value="16" />
             <Setter Property="Header3Margin" Value="0, 16, 0, 0" />
             <Setter Property="Header3Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
             <!--  Body Large Strong  -->
             <Setter Property="Header4FontWeight" Value="SemiBold" />
-            <Setter Property="Header4FontSize" Value="18" />
+            <Setter Property="Header4FontSize" Value="14" />
             <Setter Property="Header4Margin" Value="0, 16, 0, 0" />
             <Setter Property="Header4Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
             <!--  Body Large  -->
             <Setter Property="Header5FontWeight" Value="Normal" />
-            <Setter Property="Header5FontSize" Value="18" />
+            <Setter Property="Header5FontSize" Value="14" />
             <Setter Property="Header5Margin" Value="0, 16, 0, 0" />
             <Setter Property="Header5Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
             <!--  Body Strong  -->
