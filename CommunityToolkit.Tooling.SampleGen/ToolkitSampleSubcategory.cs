@@ -53,7 +53,7 @@ public enum ToolkitSampleSubcategory : byte
     Markup,
 
     /// <summary>
-    /// Samples that focus on helping with mathmatical operations.
+    /// Samples that focus on helping with mathematical operations.
     /// </summary>
     Math,
 
