@@ -39,7 +39,7 @@ public static class NavigationViewHelper
 
     private static IEnumerable<MUXC.NavigationViewItem> GenerateSampleNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
     {
-        foreach (var metadata in sampleMetadata)
+        foreach (var metadata in sampleMetadata.OrderBy(meta => meta.Title))
         {
             yield return new MUXC.NavigationViewItem
             {
@@ -52,7 +52,8 @@ public static class NavigationViewHelper
 
     private static IEnumerable<GroupNavigationItemData> GenerateSubcategoryNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
     {
-        var samplesBySubcategory = sampleMetadata.GroupBy(x => x.Subcategory);
+        var samplesBySubcategory = sampleMetadata.GroupBy(x => x.Subcategory)
+                                                 .OrderBy(g => g.Key.ToString());
 
         foreach (var subcategoryGroup in samplesBySubcategory)
         {
@@ -68,7 +69,8 @@ public static class NavigationViewHelper
 
     private static IEnumerable<GroupNavigationItemData> GenerateCategoryNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
     {
-        var samplesByCategory = sampleMetadata.GroupBy(x => x.Category);
+        var samplesByCategory = sampleMetadata.GroupBy(x => x.Category)
+                                              .OrderBy(g => g.Key.ToString());
 
         foreach (var categoryGroup in samplesByCategory)
         {
