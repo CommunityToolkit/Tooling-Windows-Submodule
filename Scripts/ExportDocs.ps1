@@ -11,12 +11,24 @@ Set-Location $PSScriptRoot;
 
 $OutputDir = Join-Path $preWorkingDir $OutputDir
 
+$lastComponent = ""
+$tocContents = "items:`n"
+
 # Find all Markdown documents
 foreach ($markdownFile in Get-ChildItem -Recurse -Path '../../components/*/samples/**/*.md' |
           Where-Object {$_.FullName -notlike "*\bin\*" -and $_FullName -notlike "*\obj\*"}) {
   $contents = Get-Content $markdownFile -Raw
 
   $filePath = $markdownFile.FullName.Substring($preWorkingDir.Path.Length).Replace('\', '/').Trim('/')
+
+  # Get Component Name
+  $componentsRoot = $filePath.Replace('components/','')
+  $componentName = $componentsRoot.Substring(0, $componentsRoot.IndexOf('/'))
+  if ($componentName -ne $lastComponent)
+  {
+    $tocContents = $tocContents + "- name: $componentName`n  items:`n"
+    $lastComponent = $componentName
+  }
 
   # Find title
   $contents -match 'title:\s*(?<title>.*)' | Out-Null
@@ -49,7 +61,7 @@ foreach ($markdownFile in Get-ChildItem -Recurse -Path '../../components/*/sampl
         # See https://learn.microsoft.com/en-us/contribute/content/code-in-docs#out-of-repo-snippet-references
         $snippet = ':::code language="xaml" source="~/../code-windows/' + $docPath.Substring(0, $docPath.Length - 3) + '":::' + "`n`n"
 
-        $snippet = $snippet + ':::code language="csharp" source="~/../code-windows/' + $docPath + '":::'
+        $snippet = $snippet + ':::code language="csharp" source="~/../code-windows/' + $docPath + '":::' + "`n`n"
 
         # Replace our Sample Placeholder with references for docs
         $contents = $contents.Replace($sampleString, $snippet)
@@ -61,12 +73,20 @@ foreach ($markdownFile in Get-ChildItem -Recurse -Path '../../components/*/sampl
   $contents = $contents.Replace('https://learn.microsoft.com', '')
 
   # create output directory if it doesn't exist
-  $outputFile = (Join-Path $OutputDir $filePath.Replace('components','').Replace('samples','').Replace('\\', '\'))
+  $targetFile = $filePath.Replace('components','').Replace('samples','').Replace('//', '/')
+  $outputFile = (Join-Path $OutputDir $targetFile)
   [System.IO.Directory]::CreateDirectory((Split-Path $outputFile)) | Out-Null
 
   # Write file contents
   Write-Host 'Writing File:', $outputFile
   $contents | Set-Content $outputFile
+
+  # Add to TOC
+  $targetFile = $targetFile.Trim('/') # need to remove initial / from path
+  $tocContents = $tocContents + "  - name: $header`n    href: $targetFile`n"
 }
+
+Write-Host 'Writing TOC'
+$tocContents | Set-Content (Join-Path $OutputDir "TOC.yml")
 
 Set-Location $preWorkingDir;
