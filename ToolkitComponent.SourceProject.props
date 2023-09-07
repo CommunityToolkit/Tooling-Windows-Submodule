@@ -11,6 +11,7 @@
     <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$(DateForVersion)</Version>
     <Version Condition="'$(PreviewVersion)' != ''">$(Version)-$(PreviewVersion)</Version>
     <PackageId Condition="'$(PackageId)' == ''">$(PackageIdPrefix).$(PackageIdVariant).$(ToolkitComponentName)</PackageId>
+    <PackageReadmeFile Condition="Exists('$(MSBuildProjectDirectory)\ReadMe.md')">ReadMe.md</PackageReadmeFile>
   </PropertyGroup>
 
   <!-- Auto Generate our own Assembly Info -->
@@ -113,6 +114,8 @@
 
     <ItemGroup>
       <Compile Include="$(GeneratedAssemblyInfoPath)" />
+
+      <None Include="$(MSBuildProjectDirectory)\ReadMe.md" Pack="true" PackagePath="\" Condition="Exists('$(MSBuildProjectDirectory)\ReadMe.md')"/>
     </ItemGroup>
 
     <!-- Write out new auto-generated AssemblyInfo.g.cs file -->
