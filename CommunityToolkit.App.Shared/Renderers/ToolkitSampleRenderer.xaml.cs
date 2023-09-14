@@ -159,21 +159,22 @@ public sealed partial class ToolkitSampleRenderer : Page
         if (XamlCode?.StartsWith("<!--  Licensed") == true ||
             XamlCode?.StartsWith("<!-- Licensed") == true)
         {
-            var lines = XamlCode.Split(Environment.NewLine).Skip(1);
-            XamlCode = string.Join(Environment.NewLine, lines).Trim();
+            // Note: We just use \n directly here as we don't know if the content will match the expected environment setup, we do know there'll be at least a \n though separating newlines, so we want to split on that, otherwise we'll skip the entire set of contents...
+            var lines = XamlCode.Split('\n').Skip(1);
+            XamlCode = string.Join('\n', lines).Trim();
         }
 
         if (CSharpCode?.StartsWith("// Licensed") == true)
         {
-            var lines = CSharpCode.Split(Environment.NewLine).Skip(3);
-            CSharpCode = string.Join(Environment.NewLine, lines).Trim();
+            var lines = CSharpCode.Split('\n').Skip(3);
+            CSharpCode = string.Join('\n', lines).Trim();
         }
 
         // Remove namespace line as not relevant to sample
         if (CSharpCode?.StartsWith("namespace") == true)
         {
-            var lines = CSharpCode.Split(Environment.NewLine).Skip(1);
-            CSharpCode = string.Join(Environment.NewLine, lines).Trim();
+            var lines = CSharpCode.Split('\n').Skip(1);
+            CSharpCode = string.Join('\n', lines).Trim();
         }
 
         RenderCode();
