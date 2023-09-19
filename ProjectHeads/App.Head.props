@@ -1,5 +1,5 @@
 <!-- Common props for any deployable app project head. -->
-<Project InitialTargets="AddMultiTargetCompatibleSampleDocs">
+<Project>
   <!-- Shared project -->
   <Import Project="$(ToolingDirectory)\CommunityToolkit.App.Shared\CommunityToolkit.App.Shared.projitems" Label="Shared" />
 
@@ -81,24 +81,23 @@
   <!-- Each deployable sample app head uses the CommunityToolkit.Toolkit.SampleGen source generator to generate document registries -->
   <Import Project="$(ToolingDirectory)\ProjectHeads\Tasks\CheckMultiTarget.props" />
 
-  <Target Name="AddMultiTargetCompatibleSampleDocs" Condition="'$(IsAllExperimentHead)' == 'true'">
-    <!-- Props scoped to current Target -->
-    <!-- Simplifies comparison of the current head against component-level <MultiTarget> definition -->
-    <PropertyGroup>
-      <MultiTargetIdentifier Condition="'$(IsUwp)' == 'true'">uwp</MultiTargetIdentifier>
-      <MultiTargetIdentifier Condition="'$(IsWasm)' == 'true'">wasm</MultiTargetIdentifier>
-      <MultiTargetIdentifier Condition="'$(IsWasdk)' == 'true'">wasdk</MultiTargetIdentifier>
-      <MultiTargetIdentifier Condition="'$(IsMacos)' == 'true'">macos</MultiTargetIdentifier>
-      <MultiTargetIdentifier Condition="'$(IsIos)' == 'true'">ios</MultiTargetIdentifier>
-      <MultiTargetIdentifier Condition="'$(IsAndroid)' == 'true'">android</MultiTargetIdentifier>
-      <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
-    </PropertyGroup>
+  <!-- Simplifies comparison of the current head against component-level <MultiTarget> definition -->
+  <PropertyGroup>
+    <MultiTargetIdentifier Condition="'$(IsUwp)' == 'true'">uwp</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsWasm)' == 'true'">wasm</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsWasdk)' == 'true'">wasdk</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsMacos)' == 'true'">macos</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsIos)' == 'true'">ios</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsAndroid)' == 'true'">android</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
+  </PropertyGroup>
 
-    <Error Condition="$(MultiTargetIdentifier) == ''" Text="Missing MultiTargetIdentifier. Is the `IsSomePlatform` property (`IsUwp`, `IsWasm`, etc) set on the deployable project head?" />
+  <Target Name="AddMultiTargetCompatibleSampleDocs" Condition="'$(IsAllExperimentHead)' == 'true'" BeforeTargets="BeforeBuild">
+    <Error Condition="'$(MultiTargetIdentifier)' == ''" Text="Missing MultiTargetIdentifier $(MultiTargetIdentifier). Is the `IsSomePlatform` property (`IsUwp`, `IsWasm`, etc) set on the deployable project head?" />
 
     <ItemGroup>
       <AllComponentMarkdownFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
-    </ItemGroup>
+    </ItemGroup>`
 
     <Message Text="Found @(AllComponentMarkdownFiles->Count()) total sample docs" Importance="high" />
 
