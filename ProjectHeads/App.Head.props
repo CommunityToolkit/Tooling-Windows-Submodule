@@ -79,7 +79,7 @@
 
   <!-- Gather sample markdown for components that MultiTarget this platform. -->
   <!-- Each deployable sample app head uses the CommunityToolkit.Toolkit.SampleGen source generator to generate document registries -->
-  <Import Project="$(ToolingDirectory)\ProjectHeads\tasks\CheckMultiTarget.props" />
+  <Import Project="$(ToolingDirectory)\ProjectHeads\Tasks\CheckMultiTarget.props" />
 
   <Target Name="AddMultiTargetCompatibleSampleDocs" Condition="'$(IsAllExperimentHead)' == 'true'">
     <!-- Props scoped to current Target -->
