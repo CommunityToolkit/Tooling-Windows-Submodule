@@ -1,5 +1,5 @@
 <!-- Common props for any deployable app project head. -->
-<Project>
+<Project InitialTargets="AddMultiTargetCompatibleSampleDocs">
   <!-- Shared project -->
   <Import Project="$(ToolingDirectory)\CommunityToolkit.App.Shared\CommunityToolkit.App.Shared.projitems" Label="Shared" />
 
@@ -64,7 +64,7 @@
       </ItemGroup>
     </When>
   </Choose>
-   <Choose>
+  <Choose>
     <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
       <ItemGroup>
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230823-rc"/>
@@ -76,6 +76,49 @@
       </ItemGroup>
     </When>
   </Choose>
+
+  <!-- Gather sample markdown for components that MultiTarget this platform. -->
+  <!-- Each deployable sample app head uses the CommunityToolkit.Toolkit.SampleGen source generator to generate document registries -->
+  <Import Project="$(ToolingDirectory)\ProjectHeads\tasks\CheckMultiTarget.props" />
+
+  <Target Name="AddMultiTargetCompatibleSampleDocs" Condition="'$(IsAllExperimentHead)' == 'true'">
+    <!-- Props scoped to current Target -->
+    <!-- Simplifies comparison of the current head against component-level <MultiTarget> definition -->
+    <PropertyGroup>
+      <MultiTargetIdentifier Condition="'$(IsUwp)' == 'true'">uwp</MultiTargetIdentifier>
+      <MultiTargetIdentifier Condition="'$(IsWasm)' == 'true'">wasm</MultiTargetIdentifier>
+      <MultiTargetIdentifier Condition="'$(IsWasdk)' == 'true'">wasdk</MultiTargetIdentifier>
+      <MultiTargetIdentifier Condition="'$(IsMacos)' == 'true'">macos</MultiTargetIdentifier>
+      <MultiTargetIdentifier Condition="'$(IsIos)' == 'true'">ios</MultiTargetIdentifier>
+      <MultiTargetIdentifier Condition="'$(IsAndroid)' == 'true'">android</MultiTargetIdentifier>
+      <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
+    </PropertyGroup>
+
+    <Error Condition="$(MultiTargetIdentifier) == ''" Text="Missing MultiTargetIdentifier. Is the `IsSomePlatform` property (`IsUwp`, `IsWasm`, etc) set on the deployable project head?" />
+
+    <ItemGroup>
+      <AllComponentMarkdownFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
+    </ItemGroup>
+
+    <Message Text="Found @(AllComponentMarkdownFiles->Count()) total sample docs" Importance="high" />
+
+    <CheckMultiTarget FilePath="%(AllComponentMarkdownFiles.Identity)" MultiTargetIdentifier="$(MultiTargetIdentifier)" RepositoryDirectory="$(RepositoryDirectory)">
+      <Output TaskParameter="FilePath" ItemName="ProcessedMarkdownFiles" />
+    </CheckMultiTarget>
+
+    <ItemGroup>
+      <SupportedMarkdownFiles Include="%(ProcessedMarkdownFiles.Identity)" Condition="%(ProcessedMarkdownFiles.IsSupported) == 'true'" />
+    </ItemGroup>
+
+    <Message Text="@(SupportedMarkdownFiles->Count()) sample docs are supported on the current MultiTarget '$(MultiTargetIdentifier)':" Importance="high" />
+    <Message Text="Included %(SupportedMarkdownFiles.Identity)" Importance="high" />
+
+    <ItemGroup>
+      <AdditionalFiles Include="%(SupportedMarkdownFiles.Identity)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Content inclusion -->
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
   <ItemGroup Condition="'$(IsAllExperimentHead)' == 'true'">
     <!-- These are also included in the Samples props file, but added here to workaround https://github.com/unoplatform/uno/issues/2502 -->
@@ -92,8 +135,6 @@
       <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension).dat</Link>
     </Content>
 
-    <!-- Include markdown files from all samples so the head can access them in the source generator -->
-    <AdditionalFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
     <AdditionalFiles Include="$(RepositoryDirectory)components\**\src\**\*.csproj" />
   </ItemGroup>
 
