@@ -40,7 +40,7 @@
 
     4. Always use fully qualified namespaces in inline tasks to ensure all types are recognized correctly. This can avoid issues where certain types or methods are not found.
 -->
-  <UsingTask TaskName="CheckMultiTarget" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+  <UsingTask TaskName="CheckMultiTarget" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>
       <FilePath ParameterType="Microsoft.Build.Framework.ITaskItem" Required="true" Output="true" />
       <MultiTargetIdentifier ParameterType="System.String" Required="true" />
