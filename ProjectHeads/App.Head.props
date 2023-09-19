@@ -97,7 +97,7 @@
 
     <ItemGroup>
       <AllComponentMarkdownFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
-    </ItemGroup>`
+    </ItemGroup>
 
     <Message Text="Found @(AllComponentMarkdownFiles->Count()) total sample docs" Importance="high" />
 
