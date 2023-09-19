@@ -85,10 +85,10 @@
   <PropertyGroup>
     <MultiTargetIdentifier Condition="'$(IsUwp)' == 'true'">uwp</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsWasm)' == 'true'">wasm</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsWasdk)' == 'true'">wasdk</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsMacos)' == 'true'">macos</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsIos)' == 'true'">ios</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsAndroid)' == 'true'">android</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsWinAppSdk)' == 'true'">wasdk</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsMacOS)' == 'true'">macos</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsiOS)' == 'true'">ios</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsDroid)' == 'true'">android</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
   </PropertyGroup>
 
