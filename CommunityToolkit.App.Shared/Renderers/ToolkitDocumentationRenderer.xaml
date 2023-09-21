@@ -234,7 +234,7 @@
                         </interactions:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>
-                <DropDownButton win:AutomationProperties.Name="Package info">
+                <muxc:DropDownButton win:AutomationProperties.Name="Package info">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon win:AutomationProperties.AccessibilityView="Raw"
                                   FontSize="14"
@@ -242,7 +242,7 @@
                         <TextBlock Margin="8,0,0,0"
                                    Text="Package info" />
                     </StackPanel>
-                    <DropDownButton.Flyout>
+                    <muxc:DropDownButton.Flyout>
                         <Flyout Placement="Bottom">
                             <StackPanel Orientation="Vertical"
                                         Spacing="4">
@@ -272,8 +272,8 @@
                                 </TextBlock>
                             </StackPanel>
                         </Flyout>
-                    </DropDownButton.Flyout>
-                </DropDownButton>
+                    </muxc:DropDownButton.Flyout>
+                </muxc:DropDownButton>
             </StackPanel>
             <ComboBox x:Name="SampleSelectionBox"
                       Grid.RowSpan="2"
