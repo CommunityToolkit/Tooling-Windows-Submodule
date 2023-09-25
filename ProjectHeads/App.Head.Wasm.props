@@ -20,11 +20,11 @@
     <WasmShellMonoRuntimeExecutionMode Condition="Exists('aot.profile')">InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
 
     <!-- MultiThreading: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-threading.html -->
-    <WasmShellEnableThreads>true</WasmShellEnableThreads>
-    <WasmShellPThreadsPoolSize>8</WasmShellPThreadsPoolSize>
+    <WasmShellEnableThreads>false</WasmShellEnableThreads>
+    <WasmShellPThreadsPoolSize Condition="'$(WasmShellEnableThreads)' == 'true'">8</WasmShellPThreadsPoolSize>
 
-    <!-- MultiThreading SharedArrayBuffer: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-additional-files.html -->
-    <WasmShellIndexHtmlPath>$(MSBuildProjectDirectory)\wwwroot\index.html</WasmShellIndexHtmlPath>
+    <!-- MultiThreading SharedArrayBuffer workaround: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-additional-files.html -->
+    <WasmShellIndexHtmlPath Condition="'$(WasmShellEnableThreads)' == 'true'">$(MSBuildProjectDirectory)\wwwroot\index.html</WasmShellIndexHtmlPath>
 
     <!-- Pre-compression: https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-pre-compression.html -->
     <WasmShellCompressionLayoutMode>InPlace</WasmShellCompressionLayoutMode>
