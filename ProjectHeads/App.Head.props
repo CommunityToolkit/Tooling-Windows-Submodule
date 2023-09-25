@@ -3,6 +3,9 @@
   <!-- Shared project -->
   <Import Project="$(ToolingDirectory)\CommunityToolkit.App.Shared\CommunityToolkit.App.Shared.projitems" Label="Shared" />
 
+  <!-- Gather sample docs from all components -->
+  <Import Project="$(ToolingDirectory)\ProjectHeads\Targets\AddMultiTargetCompatibleSampleDocs.targets" />
+
   <!-- Shared project dependencies -->
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -76,46 +79,6 @@
       </ItemGroup>
     </When>
   </Choose>
-
-  <!-- Gather sample markdown for components that MultiTarget this platform. -->
-  <!-- Each deployable sample app head uses the CommunityToolkit.Toolkit.SampleGen source generator to generate document registries -->
-  <Import Project="$(ToolingDirectory)\ProjectHeads\Tasks\CheckMultiTarget.props" />
-
-  <!-- Simplifies comparison of the current head against component-level <MultiTarget> definition -->
-  <PropertyGroup>
-    <MultiTargetIdentifier Condition="'$(IsUwp)' == 'true'">uwp</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsWasm)' == 'true'">wasm</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsWinAppSdk)' == 'true'">wasdk</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsMacOS)' == 'true'">macos</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsiOS)' == 'true'">ios</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsDroid)' == 'true'">android</MultiTargetIdentifier>
-    <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
-  </PropertyGroup>
-
-  <Target Name="AddMultiTargetCompatibleSampleDocs" Condition="'$(IsAllExperimentHead)' == 'true'" BeforeTargets="BeforeBuild">
-    <Error Condition="'$(MultiTargetIdentifier)' == ''" Text="Missing MultiTargetIdentifier $(MultiTargetIdentifier). Is the `IsSomePlatform` property (`IsUwp`, `IsWasm`, etc) set on the deployable project head?" />
-
-    <ItemGroup>
-      <AllComponentMarkdownFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
-    </ItemGroup>
-
-    <Message Text="Found @(AllComponentMarkdownFiles->Count()) total sample docs" Importance="high" />
-
-    <CheckMultiTarget FilePath="%(AllComponentMarkdownFiles.Identity)" MultiTargetIdentifier="$(MultiTargetIdentifier)" RepositoryDirectory="$(RepositoryDirectory)">
-      <Output TaskParameter="FilePath" ItemName="ProcessedMarkdownFiles" />
-    </CheckMultiTarget>
-
-    <ItemGroup>
-      <SupportedMarkdownFiles Include="%(ProcessedMarkdownFiles.Identity)" Condition="%(ProcessedMarkdownFiles.IsSupported) == 'true'" />
-    </ItemGroup>
-
-    <Message Text="@(SupportedMarkdownFiles->Count()) sample docs are supported on the current MultiTarget '$(MultiTargetIdentifier)':" Importance="high" />
-    <Message Text="Included %(SupportedMarkdownFiles.Identity)" Importance="high" />
-
-    <ItemGroup>
-      <AdditionalFiles Include="%(SupportedMarkdownFiles.Identity)" />
-    </ItemGroup>
-  </Target>
 
   <!-- Content inclusion -->
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
