@@ -3,6 +3,9 @@
   <!-- Shared project -->
   <Import Project="$(ToolingDirectory)\CommunityToolkit.App.Shared\CommunityToolkit.App.Shared.projitems" Label="Shared" />
 
+  <!-- Gather sample docs from all components -->
+  <Import Project="$(ToolingDirectory)\ProjectHeads\Targets\AddMultiTargetCompatibleSampleDocs.targets" />
+
   <!-- Shared project dependencies -->
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -64,7 +67,7 @@
       </ItemGroup>
     </When>
   </Choose>
-   <Choose>
+  <Choose>
     <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
       <ItemGroup>
         <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230823-rc"/>
@@ -76,6 +79,8 @@
       </ItemGroup>
     </When>
   </Choose>
+
+  <!-- Content inclusion -->
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
   <ItemGroup Condition="'$(IsAllExperimentHead)' == 'true'">
     <!-- These are also included in the Samples props file, but added here to workaround https://github.com/unoplatform/uno/issues/2502 -->
@@ -92,8 +97,6 @@
       <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension).dat</Link>
     </Content>
 
-    <!-- Include markdown files from all samples so the head can access them in the source generator -->
-    <AdditionalFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
     <AdditionalFiles Include="$(RepositoryDirectory)components\**\src\**\*.csproj" />
   </ItemGroup>
 
