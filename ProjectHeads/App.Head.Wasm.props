@@ -38,14 +38,12 @@
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
     <WasmShellEnableAotProfile Condition="Exists('aot.profile')" Include="aot.profile" />
-    <WasmShellExtraEmccFlags Include="-lidbfs.js" />
 
     <!-- https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-4gb.html -->
     <WasmShellExtraEmccFlags Include="-s MAXIMUM_MEMORY=4GB"/>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-
     <!-- Debugger support https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/debugger-support.html -->
     <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
     <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
