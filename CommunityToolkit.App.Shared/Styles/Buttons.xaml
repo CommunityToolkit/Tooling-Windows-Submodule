@@ -347,5 +347,27 @@
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
     </Style>
 
-
+    <Style x:Key="LabsIconBadgeStyle"
+           TargetType="muxc:InfoBadge">
+        <Setter Property="Padding" Value="4,0,4,0" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:InfoBadge">
+                    <Grid x:Name="RootGrid"
+                          Padding="{TemplateBinding Padding}"
+                          Background="#FFC225"
+                          CornerRadius="4">
+                        <TextBlock x:Name="ValueTextBlock"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="Black"
+                                   Text="LABS" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

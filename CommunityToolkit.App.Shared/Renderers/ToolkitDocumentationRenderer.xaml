@@ -17,6 +17,7 @@
       mc:Ignorable="d wasm">
 
     <Page.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <!--  Overriding the default Markdown styling to be inline with the default Windows typography / design guidelines  -->
         <Style TargetType="renderer:MarkdownTextBlock">
             <Setter Property="Background" Value="Transparent" />
@@ -301,12 +302,16 @@
             <muxc:InfoBar Title="Experimental"
                           Grid.Row="3"
                           Grid.ColumnSpan="2"
-                          Margin="0,16,0,0"
+                          Margin="0,16,0,16"
+                          BorderBrush="Transparent"
                           IsClosable="False"
-                          Visibility="Collapsed">
+                          Message="This is component it part of Toolkit Labs and is considered experimental."
+                          Severity="Warning"
+                          Visibility="{x:Bind Metadata.IsExperimental, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <!--  TO DO: Bind IsOpen to a property that indicates whether the package is experimental  -->
                 <muxc:InfoBar.ActionButton>
-                    <HyperlinkButton Content="Learn how you can use this experiment in your app"
-                                     NavigateUri="https://aka.ms/wct/wiki/previewpackages" />
+                    <HyperlinkButton Content="Learn more about Toolkit Labs"
+                                     NavigateUri="https://aka.ms/toolkit/labs/windows" />
                 </muxc:InfoBar.ActionButton>
             </muxc:InfoBar>
         </Grid>
