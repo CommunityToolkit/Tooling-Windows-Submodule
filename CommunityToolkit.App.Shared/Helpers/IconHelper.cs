@@ -16,7 +16,7 @@ public static class IconHelper
         IconElement? iconElement = null;
         switch (category)
         {
-            case ToolkitSampleCategory.Layouts: iconElement = new FontIcon() { Glyph = "\uF58C", FontFamily = "Segoe Fluent Icons" }; break;
+            case ToolkitSampleCategory.Layouts: iconElement = new FontIcon() { Glyph = "\uF58C", FontFamily = new FontFamily("Segoe Fluent Icons") }; break;
             case ToolkitSampleCategory.Controls: iconElement = new FontIcon() { Glyph = "\ue73a" }; break;
             case ToolkitSampleCategory.Animations: iconElement = new FontIcon() { Glyph = "\ue945" }; break;
             case ToolkitSampleCategory.Extensions: iconElement = new FontIcon() { Glyph = "\ue95f" }; break;
