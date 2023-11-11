@@ -1,5 +1,6 @@
 <Project>
   <ItemGroup>
     <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.UI.Xaml" Version="2.7.0" />
+    <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
   </ItemGroup>
 </Project>
