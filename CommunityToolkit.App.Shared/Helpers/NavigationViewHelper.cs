@@ -41,12 +41,23 @@ public static class NavigationViewHelper
     {
         foreach (var metadata in sampleMetadata.OrderBy(meta => meta.Title))
         {
-            yield return new MUXC.NavigationViewItem
+            MUXC.NavigationViewItem navItem = new MUXC.NavigationViewItem
             {
                 Content = metadata.Title,
-                Icon = new BitmapIcon() { ShowAsMonochrome = false, UriSource = new Uri(IconHelper.GetIconPath(metadata.Icon)) },
+                Icon = new BitmapIcon()
+                {
+                    ShowAsMonochrome = false,
+                    UriSource = new Uri(IconHelper.GetIconPath(metadata.Icon))
+                },
                 Tag = metadata,
             };
+
+            // Check if this is a Labs component
+            if (metadata.IsExperimental == true)
+            {
+                navItem.InfoBadge = new MUXC.InfoBadge() { Style = (Style)App.Current.Resources["LabsIconBadgeStyle"] };
+            }
+            yield return navItem;
         }
     }
 

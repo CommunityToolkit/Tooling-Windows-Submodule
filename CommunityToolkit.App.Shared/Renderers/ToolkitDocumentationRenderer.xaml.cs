@@ -241,4 +241,6 @@ public sealed partial class ToolkitDocumentationRenderer : Page
     };
 
     public static bool IsProjectPathValid() => !string.IsNullOrWhiteSpace(ProjectUrl);
+
+    private bool BoolFalseIfNull(bool? value) => value ?? false;
 }

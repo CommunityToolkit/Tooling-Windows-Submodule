@@ -247,8 +247,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\WideTile.scale-200_altform-colorful_theme-light.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\WideTile.scale-400.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\WideTile.scale-400_altform-colorful_theme-light.png" />
-
-
     <Content Include="$(MSBuildThisFileDirectory)LinkerConfig.xml" />
   </ItemGroup>
   <ItemGroup>
