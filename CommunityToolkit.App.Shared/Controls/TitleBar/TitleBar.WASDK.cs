@@ -4,29 +4,21 @@
 
 #if WINDOWS_WINAPPSDK
 using Microsoft.UI;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Media;
 
 namespace CommunityToolkit.App.Shared.Controls;
 
-[TemplatePart(Name = nameof(PART_ButtonsHolderColumn), Type = typeof(ColumnDefinition))]
-[TemplatePart(Name = nameof(PART_IconColumn), Type = typeof(ColumnDefinition))]
-[TemplatePart(Name = nameof(PART_TitleColumn), Type = typeof(ColumnDefinition))]
-[TemplatePart(Name = nameof(PART_LeftDragColumn), Type = typeof(ColumnDefinition))]
-[TemplatePart(Name = nameof(PART_ContentColumn), Type = typeof(ColumnDefinition))]
-[TemplatePart(Name = nameof(PART_FooterColumn), Type = typeof(ColumnDefinition))]
-[TemplatePart(Name = nameof(PART_RightDragColumn), Type = typeof(ColumnDefinition))]
-[TemplatePart(Name = nameof(PART_TitleHolder), Type = typeof(StackPanel))]
+[TemplatePart(Name = nameof(PART_FooterPresenter), Type = typeof(ContentPresenter))]
+[TemplatePart(Name = nameof(PART_ContentPresenter), Type = typeof(ContentPresenter))]
 
 public partial class TitleBar : Control
 {
-    ColumnDefinition? PART_ButtonsHolderColumn;
-    ColumnDefinition? PART_IconColumn;
-    ColumnDefinition? PART_TitleColumn;
-    ColumnDefinition? PART_LeftDragColumn;
-    ColumnDefinition? PART_ContentColumn;
-    ColumnDefinition? PART_FooterColumn;
-    ColumnDefinition? PART_RightDragColumn;
-    StackPanel? PART_TitleHolder;
+    WndProcHelper WndProcHelper;
+    MenuFlyout MenuFlyout;
+    ContentPresenter? PART_ContentPresenter;
+    ContentPresenter? PART_FooterPresenter;
 
     private void SetWASDKTitleBar()
     {
@@ -39,6 +31,16 @@ public partial class TitleBar : Control
         {
             Window.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 
+            if (this.ContextFlyout != null && this.ContextFlyout is MenuFlyout menuFlyout)
+            {
+                this.MenuFlyout = menuFlyout;
+                WndProcHelper = new WndProcHelper(this.Window);
+                WndProcHelper.RegisterWndProc(WindowWndProc);
+                WndProcHelper.RegisterInputNonClientPointerSourceWndProc(InputNonClientPointerSourceWndProc);
+            }
+
+            this.Window.SizeChanged -= Window_SizeChanged;
+            this.Window.SizeChanged += Window_SizeChanged;
             this.Window.Activated -= Window_Activated;
             this.Window.Activated += Window_Activated;
 
@@ -51,15 +53,8 @@ public partial class TitleBar : Control
                 };
             }
 
-            // Set the width of padding columns in the UI.
-            PART_ButtonsHolderColumn = GetTemplateChild(nameof(PART_ButtonsHolderColumn)) as ColumnDefinition;
-            PART_IconColumn = GetTemplateChild(nameof(PART_IconColumn)) as ColumnDefinition;
-            PART_TitleColumn = GetTemplateChild(nameof(PART_TitleColumn)) as ColumnDefinition;
-            PART_LeftDragColumn = GetTemplateChild(nameof(PART_LeftDragColumn)) as ColumnDefinition;
-            PART_ContentColumn = GetTemplateChild(nameof(PART_ContentColumn)) as ColumnDefinition;
-            PART_RightDragColumn = GetTemplateChild(nameof(PART_RightDragColumn)) as ColumnDefinition;
-            PART_FooterColumn = GetTemplateChild(nameof(PART_FooterColumn)) as ColumnDefinition;
-            PART_TitleHolder = GetTemplateChild(nameof(PART_TitleHolder)) as StackPanel;
+            PART_ContentPresenter = GetTemplateChild(nameof(PART_ContentPresenter)) as ContentPresenter;
+            PART_FooterPresenter = GetTemplateChild(nameof(PART_FooterPresenter)) as ContentPresenter;
 
             // Get caption button occlusion information.
             int CaptionButtonOcclusionWidthRight = Window.AppWindow.TitleBar.RightInset;
@@ -81,6 +76,11 @@ public partial class TitleBar : Control
             // if you explicitly defined new draggable areas.
             SetDragRegionForCustomTitleBar();
         }
+    }
+
+    private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
+    {
+        UpdateVisualStateAndDragRegion(args.Size);
     }
 
     private void UpdateCaptionButtons(FrameworkElement rootElement)
@@ -108,6 +108,7 @@ public partial class TitleBar : Control
         }
 
         Window.AppWindow.TitleBar.ExtendsContentIntoTitleBar = false;
+        this.Window.SizeChanged -= Window_SizeChanged;
         this.Window.Activated -= Window_Activated;
         SizeChanged -= this.TitleBar_SizeChanged;
         Window.AppWindow.TitleBar.ResetToDefault();
@@ -125,46 +126,119 @@ public partial class TitleBar : Control
         }
     }
 
-    private void SetDragRegionForCustomTitleBar()
+    public void SetDragRegionForCustomTitleBar()
     {
-        if (AutoConfigureCustomTitleBar && Window != null && PART_RightPaddingColumn != null && PART_LeftPaddingColumn != null)
+        if (AutoConfigureCustomTitleBar && Window != null)
         {
-            double scaleAdjustment = GetScaleAdjustment();
-
-            PART_RightPaddingColumn.Width = new GridLength(Window.AppWindow.TitleBar.RightInset / scaleAdjustment);
-            PART_LeftPaddingColumn.Width = new GridLength(Window.AppWindow.TitleBar.LeftInset / scaleAdjustment);
-
-            List<Windows.Graphics.RectInt32> dragRectsList = new();
-
-            Windows.Graphics.RectInt32 dragRectL;
-            dragRectL.X = (int)((PART_LeftPaddingColumn.ActualWidth
-                            + PART_ButtonsHolderColumn!.ActualWidth)
-                            * scaleAdjustment);
-            dragRectL.Y = 0;
-            dragRectL.Height = (int)(this.ActualHeight * scaleAdjustment);
-            dragRectL.Width = (int)((PART_IconColumn!.ActualWidth
-                                + PART_TitleColumn!.ActualWidth
-                                + PART_LeftDragColumn!.ActualWidth)
-                                * scaleAdjustment);
-            dragRectsList.Add(dragRectL);
-
-            Windows.Graphics.RectInt32 dragRectR;
-            dragRectR.X = (int)((PART_LeftPaddingColumn.ActualWidth
-                                + PART_IconColumn.ActualWidth
-                                + PART_ButtonsHolderColumn!.ActualWidth
-                                + PART_TitleHolder!.ActualWidth
-                                + PART_LeftDragColumn.ActualWidth
-                                + PART_ContentColumn!.ActualWidth)
-                                * scaleAdjustment);
-            dragRectR.Y = 0;
-            dragRectR.Height = (int)(this.ActualHeight * scaleAdjustment);
-            dragRectR.Width = (int)(PART_RightDragColumn!.ActualWidth * scaleAdjustment);
-            dragRectsList.Add(dragRectR);
-
-            Windows.Graphics.RectInt32[] dragRects = dragRectsList.ToArray();
-
-            Window.AppWindow.TitleBar.SetDragRectangles(dragRects);
+            ClearDragRegions(NonClientRegionKind.Passthrough);
+            SetDragRegion(NonClientRegionKind.Passthrough, PART_ContentPresenter, PART_FooterPresenter, PART_ButtonHolder);
         }
+    }
+
+    public double GetRasterizationScaleForElement(UIElement element)
+    {
+        if (element.XamlRoot != null)
+        {
+            return element.XamlRoot.RasterizationScale;
+        }
+        return 0.0;
+    }
+
+    public void SetDragRegion(NonClientRegionKind nonClientRegionKind, params FrameworkElement[] frameworkElements)
+    {
+        var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(Window.AppWindow.Id);
+        List<Windows.Graphics.RectInt32> rects = new List<Windows.Graphics.RectInt32>();
+        var scale = GetRasterizationScaleForElement(this);
+
+        foreach (var frameworkElement in frameworkElements)
+        {
+            if (frameworkElement == null)
+            {
+                continue;
+            }
+            GeneralTransform transformElement = frameworkElement.TransformToVisual(null);
+            Windows.Foundation.Rect bounds = transformElement.TransformBounds(new Windows.Foundation.Rect(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight));
+            var transparentRect = new Windows.Graphics.RectInt32(
+                _X: (int)Math.Round(bounds.X * scale),
+                _Y: (int)Math.Round(bounds.Y * scale),
+                _Width: (int)Math.Round(bounds.Width * scale),
+                _Height: (int)Math.Round(bounds.Height * scale)
+            );
+            rects.Add(transparentRect);
+        }
+        if (rects.Count > 0)
+        {
+            nonClientInputSrc.SetRegionRects(nonClientRegionKind, rects.ToArray());
+        }
+    }
+
+    public void ClearDragRegions(NonClientRegionKind nonClientRegionKind)
+    {
+        var noninputsrc = InputNonClientPointerSource.GetForWindowId(Window.AppWindow.Id);
+        noninputsrc.ClearRegionRects(nonClientRegionKind);
+    }
+
+    private IntPtr InputNonClientPointerSourceWndProc(IntPtr hWnd, NativeMethods.WindowMessage Msg, IntPtr wParam, IntPtr lParam)
+    {
+        switch (Msg)
+        {
+            case NativeMethods.WindowMessage.WM_NCLBUTTONDOWN:
+                {
+                    if (MenuFlyout.IsOpen)
+                    {
+                        MenuFlyout.Hide();
+                    }
+                    break;
+                }
+            case NativeMethods.WindowMessage.WM_NCRBUTTONDOWN:
+                {
+                    PointInt32 pt = new PointInt32(lParam.ToInt32() & 0xFFFF, lParam.ToInt32() >> 16);
+                    FlyoutShowOptions options = new FlyoutShowOptions();
+                    options.ShowMode = FlyoutShowMode.Standard;
+                    options.Position = InfoHelper.SystemVersion.Build >= 22000 ?
+                    new Windows.Foundation.Point((pt.X - this.Window.AppWindow.Position.X - 8) / XamlRoot.RasterizationScale, (pt.Y - this.Window.AppWindow.Position.Y) / XamlRoot.RasterizationScale) :
+                    new Windows.Foundation.Point(pt.X - this.Window.AppWindow.Position.X - 8, pt.Y - this.Window.AppWindow.Position.Y);
+
+                    MenuFlyout.ShowAt(this, options);
+                    return (IntPtr)0;
+                }
+        }
+        return WndProcHelper.CallInputNonClientPointerSourceWindowProc(hWnd, Msg, wParam, lParam);
+    }
+
+    private IntPtr WindowWndProc(IntPtr hWnd, NativeMethods.WindowMessage Msg, IntPtr wParam, IntPtr lParam)
+    {
+        switch (Msg)
+        {
+            case NativeMethods.WindowMessage.WM_SYSMENU:
+            {
+                return (IntPtr)0;
+            }
+
+            case NativeMethods.WindowMessage.WM_SYSCOMMAND:
+            {
+                NativeMethods.SystemCommand sysCommand = (NativeMethods.SystemCommand)(wParam.ToInt32() & 0xFFF0);
+
+                if (sysCommand is NativeMethods.SystemCommand.SC_MOUSEMENU)
+                {
+                    FlyoutShowOptions options = new FlyoutShowOptions();
+                    options.Position = new Windows.Foundation.Point(0, 15);
+                    options.ShowMode = FlyoutShowMode.Standard;
+                    MenuFlyout.ShowAt(null, options);
+                    return (IntPtr)0;
+                }
+                else if (sysCommand is NativeMethods.SystemCommand.SC_KEYMENU)
+                {
+                    FlyoutShowOptions options = new FlyoutShowOptions();
+                    options.Position = new Windows.Foundation.Point(0, 45);
+                    options.ShowMode = FlyoutShowMode.Standard;
+                    MenuFlyout.ShowAt(null, options);
+                    return (IntPtr)0;
+                }
+                break;
+            }
+        }
+        return WndProcHelper.CallWindowProc(hWnd, Msg, wParam, lParam);
     }
 }
 #endif
