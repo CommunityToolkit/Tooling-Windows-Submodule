@@ -1,4 +1,14 @@
-<Project>
+<Project InitialTargets="CheckEnabledMultiTargetsWithMissingTfms">
+  <Target Condition="'$(Configuration)' == 'Debug'" Name="CheckEnabledMultiTargetsWithMissingTfms">
+    <Warning Condition="$(MultiTarget.Contains('uwp')) == 'true' AND '$(UwpTargetFramework)' == ''" Text="Attempted to build a project with a uwp MultiTarget, but the corresponding TargetFramework is not enabled. To build this TFM, please use ./tooling/MultiTarget/UseTargetFrameworks.ps1 to enable this TFM, then regenerate your solution and try again." />
+    <Warning Condition="$(MultiTarget.Contains('wasdk')) == 'true' AND '$(WinAppSdkTargetFramework)' == ''" Text="Attempted to build a project with a wasdk MultiTarget, but the corresponding TargetFramework is not enabled. To build this TFM, please use ./tooling/MultiTarget/UseTargetFrameworks.ps1 to enable this TFM, then regenerate your solution and try again." />
+    <Warning Condition="$(MultiTarget.Contains('wasm')) == 'true' AND '$(DotnetCommonTargetFramework)' == ''" Text="Attempted to build a project with a wasm MultiTarget, but the corresponding TargetFramework is not enabled. To build this TFM, please use ./tooling/MultiTarget/UseTargetFrameworks.ps1 to enable this TFM, then regenerate your solution and try again." />
+    <Warning Condition="$(MultiTarget.Contains('macos')) == 'true' AND '$(DotnetCommonTargetFramework)' == ''" Text="Attempted to build a project with a macos MultiTarget, but the corresponding TargetFramework is not enabled. To build this TFM, please use ./tooling/MultiTarget/UseTargetFrameworks.ps1 to enable this TFM, then regenerate your solution and try again." />
+    <Warning Condition="$(MultiTarget.Contains('ios')) == 'true' AND '$(DotnetCommonTargetFramework)' == ''" Text="Attempted to build an project with an ios MultiTarget, but the corresponding TargetFramework is not enabled. To build this TFM, please use ./tooling/MultiTarget/UseTargetFrameworks.ps1 to enable this TFM, then regenerate your solution and try again." />
+    <Warning Condition="$(MultiTarget.Contains('android')) == 'true' AND '$(DotnetCommonTargetFramework)' == ''" Text="Attempted to build a project with an android MultiTarget, but the corresponding TargetFramework is not enabled. To build this TFM, please use ./tooling/MultiTarget/UseTargetFrameworks.ps1 to enable this TFM, then regenerate your solution and try again." />
+    <Warning Condition="$(MultiTarget.Contains('netstandard')) == 'true' AND '$(DotnetStandardCommonTargetFramework)' == ''" Text="Attempted to build a project with a netstandard MultiTarget, but the corresponding TargetFramework is not enabled. To build this TFM, please use ./tooling/MultiTarget/UseTargetFrameworks.ps1 to enable this TFM, then regenerate your solution and try again." />
+  </Target>
+  
   <PropertyGroup>
     <!--
       MultiTarget is a custom property that indicates which target a project is designed to be built for / run on.
@@ -9,13 +19,13 @@
 
     <!--
       TargetFrameworks for WasmLibTargetFramework, WpfLibTargetFramework, and LinuxLibTargetFramework all use the same value.
-      Duplicate values can't be removed during the evaluation phase without breaking things, so we use the value directly.
+      Duplicate values can't be removed during the evaluation phase without breaking things, so we use a single value for all that need it.
     -->
-    <TargetFrameworks Condition="$(MultiTarget.Contains('wasm')) == 'true' OR $(MultiTarget.Contains('wpf')) == 'true' OR $(MultiTarget.Contains('linuxgtk')) == 'true'">$(TargetFrameworks);$(NetStandardCommonTargetFramework)</TargetFrameworks>
+    <TargetFrameworks Condition="$(MultiTarget.Contains('wasm')) == 'true' OR $(MultiTarget.Contains('wpf')) == 'true' OR $(MultiTarget.Contains('linuxgtk')) == 'true'">$(TargetFrameworks);$(DotnetCommonTargetFramework)</TargetFrameworks>
     <TargetFrameworks Condition="$(MultiTarget.Contains('macos')) == 'true'">$(TargetFrameworks);$(MacOSLibTargetFramework)</TargetFrameworks>
     <TargetFrameworks Condition="$(MultiTarget.Contains('ios')) == 'true'">$(TargetFrameworks);$(iOSLibTargetFramework)</TargetFrameworks>
     <TargetFrameworks Condition="$(MultiTarget.Contains('android')) == 'true'">$(TargetFrameworks);$(AndroidLibTargetFramework)</TargetFrameworks>
 
-    <TargetFrameworks Condition="$(MultiTarget.Contains('netstandard')) == 'true'">$(TargetFrameworks);$(NetStandardCommonTargetFramework)</TargetFrameworks>
+    <TargetFrameworks Condition="$(MultiTarget.Contains('netstandard')) == 'true'">$(TargetFrameworks);$(DotnetStandardCommonTargetFramework)</TargetFrameworks>
   </PropertyGroup>
 </Project>

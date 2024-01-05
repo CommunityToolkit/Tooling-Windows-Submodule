@@ -50,7 +50,21 @@ public static partial class TestHelpers
         {
             if (!string.IsNullOrWhiteSpace(markdown))
             {
-                var text = new InMemoryAdditionalText(@"C:\pathtorepo\components\experiment\samples\experiment.Samples\documentation.md", markdown);
+                var text = new InMemoryAdditionalText(@"C:\pathtorepo\components\experiment\samples\documentation.md", markdown);
+                driver = driver.AddAdditionalTexts(ImmutableArray.Create<AdditionalText>(text));
+            }
+        }
+
+        return driver;
+    }
+
+    internal static GeneratorDriver WithCsproj(this GeneratorDriver driver, params string[] csprojFilesToCreate)
+    {
+        foreach (var proj in csprojFilesToCreate)
+        {
+            if (!string.IsNullOrWhiteSpace(proj))
+            {
+                var text = new InMemoryAdditionalText(@"C:\pathtorepo\components\experiment\src\componentname.csproj", proj);
                 driver = driver.AddAdditionalTexts(ImmutableArray.Create<AdditionalText>(text));
             }
         }

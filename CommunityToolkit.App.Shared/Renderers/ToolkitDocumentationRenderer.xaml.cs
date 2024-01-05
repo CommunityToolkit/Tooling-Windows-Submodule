@@ -6,6 +6,7 @@ using CommunityToolkit.Tooling.SampleGen;
 using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Windows.Storage;
 using Windows.System;
+using static System.Net.WebRequestMethods;
 
 #if !HAS_UNO
 #if !WINAPPSDK
@@ -215,6 +216,24 @@ public sealed partial class ToolkitDocumentationRenderer : Page
 
     public static Uri? ToGitHubUri(string path, int id) => IsProjectPathValid() ? new Uri($"{ProjectUrl}/{path}/{id}") : null;
 
+    public static Uri? ToComponentUri(string name) => IsProjectPathValid() ? new Uri($"{ProjectUrl}/tree/main/components/{name}") : null;
+
+    public static Uri? ToPackageUri(string platform, string projectFileName) => new Uri($"https://www.nuget.org/packages/{RemoveFileExtension(projectFileName).Replace("WinUI", platform)}");
+
+    public static string ToPackageName(string platform, string projectFileName) => RemoveFileExtension(projectFileName).Replace("WinUI", platform);
+
+    // TODO: Think this is most of the special cases with Controls and the Extensions/Triggers using the base namespace
+    // See: https://github.com/CommunityToolkit/Tooling-Windows-Submodule/issues/105#issuecomment-1698306420
+    // And: https://github.com/unoplatform/uno/issues/8750 - otherwise we could use csproj data and inject with SG.
+    public static string ToPackageNamespace(string projectFileName) => RemoveFileExtension(projectFileName) switch
+    {
+        string c when c.Contains("Controls") => "CommunityToolkit.WinUI.Controls",
+        string e when e.Contains("Extensions") || e.Contains("Triggers") => "CommunityToolkit.WinUI",
+        _ => RemoveFileExtension(projectFileName)
+    };
+
+    private static string RemoveFileExtension(string filename) => filename.Replace(".csproj", "");
+
     public static Visibility IsIdValid(int id) => id switch
     {
         <= 0 => Visibility.Collapsed,
@@ -222,4 +241,6 @@ public sealed partial class ToolkitDocumentationRenderer : Page
     };
 
     public static bool IsProjectPathValid() => !string.IsNullOrWhiteSpace(ProjectUrl);
+
+    private bool BoolFalseIfNull(bool? value) => value ?? false;
 }

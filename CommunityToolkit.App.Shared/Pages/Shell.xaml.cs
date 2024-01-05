@@ -43,7 +43,7 @@ public sealed partial class Shell : Page
     {
         if (samplePages is not null)
         {
-            NavView.MenuItems.Add(new MUXC.NavigationViewItem() { Content = "Get started", Icon = new SymbolIcon() { Symbol = Symbol.Home }, Tag = "GettingStarted" });
+            NavView.MenuItems.Add(new MUXC.NavigationViewItem() { Content = "Home", Icon = new SymbolIcon() { Symbol = Symbol.Home }, Tag = "GettingStarted" });
             NavView.MenuItems.Add(new MUXC.NavigationViewItemSeparator());
 
             // Populate menu with categories, subcategories and samples
@@ -162,8 +162,8 @@ public sealed partial class Shell : Page
             }
             else
             {
-                var query = searchBox.Text;
-                searchBox.ItemsSource = samplePages?.Where(s => s!.Title!.ToLower().Contains(query) || s!.Keywords!.ToLower().Contains(query) || s!.Category!.ToString().ToLower().Contains(query) || s!.Subcategory!.ToString().ToLower().Contains(query)).ToArray(); ;
+                var query = searchBox.Text.ToLower();
+                searchBox.ItemsSource = samplePages?.Where(s => s!.Title!.ToLower().Contains(query) || s!.Description!.ToLower().Contains(query) || s!.Keywords!.ToLower().Contains(query) || s!.Category!.ToString().ToLower().Contains(query) || s!.Subcategory!.ToString().ToLower().Contains(query)).ToArray();
                 return;
             }
         }

@@ -15,7 +15,7 @@ public enum ToolkitSampleSubcategory : byte
     /// <summary>
     /// No subcategory specified.
     /// </summary>
-    None,
+    Miscellaneous,
 
     /// <summary>
     /// A sample that focuses on layout panels.
@@ -53,7 +53,7 @@ public enum ToolkitSampleSubcategory : byte
     Markup,
 
     /// <summary>
-    /// Samples that focus on helping with mathmatical operations.
+    /// Samples that focus on helping with mathematical operations.
     /// </summary>
     Math,
 
@@ -86,5 +86,25 @@ public enum ToolkitSampleSubcategory : byte
     /// Samples that focus on helpers during development.
     /// </summary>
     Developer,
+
+    /// <summary>
+    /// Samples that focus on sizer related controls
+    /// </summary>
+    Sizers,
+
+    /// <summary>
+    /// Samples that focus shadows
+    /// </summary>
+    Shadows,
+
+    /// <summary>
+    /// Samples that focus on Text related controls or extensions.
+    /// </summary>
+    Text,
+
+    /// <summary>
+    /// Samples that focus on adding visual effects like animations
+    /// </summary>
+    Effects,
 }
 

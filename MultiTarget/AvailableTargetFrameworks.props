@@ -1,22 +1,23 @@
 <Project>
     <PropertyGroup>
         <UwpTargetFramework>uap10.0.17763</UwpTargetFramework>
-        <WinAppSdkTargetFramework>net6.0-windows10.0.19041.0</WinAppSdkTargetFramework>
+        <WinAppSdkTargetFramework>net6.0-windows10.0.19041.0;net7.0-windows10.0.19041.0;</WinAppSdkTargetFramework>
         
-        <WasmHeadTargetFramework>net5.0</WasmHeadTargetFramework>
-        <LinuxHeadTargetFramework>net5.0</LinuxHeadTargetFramework>
-        <WpfHeadTargetFramework>netcoreapp3.1</WpfHeadTargetFramework>
+        <WasmHeadTargetFramework>net7.0</WasmHeadTargetFramework>
+        <LinuxHeadTargetFramework>net7.0</LinuxHeadTargetFramework>
+        <WpfHeadTargetFramework>net7.0</WpfHeadTargetFramework>
         
-        <AndroidLibTargetFramework>monoandroid12.0</AndroidLibTargetFramework>
-        <MacOSLibTargetFramework>xamarinmac20</MacOSLibTargetFramework>
-        <iOSLibTargetFramework>xamarinios10</iOSLibTargetFramework>
+        <AndroidLibTargetFramework>net7.0-android33.0</AndroidLibTargetFramework>
+        <MacOSLibTargetFramework>net7.0-maccatalyst</MacOSLibTargetFramework>
+        <iOSLibTargetFramework>net7.0-ios</iOSLibTargetFramework>
 
         <!-- Used for comparison to current TargetFramework -->
-        <LinuxLibTargetFramework>netstandard2.0</LinuxLibTargetFramework>
-        <WasmLibTargetFramework>netstandard2.0</WasmLibTargetFramework>
-        <WpfLibTargetFramework>netstandard2.0</WpfLibTargetFramework>
+        <LinuxLibTargetFramework>net7.0</LinuxLibTargetFramework>
+        <WasmLibTargetFramework>net7.0</WasmLibTargetFramework>
+        <WpfLibTargetFramework>net7.0</WpfLibTargetFramework>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
-        <NetStandardCommonTargetFramework>netstandard2.0</NetStandardCommonTargetFramework>
+        <DotnetStandardCommonTargetFramework>netstandard2.0</DotnetStandardCommonTargetFramework>
+        <DotnetCommonTargetFramework>net7.0</DotnetCommonTargetFramework>
     </PropertyGroup>
 </Project>

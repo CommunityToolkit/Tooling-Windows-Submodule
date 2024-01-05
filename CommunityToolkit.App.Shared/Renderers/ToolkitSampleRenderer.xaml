@@ -6,11 +6,13 @@
       xmlns:local="using:CommunityToolkit.App.Shared"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+      xmlns:not_win="http://uno.ui/not_win"
       xmlns:renderer="using:CommunityToolkit.App.Shared.Renderers"
       xmlns:wasm="http://uno.ui/wasm"
       xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      ActualThemeChanged="ToolkitSampleRenderer_ActualThemeChanged"
       Loaded="ToolkitSampleRenderer_Loaded"
-      mc:Ignorable="d wasm">
+      mc:Ignorable="d wasm not_win">
 
     <Grid CornerRadius="0">
         <Grid.RowDefinitions>
@@ -62,7 +64,6 @@
                         <Setter Target="FixedOptionsBar.ColumnSpacing" Value="8" />
                         <Setter Target="FixedOptionsBar.RowSpacing" Value="0" />
                         <Setter Target="FixedOptionsBar.Margin" Value="12" />
-
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -127,11 +128,13 @@
                             Height="32"
                             Padding="4"
                             HorizontalAlignment="Center"
+                            win:AutomationProperties.Name="Toggle theme"
                             Click="ThemeBtn_OnClick"
                             Style="{StaticResource SubtleButtonStyle}"
                             ToolTipService.ToolTip="Toggle theme">
                         <Button.Content>
-                            <FontIcon FontSize="16"
+                            <FontIcon win:AutomationProperties.AccessibilityView="Raw"
+                                      FontSize="16"
                                       Glyph="&#xE793;" />
                         </Button.Content>
                     </Button>
@@ -144,12 +147,13 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
                             wasm:Visibility="Collapsed"
+                            win:AutomationProperties.Name="Toggle right-to-left"
                             Click="FlowDirectionBtn_OnClick"
                             Style="{StaticResource SubtleButtonStyle}"
                             ToolTipService.ToolTip="Toggle right-to-left">
-
                         <Button.Content>
-                            <FontIcon FontSize="16"
+                            <FontIcon win:AutomationProperties.AccessibilityView="Raw"
+                                      FontSize="16"
                                       Glyph="&#xE1A0;" />
                         </Button.Content>
                     </Button>
@@ -158,18 +162,19 @@
                             Grid.Row="2"
                             Width="32"
                             Height="32"
-                            Padding="4"
+                            Padding="0,0,0,2"
                             HorizontalAlignment="Center"
+                            win:AutomationProperties.Name="View code"
                             Click="CodeBtn_OnClick"
                             Style="{StaticResource AccentButtonStyle}"
                             ToolTipService.ToolTip="View code">
                         <Button.Content>
-                            <FontIcon FontSize="14"
-                                      Glyph="&#xE943;" />
+                            <PathIcon VerticalAlignment="Center"
+                                      win:AutomationProperties.AccessibilityView="Raw"
+                                      Data="{StaticResource CodeIcon}" />
                         </Button.Content>
                     </Button>
                 </Grid>
-
             </Grid>
 
             <Grid x:Name="ContentPageHolder"
@@ -211,25 +216,41 @@
                     <Pivot x:Name="CodePivot"
                            MaxHeight="400"
                            Margin="16,0,16,0"
-                           HorizontalAlignment="Stretch">
+                           HorizontalAlignment="Stretch"
+                           HorizontalContentAlignment="Stretch">
                         <Pivot.Resources>
                             <x:Double x:Key="PivotHeaderItemFontSize">14</x:Double>
                         </Pivot.Resources>
 
                         <PivotItem Header="XAML">
                             <ScrollViewer>
-                                <TextBlock wasm:IsTextSelectionEnabled="True"
-                                           win:IsTextSelectionEnabled="True"
-                                           Style="{StaticResource CaptionTextBlockStyle}"
-                                           Text="{x:Bind XamlCode, Mode=OneWay}" />
+                                <StackPanel Orientation="Vertical">
+                                    <not_win:TextBlock x:Name="XAMLCodeRenderer"
+                                                       Margin="0,12,0,12"
+                                                       wasm:IsTextSelectionEnabled="True"
+                                                       FontFamily="Consolas"
+                                                       FontSize="12"
+                                                       TextWrapping="WrapWholeWords" />
+                                    <win:RichTextBlock x:Name="XAMLCodeRenderer"
+                                                       FontFamily="Consolas"
+                                                       FontSize="12"
+                                                       IsTextSelectionEnabled="True" />
+                                </StackPanel>
                             </ScrollViewer>
                         </PivotItem>
                         <PivotItem Header="C#">
                             <ScrollViewer>
-                                <TextBlock wasm:IsTextSelectionEnabled="True"
-                                           win:IsTextSelectionEnabled="True"
-                                           Style="{StaticResource CaptionTextBlockStyle}"
-                                           Text="{x:Bind CSharpCode, Mode=OneWay}" />
+                                <StackPanel Orientation="Vertical">
+                                    <not_win:TextBlock x:Name="CSharpCodeRenderer"
+                                                       Margin="0,12,0,12"
+                                                       wasm:IsTextSelectionEnabled="True"
+                                                       FontFamily="Consolas"
+                                                       FontSize="12"
+                                                       TextWrapping="WrapWholeWords" />
+                                    <win:RichTextBlock x:Name="CSharpCodeRenderer"
+                                                       wasm:IsTextSelectionEnabled="True"
+                                                       win:IsTextSelectionEnabled="True" />
+                                </StackPanel>
                             </ScrollViewer>
                         </PivotItem>
                     </Pivot>

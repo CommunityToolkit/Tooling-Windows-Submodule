@@ -19,6 +19,9 @@ public partial class ToolkitSampleMetadataGenerator
     private const string FrontMatterRegexTitleExpression = @"^title:\s*(?<title>.*)$";
     private static readonly Regex FrontMatterRegexTitle = new Regex(FrontMatterRegexTitleExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
+    private const string FrontMatterRegexAuthorExpression = @"^author:\s*(?<author>.*)$";
+    private static readonly Regex FrontMatterRegexAuthor = new Regex(FrontMatterRegexAuthorExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
     private const string FrontMatterRegexDescriptionExpression = @"^description:\s*(?<description>.*)$";
     private static readonly Regex FrontMatterRegexDescription = new Regex(FrontMatterRegexDescriptionExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
@@ -42,6 +45,12 @@ public partial class ToolkitSampleMetadataGenerator
 
     private const string MarkdownRegexSampleTagExpression = @"^>\s*\[!SAMPLE\s*(?<sampleid>.*)\s*\]\s*$";
     private static readonly Regex MarkdownRegexSampleTag = new Regex(MarkdownRegexSampleTagExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+    private const string FrontMatterRegexIsExperimentalExpression = @"^experimental:\s*(?<experimental>.*)$";
+    private static readonly Regex FrontMatterRegexIsExperimental = new Regex(FrontMatterRegexIsExperimentalExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+    private const string CsProjRegexComponentNameExpression = @"^\s*<ToolkitComponentName>(?<ToolkitComponentName>.*)<\/ToolkitComponentName>\s*$";
+    private static readonly Regex CsProjRegexComponentName = new Regex(CsProjRegexComponentNameExpression, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
     private static void ReportDocumentDiagnostics(SourceProductionContext ctx, Dictionary<string, ToolkitSampleRecord> sampleMetadata, IEnumerable<AdditionalText> markdownFileData, IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData, ImmutableArray<ToolkitFrontMatter> docFrontMatter)
     {
@@ -84,14 +93,16 @@ public partial class ToolkitSampleMetadataGenerator
         }
     }
 
-    private ImmutableArray<ToolkitFrontMatter> GatherDocumentFrontMatter(SourceProductionContext ctx, IEnumerable<AdditionalText> data)
+    private static ImmutableArray<ToolkitFrontMatter> GatherDocumentFrontMatter(SourceProductionContext ctx, IEnumerable<(AdditionalText Document, AdditionalText? CsProj)> data)
     {
-        return data.Select(file =>
+        return data.Select(info =>
         {
+            var file = info.Document;
+
             // We have to manually parse the YAML here for now because of
             // https://github.com/dotnet/roslyn/issues/43903
 
-            var content = file.GetText()!.ToString();
+            var content = info.Document.GetText()!.ToString();
             var matter = content.Split(new[] { "---" }, StringSplitOptions.RemoveEmptyEntries);
 
             if (matter.Length <= 1)
@@ -110,6 +121,7 @@ public partial class ToolkitSampleMetadataGenerator
 
                 // Grab all front matter fields using RegEx expressions.
                 var title = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexTitle, "title");
+                var author = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexAuthor, "author");
                 var description = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexDescription, "description");
                 var keywords = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexKeywords, "keywords");
 
@@ -121,6 +133,8 @@ public partial class ToolkitSampleMetadataGenerator
                 // TODO: Should these just be optional?
                 var discussion = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexDiscussionId, "discussionid")?.Trim();
                 var issue = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexIssueId, "issueid")?.Trim();
+
+                var experimental = ParseYamlField(ref ctx, file.Path, ref frontmatter, FrontMatterRegexIsExperimental, "experimental", true)?.Trim();
 
                 // Check we have all the fields we expect to continue (errors will have been spit out otherwise already from the ParseYamlField method)
                 if (title == null || description == null || keywords == null ||
@@ -156,7 +170,8 @@ public partial class ToolkitSampleMetadataGenerator
 
                 // Get the filepath we need to be able to load the markdown file in sample app.
                 var filepath = file.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-                var iconpath = (filepath.Split(new string[] { @"\samples\", "/samples/" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() + "\\samples\\" + icon).Replace('\\', '/');
+
+                var iconpath = icon.Replace('\\', '/');
 
                 // Look for sample id tags
                 var matches = MarkdownRegexSampleTag.Matches(content);
@@ -199,10 +214,45 @@ public partial class ToolkitSampleMetadataGenerator
                     return null;
                 }
 
+                bool isExperimental = false;
+                if (experimental != null && !bool.TryParse(experimental, out isExperimental))
+                {
+                    ctx.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.MarkdownYAMLFrontMatterException,
+                            Location.Create(file.Path, TextSpan.FromBounds(0, 1), new LinePositionSpan(LinePosition.Zero, LinePosition.Zero)),
+                            file.Path,
+                            "Can't parse optional experimental field, must be a boolean value like 'true' or 'false' or remove it."));
+                    return null;
+                }
+
+                string? componentName = null;
+                string? csprojName = null;
+
+                // Get component name from csproj file (if we have one) and its filename, otherwise, use path data of doc file
+                if (info.CsProj != null)
+                {
+                    var text = info.CsProj.GetText()!.ToString();
+
+                    var match = CsProjRegexComponentName.Match(text);
+
+                    if (match.Success)
+                    {
+                        componentName = match.Groups["ToolkitComponentName"].Value.Trim();
+                    }
+
+                    csprojName = info.CsProj.Path.Split(new char[] { '/', '\\' }).LastOrDefault();
+                }
+                else
+                {
+                    componentName = filepath.Split(new char[] { '/', '\\' }).FirstOrDefault();
+                }
+
                 // Finally, construct the complete object.
                 return new ToolkitFrontMatter()
                 {
                     Title = title!,
+                    Author = author!,
                     Description = description!,
                     Keywords = keywords!,
                     Category = categoryValue,
@@ -212,16 +262,19 @@ public partial class ToolkitSampleMetadataGenerator
                     DiscussionId = discussionId,
                     IssueId = issueId,
                     Icon = iconpath,
+                    IsExperimental = isExperimental,
+                    ComponentName = componentName,
+                    CsProjName = csprojName,
                 };
             }
         }).OfType<ToolkitFrontMatter>().ToImmutableArray();
     }
 
-    private string? ParseYamlField(ref SourceProductionContext ctx, string filepath, ref string content, Regex pattern, string captureGroupName)
+    private static string? ParseYamlField(ref SourceProductionContext ctx, string filepath, ref string content, Regex pattern, string captureGroupName, bool optional = false)
     {
         var match = pattern.Match(content);
 
-        if (!match.Success)
+        if (!optional && !match.Success)
         {
             ctx.ReportDiagnostic(
                 Diagnostic.Create(
@@ -231,11 +284,15 @@ public partial class ToolkitSampleMetadataGenerator
                     captureGroupName));
             return null;
         }
+        else if (optional && !match.Success)
+        {
+            return null;
+        }
 
         return match.Groups[captureGroupName].Value.Trim();
     }
 
-    private void CreateDocumentRegistry(SourceProductionContext ctx, ImmutableArray<ToolkitFrontMatter> matter)
+    private static void CreateDocumentRegistry(SourceProductionContext ctx, ImmutableArray<ToolkitFrontMatter> matter)
     {
         // TODO: Emit a better error that no documentation is here?
         if (matter.Length == 0)
@@ -264,6 +321,6 @@ public static class ToolkitDocumentRegistry
         var categoryParam = $"{nameof(ToolkitSampleCategory)}.{metadata.Category}";
         var subcategoryParam = $"{nameof(ToolkitSampleSubcategory)}.{metadata.Subcategory}";
 
-        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }} }};"; // TODO: Add list of sample ids in document
+        return @$"yield return new {typeof(ToolkitFrontMatter).FullName}() {{ ComponentName = ""{metadata.ComponentName}"", Title = ""{metadata.Title}"", Author = ""{metadata.Author}"", Description = ""{metadata.Description}"", Keywords = ""{metadata.Keywords}"", Category = {categoryParam}, Subcategory = {subcategoryParam}, DiscussionId = {metadata.DiscussionId}, IssueId = {metadata.IssueId}, Icon = @""{metadata.Icon}"", FilePath = @""{metadata.FilePath}"", SampleIdReferences = new string[] {{ ""{string.Join("\",\"", metadata.SampleIdReferences)}"" }}, IsExperimental = {metadata.IsExperimental.ToString().ToLowerInvariant()}, CsProjName = @""{metadata.CsProjName}"" }};"; // TODO: Add list of sample ids in document
     }
 }

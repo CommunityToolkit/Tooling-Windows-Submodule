@@ -1,7 +1,10 @@
 <Project>
   <PropertyGroup>
-    <RepositoryDirectory>$(MSBuildThisFileDirectory)</RepositoryDirectory>
-    <ToolingDirectory>$(RepositoryDirectory)\tooling</ToolingDirectory>
+    <RepositoryDirectory>$([MSBuild]::EnsureTrailingSlash('$(MSBuildThisFileDirectory)'))</RepositoryDirectory>
+    <ToolingDirectory>$(RepositoryDirectory)tooling</ToolingDirectory>
+
+    <MajorVersion>1</MajorVersion>
+    <MinorVersion>0</MinorVersion>
   </PropertyGroup>
 
   <PropertyGroup>

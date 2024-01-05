@@ -1,10 +1,7 @@
 <Project>
-  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\WinAppSdk.props" />
-  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>$(WinAppSdkTargetFramework)</TargetFramework>
+    <TargetFramework>$(WinAppSdkTargetFramework.Split(';')[0])</TargetFramework>
     <Platforms>x86;x64;arm64</Platforms>
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
     <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
@@ -14,6 +11,9 @@
     <WindowsAppContainer>true</WindowsAppContainer>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\WinAppSdk.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />

@@ -8,7 +8,7 @@ namespace CommunityToolkit.App.Shared.Helpers;
 
 public static class IconHelper
 {
-    internal const string SourceAssetsPrefix = "ms-appx:///SourceAssets/";
+    internal const string SourceAssetsPrefix = "ms-appx:///";
     internal const string FallBackControlIconPath = "ms-appx:///Assets/DefaultControlIcon.png";
 
     public static IconElement? GetCategoryIcon(ToolkitSampleCategory category)
@@ -16,7 +16,7 @@ public static class IconHelper
         IconElement? iconElement = null;
         switch (category)
         {
-            case ToolkitSampleCategory.Layouts: iconElement = new FontIcon() { Glyph = "\uF58C" }; break;
+            case ToolkitSampleCategory.Layouts: iconElement = new FontIcon() { Glyph = "\uE138" }; break;
             case ToolkitSampleCategory.Controls: iconElement = new FontIcon() { Glyph = "\ue73a" }; break;
             case ToolkitSampleCategory.Animations: iconElement = new FontIcon() { Glyph = "\ue945" }; break;
             case ToolkitSampleCategory.Extensions: iconElement = new FontIcon() { Glyph = "\ue95f" }; break;

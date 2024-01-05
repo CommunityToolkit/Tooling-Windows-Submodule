@@ -8,9 +8,9 @@
     
     Note: Projects which rely on target platforms that are excluded will be unable to build.
 .PARAMETER targets
-    List of targets to set as TFM platforms to build for. This can also be 'all', 'all-uwp', or blank.
-    When run as blank, teh defaults (uwp, winappsdk, wasm) will be used.
-    'all' and 'all-uwp' shouldn't be used with other targets or each other.
+    List of targets to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property, as well as 'all', 'all-uwp', 'all-wasdk', or blank.
+    When run as blank, the defaults (uwp, winappsdk, wasm) will be used.
+    'all', 'all-uwp', and 'all-wasdk' shouldn't be used with other targets or each other.
 .PARAMETER allowGitChanges
     Enabling this flag will allow changes to the props file to be checked into source control.
     By default the file is ignored so local changes to building don't accidently get checked in.
@@ -23,19 +23,19 @@
 #>
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
-    [ValidateSet('all', 'all-uwp', 'wasm', 'uwp', 'winappsdk', 'wpf', 'gtk', 'macos', 'ios', 'droid', 'netstandard')]
+    [ValidateSet('all', 'all-uwp', 'all-wasdk', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
     [string[]]$targets = @('uwp', 'winappsdk', 'wasm') # default settings
 )
 
 $UwpTfm = "UwpTargetFramework";
 $WinAppSdkTfm = "WinAppSdkTargetFramework";
-$WasmTfm = "NetStandardCommonTargetFramework";
-$WpfTfm = "NetStandardCommonTargetFramework";
-$GtkTfm = "NetStandardCommonTargetFramework";
+$WasmTfm = "DotnetCommonTargetFramework";
+$WpfTfm = "DotnetCommonTargetFramework";
+$GtkTfm = "DotnetCommonTargetFramework";
 $macOSTfm = "MacOSLibTargetFramework";
 $iOSTfm = "iOSLibTargetFramework";
 $DroidTfm = "AndroidLibTargetFramework";
-$NetstandardTfm = "NetStandardCommonTargetFramework";
+$NetstandardTfm = "DotnetStandardCommonTargetFramework";
 
 $fileContents = Get-Content -Path $PSScriptRoot/AvailableTargetFrameworks.props
 
@@ -61,6 +61,10 @@ if ($targets.Contains("all-uwp")) {
     $desiredTfmValues = $allTargetFrameworks.Replace($UwpTfm, "");
 }
 
+if ($targets.Contains("all-wasdk")) {
+    $desiredTfmValues = $allTargetFrameworks.Replace($WinAppSdkTfm, "");
+}
+
 if ($targets.Contains("wasm")) {
     $desiredTfmValues += $WasmTfm;
 }
@@ -69,7 +73,7 @@ if ($targets.Contains("uwp")) {
     $desiredTfmValues += $UwpTfm;
 }
 
-if ($targets.Contains("winappsdk")) {
+if ($targets.Contains("wasdk")) {
     $desiredTfmValues += $WinAppSdkTfm;
 }
 
@@ -77,7 +81,7 @@ if ($targets.Contains("wpf")) {
     $desiredTfmValues += $WpfTfm;
 }
 
-if ($targets.Contains("gtk")) {
+if ($targets.Contains("linuxgtk")) {
     $desiredTfmValues += $GtkTfm;
 }
 
@@ -89,7 +93,7 @@ if ($targets.Contains("ios")) {
     $desiredTfmValues += $iOSTfm;
 }
 
-if ($targets.Contains("droid")) {
+if ($targets.Contains("android")) {
     $desiredTfmValues += $DroidTfm;
 }
 

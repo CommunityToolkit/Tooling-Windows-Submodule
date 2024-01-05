@@ -209,6 +209,7 @@
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="Content" Value="&#xE72B;" />
         <Setter Property="Padding" Value="12,4,12,4" />
+        <Setter Property="win:AutomationProperties.Name" Value="Back" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -277,7 +278,8 @@
                                            win:AutomationProperties.AccessibilityView="Raw">
                             <animatedvisuals:AnimatedBackVisualSource />
                             <muxc:AnimatedIcon.FallbackIconSource>
-                                <muxc:FontIconSource FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}"
+                                <muxc:FontIconSource win:AutomationProperties.AccessibilityView="Raw"
+                                                     FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}"
                                                      FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
                                                      Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
                                                      MirroredWhenRightToLeft="True" />
@@ -302,6 +304,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="Content" Value="&#xE700;" />
+        <Setter Property="win:AutomationProperties.Name" Value="Toggle menu" />
         <Setter Property="Padding" Value="12,4,12,4" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
@@ -371,7 +374,8 @@
                                            win:AutomationProperties.AccessibilityView="Raw">
                             <animatedvisuals:AnimatedGlobalNavigationButtonVisualSource />
                             <muxc:AnimatedIcon.FallbackIconSource>
-                                <muxc:FontIconSource FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}"
+                                <muxc:FontIconSource win:AutomationProperties.AccessibilityView="Raw"
+                                                     FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}"
                                                      FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
                                                      Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
                                                      MirroredWhenRightToLeft="True" />

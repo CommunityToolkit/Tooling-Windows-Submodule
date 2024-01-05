@@ -39,20 +39,32 @@ public static class NavigationViewHelper
 
     private static IEnumerable<MUXC.NavigationViewItem> GenerateSampleNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
     {
-        foreach (var metadata in sampleMetadata)
+        foreach (var metadata in sampleMetadata.OrderBy(meta => meta.Title))
         {
-            yield return new MUXC.NavigationViewItem
+            MUXC.NavigationViewItem navItem = new MUXC.NavigationViewItem
             {
                 Content = metadata.Title,
-                Icon = new BitmapIcon() { ShowAsMonochrome = false, UriSource = new Uri(IconHelper.GetIconPath(metadata.Icon)) },
+                Icon = new BitmapIcon()
+                {
+                    ShowAsMonochrome = false,
+                    UriSource = new Uri(IconHelper.GetIconPath(metadata.Icon))
+                },
                 Tag = metadata,
             };
+
+            // Check if this is a Labs component
+            if (metadata.IsExperimental == true)
+            {
+                navItem.InfoBadge = new MUXC.InfoBadge() { Style = (Style)App.Current.Resources["LabsIconBadgeStyle"] };
+            }
+            yield return navItem;
         }
     }
 
     private static IEnumerable<GroupNavigationItemData> GenerateSubcategoryNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
     {
-        var samplesBySubcategory = sampleMetadata.GroupBy(x => x.Subcategory);
+        var samplesBySubcategory = sampleMetadata.GroupBy(x => x.Subcategory)
+                                                 .OrderBy(g => g.Key.ToString());
 
         foreach (var subcategoryGroup in samplesBySubcategory)
         {
@@ -68,7 +80,8 @@ public static class NavigationViewHelper
 
     private static IEnumerable<GroupNavigationItemData> GenerateCategoryNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
     {
-        var samplesByCategory = sampleMetadata.GroupBy(x => x.Category);
+        var samplesByCategory = sampleMetadata.GroupBy(x => x.Category)
+                                              .OrderBy(g => g.Key.ToString());
 
         foreach (var categoryGroup in samplesByCategory)
         {

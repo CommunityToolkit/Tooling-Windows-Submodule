@@ -2,12 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using CommunityToolkit.Tooling.SampleGen.Attributes;
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
@@ -141,7 +138,7 @@ Without any sample.";
     }
 
     [TestMethod]
-    public void DocumentationValid()
+    public void DocumentationValidNoDiagnostics()
     {
         string markdown = @"---
 title: Canvas Layout
@@ -184,12 +181,15 @@ issue-id: 0
 icon: assets/icon.png
 ---
 # This is some test documentation...
-Without an invalid discussion id.";
+Without an invalid discussion-id.";
 
         var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
+
+        var diag = result.Diagnostics.First((d) => d.Descriptor == DiagnosticDescriptors.MarkdownYAMLFrontMatterException);
+        Assert.IsTrue(diag.GetMessage().Contains("discussion-id"));
     }
 
     [TestMethod]
@@ -209,11 +209,99 @@ issue-id: https://github.com/1234
 icon: assets/icon.png
 ---
 # This is some test documentation...
-Without an invalid discussion id.";
+Without an invalid issue-id.";
 
         var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
+
+        var diag = result.Diagnostics.First((d) => d.Descriptor == DiagnosticDescriptors.MarkdownYAMLFrontMatterException);
+        Assert.IsTrue(diag.GetMessage().Contains("issue-id"));
+    }
+
+    [TestMethod]
+    public void DocumentationInvalidIsExperimental()
+    {
+        string markdown = @"---
+title: Canvas Layout
+author: mhawker
+description: A canvas-like VirtualizingLayout for use in an ItemsRepeater
+keywords: CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange
+dev_langs:
+    - csharp
+category: Controls
+subcategory: Layout
+discussion-id: 0
+issue-id: 0
+icon: assets/icon.png
+experimental: No
+---
+# This is some test documentation...
+Without an invalid experimental value.";
+
+        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
+
+        var diag = result.Diagnostics.First((d) => d.Descriptor == DiagnosticDescriptors.MarkdownYAMLFrontMatterException);
+        Assert.IsTrue(diag.GetMessage().Contains("experimental"));
+    }
+
+    [TestMethod]
+    public void DocumentationValidWithRegistry()
+    {
+        string markdown = @"---
+title: Canvas Layout
+author: mhawker
+description: A canvas-like VirtualizingLayout for use in an ItemsRepeater
+keywords: CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange
+dev_langs:
+    - csharp
+category: Controls
+subcategory: Layout
+discussion-id: 0
+issue-id: 0
+icon: assets\icon.png
+experimental: true
+---
+# This is some test documentation...
+Which is valid.
+> [!SAMPLE Sample]";
+
+        string csproj = """
+<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+  <PropertyGroup>
+    <ToolkitComponentName>Primitives</ToolkitComponentName>
+  </PropertyGroup>
+</Project>
+""";
+
+        var sampleProjectAssembly = SimpleSource.ToSyntaxTree()
+            .CreateCompilation("MyApp.Samples")
+            .ToMetadataReference();
+
+        var headCompilation = string.Empty
+            .ToSyntaxTree()
+            .CreateCompilation("MyApp.Head")
+            .AddReferences(sampleProjectAssembly);
+
+        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>(markdown, csproj);
+
+        result.AssertNoCompilationErrors();
+
+        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitDocumentRegistry.g.cs"), """
+        #nullable enable
+        namespace CommunityToolkit.Tooling.SampleGen;
+
+        public static class ToolkitDocumentRegistry
+        {
+            public static System.Collections.Generic.IEnumerable<CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter> Execute()
+            {
+                yield return new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter() { ComponentName = "Primitives", Title = "Canvas Layout", Author = "mhawker", Description = "A canvas-like VirtualizingLayout for use in an ItemsRepeater", Keywords = "CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange", Category = ToolkitSampleCategory.Controls, Subcategory = ToolkitSampleSubcategory.Layout, DiscussionId = 0, IssueId = 0, Icon = @"assets/icon.png", FilePath = @"experiment\samples\documentation.md", SampleIdReferences = new string[] { "Sample" }, IsExperimental = true, CsProjName = @"componentname.csproj" };
+            }
+        }
+        """, "Unexpected code generated");
     }
 }
