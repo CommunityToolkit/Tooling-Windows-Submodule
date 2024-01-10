@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <CommonUnoPackageVersion>5.0.118</CommonUnoPackageVersion>
+        <CommonUnoPackageVersion>5.0.143</CommonUnoPackageVersion>
     </PropertyGroup>
 
     <!-- This file is modified by UseUnoWinUI.ps1 to switch between WinUI 2 and 3 under Uno Platform -->
