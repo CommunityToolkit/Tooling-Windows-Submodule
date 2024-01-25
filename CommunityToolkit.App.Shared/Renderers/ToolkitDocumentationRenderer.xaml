@@ -19,7 +19,7 @@
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <!--  Overriding the default Markdown styling to be inline with the default Windows typography / design guidelines  -->
-        <Style TargetType="renderer:MarkdownTextBlock">
+        <win:Style TargetType="renderer:MarkdownTextBlock">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="IsTabStop" Value="False" />
             <Setter Property="LinkForeground" Value="{ThemeResource AccentTextFillColorPrimaryBrush}" />
@@ -99,7 +99,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </win:Style>
 
         <DataTemplate x:Key="DocumentTemplate"
                       x:DataType="x:String">
@@ -316,4 +316,3 @@
         </Grid>
     </Grid>
 </Page>
-
