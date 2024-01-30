@@ -78,7 +78,7 @@ if ($UseDiagnostics.IsPresent)
     $sdkoptions = "-d"
     $diagnostics = @(
         '-bl:slngen.binlog'
-        '--consolelogger:"ShowEventId;Summary;Verbosity=Detailed"'
+        '--consolelogger:ShowEventId;Summary;Verbosity=Detailed'
     )
 }
 else
@@ -101,7 +101,5 @@ $arguments = @(
     $platforms
     $projects
 )
-
-Write-Output "Running Command: $cmd $arguments"
 
 &$cmd @arguments
