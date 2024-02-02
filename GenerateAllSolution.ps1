@@ -78,7 +78,7 @@ if ($UseDiagnostics.IsPresent)
     $sdkoptions = "-d"
     $diagnostics = @(
         '-bl:slngen.binlog'
-        '--consolelogger:"ShowEventId;Summary;Verbosity=Detailed"'
+        '--consolelogger:ShowEventId;Summary;Verbosity=Detailed'
     )
 }
 else
@@ -86,6 +86,9 @@ else
     $sdkoptions = ""
     $diagnostics = ""
 }
+
+# See https://learn.microsoft.com/en-us/powershell/scripting/learn/experimental-features?view=powershell-7.4#psnativecommandargumentpassing
+$PSNativeCommandArgumentPassing = 'Legacy'
 
 $cmd = 'dotnet'
 $arguments = @(
@@ -101,7 +104,5 @@ $arguments = @(
     $platforms
     $projects
 )
-
-Write-Output "Running Command: $cmd $arguments"
 
 &$cmd @arguments
