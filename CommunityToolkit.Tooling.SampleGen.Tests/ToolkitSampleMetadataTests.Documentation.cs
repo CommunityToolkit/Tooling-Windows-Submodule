@@ -271,7 +271,9 @@ Which is valid.
 > [!SAMPLE Sample]";
 
         string csproj = """
-<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(directory.build.props))" Condition="Exists('$([MSBuild]::GetPathOfFileAbove(directory.build.props))')" />
+  
   <PropertyGroup>
     <ToolkitComponentName>Primitives</ToolkitComponentName>
   </PropertyGroup>
