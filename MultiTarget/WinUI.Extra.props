@@ -1,6 +1,7 @@
 <Project>
-  <Sdk Condition="'$(IsUwp)' == 'true'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
-
+<!--
+  Extra properties for WinUI projects.
+-->
   <PropertyGroup>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
