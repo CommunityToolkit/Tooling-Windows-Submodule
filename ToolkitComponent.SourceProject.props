@@ -3,9 +3,6 @@
     <Error Condition="$(ToolkitComponentName) == ''" Message="ToolkitComponentName is not defined. Please check your csproj." />
   </Target>
 
-  <!-- Set up the MultiTarget system -->
-  <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
-
   <PropertyGroup>
     <DateForVersion Condition="'$(DateForVersion)' == ''">$([System.DateTime]::UtcNow.ToString(yyMMdd))</DateForVersion>
     <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$(DateForVersion)</Version>
@@ -18,6 +15,9 @@
     <!-- Turn-off .NET based AssemblyInfo.cs generator, see below -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
+
+  <!-- Set up the MultiTarget system -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
   <!-- https://stackoverflow.com/questions/10980249/msbuild-task-for-setting-custom-attribute-in-assemblyinfo-cs -->
   <!-- https://gist.github.com/KirillOsenkov/f20cb84d37a89b01db63f8aafe03f19b -->
