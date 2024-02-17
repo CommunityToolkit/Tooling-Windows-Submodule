@@ -272,7 +272,7 @@ Which is valid.
 
         string csproj = """
 <Project>
-  <Import Project="$([MSBuild]::GetPathOfFileAbove(directory.build.props))" Condition="Exists('$([MSBuild]::GetPathOfFileAbove(directory.build.props))')" />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Build.props))" Condition="Exists('$([MSBuild]::GetPathOfFileAbove(Directory.Build.props))')" />
   
   <PropertyGroup>
     <ToolkitComponentName>Primitives</ToolkitComponentName>
