@@ -6,6 +6,6 @@ Param (
     [string]$postfix
 )
 
-foreach ($experimentProjPath in Get-ChildItem -Recurse -Path '../../components/*/src/*.csproj') {
+foreach ($experimentProjPath in Get-ChildItem -Recurse -Path "$PSScriptRoot/../../components/*/src/*.csproj") {
   & msbuild.exe -t:pack /p:Configuration=Release /p:DebugType=Portable /p:DateForVersion=$date /p:PreviewVersion=$postfix $experimentProjPath
 }
