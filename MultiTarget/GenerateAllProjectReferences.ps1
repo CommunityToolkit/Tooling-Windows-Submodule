@@ -3,8 +3,18 @@ Param (
   [string]$projectPropsOutputDir = "$PSScriptRoot/Generated",
 
   [Parameter(HelpMessage = "Only projects that support these targets will have references generated for use by deployable heads.")]
-  [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
+  [string[]]$MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard"),
+
+  [Parameter(HelpMessage = "The names of the components to generate references for. Defaults to all components.")]
+  [string[]]$Components = @("all"),
+
+  [Parameter(HelpMessage = "The names of the components to exclude when generating project references.")]
+  [string[]]$ExcludeComponents
 )
+
+if ($Components -eq @('all')) {
+    $Components = @('**')
+}
 
 $preWorkingDir = $pwd;
 Set-Location $PSScriptRoot;
@@ -13,20 +23,28 @@ Set-Location $PSScriptRoot;
 Remove-Item -Path $projectPropsOutputDir -Recurse -Force -ErrorAction SilentlyContinue | Out-Null;
 New-Item -ItemType Directory -Force -Path $projectPropsOutputDir -ErrorAction SilentlyContinue | Out-Null;
 
-# Discover projects in provided paths
-foreach ($projectPath in Get-ChildItem -Directory -Path "$PSScriptRoot/../../components/*") {
-  $srcPath = Resolve-Path "$($projectPath.FullName)\src";
-  $srcProjectPath = Get-ChildItem -File "$srcPath\*.csproj";
-  $sampleProjectPath = Get-ChildItem -File "$($projectPath.FullName)\samples\*.csproj" -ErrorAction SilentlyContinue;
-
-  # Generate <ProjectReference>s for sample project
-  # Use source project MultiTarget as first fallback.
-  if ($null -ne $sampleProjectPath -and (Test-Path $sampleProjectPath)) {
-    & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $sampleProjectPath -outputPath "$projectPropsOutputDir/$($sampleProjectPath.BaseName).props" -MultiTarget $MultiTarget
+foreach ($componentName in $Components) {
+  if ($ExcludeComponents -contains $componentName) {
+    continue;
   }
 
-  # Generate <ProjectReference>s for src project
-  & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $srcProjectPath -outputPath "$projectPropsOutputDir/$($srcProjectPath.BaseName).props" -MultiTarget $MultiTarget
+  # Find all components source csproj (when wildcard), or find specific component csproj by name.
+  foreach ($componentPath in Get-Item "$PSScriptRoot/../../components/$componentName/") {
+    Write-Output "Generating project references for component $componentName at $componentPath";
+
+    # Find source and sample csproj files
+    $componentSourceCsproj = Get-ChildItem $componentPath/src/*.csproj -ErrorAction SilentlyContinue;
+    $componentSampleCsproj = Get-ChildItem $componentPath/samples/*.csproj -ErrorAction SilentlyContinue;
+    
+    # Generate <ProjectReference>s for sample project
+    # Use source project MultiTarget as first fallback.
+    if ($null -ne $componentSampleCsproj -and (Test-Path $componentSampleCsproj)) {
+      & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $componentSampleCsproj -outputPath "$projectPropsOutputDir/$($componentSampleCsproj.BaseName).props" -MultiTarget $MultiTarget
+    }
+
+    # Generate <ProjectReference>s for src project
+    & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $componentSourceCsproj -outputPath "$projectPropsOutputDir/$($componentSourceCsproj.BaseName).props" -MultiTarget $MultiTarget
+  }
 }
 
 Set-Location $preWorkingDir;
