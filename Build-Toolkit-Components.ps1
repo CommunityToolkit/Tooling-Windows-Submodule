@@ -120,9 +120,7 @@ if ($NupkgOutput -and -not $PreviewVersion) {
 
 function Invoke-MSBuildWithBinlog {
     param (
-        [string]$TargetHeadPath,
-        [switch]$EnableBinLogs,
-        [string]$BinlogOutput
+        [string]$TargetHeadPath
     )
 
     # Reset build args to default

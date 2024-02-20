@@ -77,7 +77,7 @@ Param (
   [switch]$Verbose
 )
 
-if ($ExcludeMultiTargets -eq $null)
+if ($null -eq $ExcludeMultiTargets)
 {
   $ExcludeMultiTargets = @()
 }
@@ -118,9 +118,7 @@ if ($Heads -eq 'all') {
 
 function Invoke-MSBuildWithBinlog {
   param (
-    [string]$TargetHeadPath,
-    [switch]$EnableBinLogs,
-    [string]$BinlogOutput
+    [string]$TargetHeadPath
   )
 
   # Reset build args to default
