@@ -19,63 +19,41 @@ Param (
     [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
 )
 
+$templateContents = Get-Content -Path $templatePath;
+
 $preWorkingDir = $pwd;
 Set-Location "$PSScriptRoot/../../"
 
 $relativeProjectPath = Resolve-Path -Relative -Path $projectPath
-$templateContents = Get-Content -Path $templatePath;
 
 Set-Location $preWorkingDir;
 
 # Insert csproj file name.
-$csprojFileName = [System.IO.Path]::GetFileName($relativeProjectPath);
+$csprojFileName = [System.IO.Path]::GetFileName($projectPath);
 $templateContents = $templateContents -replace [regex]::escape($projectFileNamePlaceholder), $csprojFileName;
 
-# Insert project directory
-$projectDirectoryRelativeToRoot = [System.IO.Path]::GetDirectoryName($relativeProjectPath).TrimStart('.').TrimStart('\');
-$templateContents = $templateContents -replace [regex]::escape($projectRootPlaceholder), "$projectDirectoryRelativeToRoot";
+# Insert component directory
+$componentDirectoryRelativeToRoot = [System.IO.Path]::GetDirectoryName($relativeProjectPath).TrimStart('.').TrimStart('\');
+$templateContents = $templateContents -replace [regex]::escape($projectRootPlaceholder), "$componentDirectoryRelativeToRoot";
 
-# Load multitarget preferences for project
-# Folder layout is expected to match the Community Toolkit.
-$projectName = (Get-Item (Split-Path -Parent (Split-Path -Parent $projectPath))).Name;
-$componentPath = "$PSScriptRoot/../../components/$projectName";
+# Get component name from project path
+$componentPath = Get-Item "$projectPath/../../"
 
-$srcPath = Resolve-Path "$componentPath\src";
-$samplePath = "$componentPath\samples";
+# Load multitarget preferences for component
+$multiTargets = & $PSScriptRoot\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
 
-# Uses the <MultiTarget> values from the source library project as the fallback for the sample project.
-# This behavior also implemented in TargetFramework evaluation. 
-$multiTargetFallbackPropsPaths = @()
-
-if($projectPath.ToLower().Contains('sample')) {
-    $multiTargetFallbackPropsPaths += @("$samplePath/MultiTarget.props", "$srcPath/MultiTarget.props")
-} else {
-    $multiTargetFallbackPropsPaths += @("$srcPath/MultiTarget.props")
-}
-
-$multiTargetFallbackPropsPaths += @("$PSScriptRoot/Defaults.props")
-
-# Load first available default
-$fileContents = "";
-foreach ($fallbackPath in $multiTargetFallbackPropsPaths) {
-    if (Test-Path $fallbackPath) {
-        $fileContents = Get-Content $fallbackPath -ErrorAction Stop;
-        break;
-    }
-}
-
-# Parse file contents
-$regex = Select-String -Pattern '<MultiTarget>(.+?)<\/MultiTarget>' -InputObject $fileContents;
-
-if ($null -eq $regex -or $null -eq $regex.Matches -or $null -eq $regex.Matches.Groups -or $regex.Matches.Groups.Length -lt 2) {
-    Write-Error "Couldn't get MultiTarget property from $path";
+if ($null -eq $multiTargets) {
+    Write-Error "Couldn't get MultiTarget property for $componentPath";
     exit(-1);
 }
 
-$multiTargets = $regex.Matches.Groups[1].Value;
+# Ensure multiTargets is not empty
+if ($multiTargets.Length -eq 0) {
+    Write-Error "MultiTarget property is empty for $projectPath";
+    exit(-1);
+}
 
 $templateContents = $templateContents -replace [regex]::escape("[IntendedTargets]"), $multiTargets;
-$multiTargets = $multiTargets.Split(';');
 
 function ShouldMultiTarget([string] $target) {
     return ($multiTargets.Contains($target) -and $MultiTarget.Contains($target)).ToString().ToLower()
