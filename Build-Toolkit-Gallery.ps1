@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-  Builds the Toolkit Gallery with specified parameters.
+  Builds the Toolkit Gallery with specified parameters. Primarily used by maintainers for local testing.
 
 .DESCRIPTION
-  The Build-Toolkit-Gallery function is used to build the Windows Community Toolkit Gallery app with customizable parameters. It allows you to specify the MultiTarget TFM, include heads, enable binlogs, additional msbuild properties, pick the components to build, and exclude specific components.
+  The Build-Toolkit-Gallery function is used to build the Community Toolkit Gallery app with customizable parameters. It allows you to specify the MultiTarget TFM, include heads, enable binlogs, additional msbuild properties, pick the components to build, and exclude specific components.
 
 .PARAMETER MultiTargets
     Specifies the MultiTarget TFM(s) to include for building the components. The default value is 'all'.
