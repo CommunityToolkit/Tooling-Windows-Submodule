@@ -20,7 +20,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SamplePaneOptionAttributeOnNonSample = new(
         id: "TKSMPL0001",
         title: "Invalid sample option declaration",
-        messageFormat: "Cannot generate sample pane options for type {{0}} as it does not use ToolkitSampleAttribute",
+        messageFormat: $"Cannot generate sample pane options for type {{0}} as it does not use ToolkitSampleAttribute",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -35,7 +35,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SamplePaneOptionWithBadName = new(
         id: "TKSMPL0002",
         title: "Invalid sample option declaration",
-        messageFormat: "Cannot generate sample pane options for type {{0}} as the provided name is empty or invalid",
+        messageFormat: $"Cannot generate sample pane options for type {{0}} as the provided name is empty or invalid",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -50,7 +50,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor OptionsPaneAttributeWithMissingOrInvalidSampleId = new(
         id: "TKSMPL0003",
         title: "Missing or invalid sample Id",
-        messageFormat: "Cannot link sample options pane to type {{0}} as the provided sample ID does not match any known ToolkitSampleAttribute",
+        messageFormat: $"Cannot link sample options pane to type {{0}} as the provided sample ID does not match any known ToolkitSampleAttribute",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -65,7 +65,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SamplePaneOptionWithDuplicateName = new(
         id: "TKSMPL0004",
         title: "Duplicate sample option name",
-        messageFormat: "Cannot generate sample pane option with name {{0}} as the provided name is already in use by another sample option",
+        messageFormat: $"Cannot generate sample pane option with name {{0}} as the provided name is already in use by another sample option",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -80,7 +80,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SamplePaneOptionWithConflictingName = new(
         id: "TKSMPL0005",
         title: "Conflicting sample option name",
-        messageFormat: "Cannot generate sample pane option with name {{0}} as the provided name is already defined as a member in the attached class",
+        messageFormat: $"Cannot generate sample pane option with name {{0}} as the provided name is already defined as a member in the attached class",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -95,7 +95,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SamplePaneMultiChoiceOptionWithNoChoices = new(
         id: "TKSMPL0006",
         title: "Missing choices in multi-choice sample option",
-        messageFormat: "Cannot generate multiple choice sample pane option with title {{0}} as no choices were provided",
+        messageFormat: $"Cannot generate multiple choice sample pane option with title {{0}} as no choices were provided",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -110,7 +110,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SampleAttributeOnUnsupportedType = new(
         id: "TKSMPL0007",
         title: "ToolkitSampleAttribute declared on an invalid type",
-        messageFormat: "Cannot generate sample metadata as the attribute was used on an unsupported type",
+        messageFormat: $"Cannot generate sample metadata as the attribute was used on an unsupported type",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -125,7 +125,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SampleOptionPaneAttributeOnUnsupportedType = new(
         id: "TKSMPL0008",
         title: "Toolkit sample options pane declared on an invalid type",
-        messageFormat: "Cannot generate options pane metadata as the attribute was used on an unsupported type",
+        messageFormat: $"Cannot generate options pane metadata as the attribute was used on an unsupported type",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -140,7 +140,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SampleGeneratedOptionAttributeOnUnsupportedType = new(
         id: "TKSMPL0009",
         title: "Toolkit sample option declared on an invalid type",
-        messageFormat: "Cannot generate sample option metadata as the attribute was used on an unsupported type",
+        messageFormat: $"Cannot generate sample option metadata as the attribute was used on an unsupported type",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -152,7 +152,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor MarkdownYAMLFrontMatterException = new(
         id: "TKSMPL0010",
         title: "Invalid YAML Front Matter",
-        messageFormat: "Cannot generate sample page info for file {{0}} as an error was encountered parsing its YAML front matter: {{1}}",
+        messageFormat: $"Cannot generate sample page info for file {{0}} as an error was encountered parsing its YAML front matter: {{1}}",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -164,7 +164,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor MarkdownYAMLFrontMatterMissingField = new(
         id: "TKSMPL0011",
         title: "Missing YAML Front Matter",
-        messageFormat: "Cannot generate sample page info for file {{0}} as no '{{1}}' field was found in its YAML front matter",
+        messageFormat: $"Cannot generate sample page info for file {{0}} as no '{{1}}' field was found in its YAML front matter",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -176,7 +176,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor MarkdownSampleIdNotFound = new(
         id: "TKSMPL0012",
         title: "Sample Id Not Found from Markdown Reference",
-        messageFormat: "Cannot find the sample page referenced in file {{0}} with sample id '{{1}}'",
+        messageFormat: $"Cannot find the sample page referenced in file {{0}} with sample id '{{1}}'",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -188,7 +188,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SampleNotReferencedInMarkdown = new(
         id: "TKSMPL0013",
         title: "Sample Not Referenced In Documentation",
-        messageFormat: "The sample with id '{{0}}' is not referenced in any documentation files and will not appear in the full sample app",
+        messageFormat: $"The sample with id '{{0}}' is not referenced in any documentation files and will not appear in the full sample app",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -200,7 +200,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor DocumentationHasNoSamples = new(
         id: "TKSMPL0014",
         title: "Documentation Has No Samples",
-        messageFormat: "The documentation page '{{0}}' does not reference any sample examples, it is recommended to have at least one code sample per document page",
+        messageFormat: $"The documentation page '{{0}}' does not reference any sample examples, it is recommended to have at least one code sample per document page",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -215,7 +215,7 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor SampleIdAlreadyInUse = new(
         id: "TKSMPL0015",
         title: "Sample ID already in use",
-        messageFormat: "Cannot generate sample with id {{0}} as the provided id is already in use by another sample",
+        messageFormat: $"Cannot generate sample with id {{0}} as the provided id is already in use by another sample",
         category: typeof(ToolkitSampleMetadataGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
