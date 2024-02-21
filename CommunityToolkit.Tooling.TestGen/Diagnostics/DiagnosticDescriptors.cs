@@ -19,7 +19,7 @@ public static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor TestControlHasConstructorWithParameters = new(
         id: "LUITM0001",
-        title: "Provided control must not have a constructor with parameters.",
+        title: "Provided control must not have a constructor with parameters",
         messageFormat: "Cannot generate test with control {{0}} as it has a constructor with parameters",
         category: typeof(UIThreadTestMethodGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
