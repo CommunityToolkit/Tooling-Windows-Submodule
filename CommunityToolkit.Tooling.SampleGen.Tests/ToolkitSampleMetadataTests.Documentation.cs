@@ -31,6 +31,13 @@ public partial class ToolkitSampleMetadataTests
             }
             """;
 
+    private static readonly string EmptySource = """        
+        namespace MyApp
+        {
+            public class MyClass { }
+        }
+        """;
+
     [TestMethod]
     public void MissingFrontMatterSection()
     {
@@ -158,7 +165,7 @@ Which is valid.
 > [!SAMPLE Sample]";
 
 
-        var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre();
@@ -183,7 +190,7 @@ icon: assets/icon.png
 # This is some test documentation...
 Without an invalid discussion-id.";
 
-        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
@@ -211,7 +218,7 @@ icon: assets/icon.png
 # This is some test documentation...
 Without an invalid issue-id.";
 
-        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
@@ -240,7 +247,7 @@ experimental: No
 # This is some test documentation...
 Without an invalid experimental value.";
 
-        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
