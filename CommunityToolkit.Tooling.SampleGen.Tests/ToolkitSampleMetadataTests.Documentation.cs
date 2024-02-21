@@ -165,7 +165,7 @@ Which is valid.
 > [!SAMPLE Sample]";
 
 
-        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = SimpleSource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre();
