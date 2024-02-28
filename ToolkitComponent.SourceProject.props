@@ -3,18 +3,23 @@
     <Error Condition="$(ToolkitComponentName) == ''" Message="ToolkitComponentName is not defined. Please check your csproj." />
   </Target>
 
-  <!-- Set up the MultiTarget system -->
-  <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
-
   <PropertyGroup>
     <DateForVersion Condition="'$(DateForVersion)' == ''">$([System.DateTime]::UtcNow.ToString(yyMMdd))</DateForVersion>
     <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$(DateForVersion)</Version>
     <Version Condition="'$(PreviewVersion)' != ''">$(Version)-$(PreviewVersion)</Version>
+  </PropertyGroup>
+
+  <!-- Set up the MultiTarget system -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
+
+  <PropertyGroup>
     <PackageId Condition="'$(PackageId)' == ''">$(PackageIdPrefix).$(PackageIdVariant).$(ToolkitComponentName)</PackageId>
   </PropertyGroup>
 
+  <Sdk Condition="'$(IsUwp)' == 'true'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
+
   <!-- Auto Generate our own Assembly Info -->
-    <PropertyGroup>
+  <PropertyGroup>
     <!-- Turn-off .NET based AssemblyInfo.cs generator, see below -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

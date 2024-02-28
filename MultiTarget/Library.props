@@ -28,6 +28,4 @@
 
   <!-- Import Uno and native dependencies for all multitargeted library projects. -->
   <Import Project="$(MSBuildProjectDirectory)\Dependencies.props" Condition="Exists('$(MSBuildProjectDirectory)\Dependencies.props')" />
-  
-  <Sdk Condition="'$(IsUwp)' == 'true'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
 </Project>
