@@ -24,6 +24,7 @@ namespace CommunityToolkit.App.Shared.Controls;
 [TemplatePart(Name = PartPaneButton, Type = typeof(Button))]
 [TemplatePart(Name = nameof(PART_LeftPaddingColumn), Type = typeof(ColumnDefinition))]
 [TemplatePart(Name = nameof(PART_RightPaddingColumn), Type = typeof(ColumnDefinition))]
+[TemplatePart(Name = nameof(PART_ButtonHolder), Type = typeof(StackPanel))]
 
 public partial class TitleBar : Control
 {
@@ -64,6 +65,7 @@ public partial class TitleBar : Control
 
     ColumnDefinition? PART_LeftPaddingColumn;
     ColumnDefinition? PART_RightPaddingColumn;
+    StackPanel? PART_ButtonHolder;
 
     public TitleBar()
     {
@@ -74,6 +76,7 @@ public partial class TitleBar : Control
     {
         PART_LeftPaddingColumn = GetTemplateChild(nameof(PART_LeftPaddingColumn)) as ColumnDefinition;
         PART_RightPaddingColumn = GetTemplateChild(nameof(PART_RightPaddingColumn)) as ColumnDefinition;
+        ConfigureButtonHolder();
         Configure();
         if (GetTemplateChild(PartBackButton) is Button backButton)
         {
@@ -97,7 +100,12 @@ public partial class TitleBar : Control
 
     private void TitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        if (e.NewSize.Width <= CompactStateBreakpoint)
+        UpdateVisualStateAndDragRegion(e.NewSize);
+    }
+
+    private void UpdateVisualStateAndDragRegion(Windows.Foundation.Size size)
+    {
+        if (size.Width <= CompactStateBreakpoint)
         {
             if (Content != null || Footer != null)
             {
@@ -109,7 +117,7 @@ public partial class TitleBar : Control
             VisualStateManager.GoToState(this, WideState, true);
         }
 
-#if WINDOWS_WINAPPSDK
+#if WINAPPSDK
         SetDragRegionForCustomTitleBar();
 #endif
     }
@@ -124,12 +132,34 @@ public partial class TitleBar : Control
         PaneButtonClick?.Invoke(this, new RoutedEventArgs());
     }
 
+    private void ConfigureButtonHolder()
+    {
+        if (PART_ButtonHolder != null)
+        {
+            PART_ButtonHolder.SizeChanged -= PART_ButtonHolder_SizeChanged;
+        }
+
+        PART_ButtonHolder = GetTemplateChild(nameof(PART_ButtonHolder)) as StackPanel;
+
+        if(PART_ButtonHolder != null)
+        {
+            PART_ButtonHolder.SizeChanged += PART_ButtonHolder_SizeChanged;
+        }
+    }
+
+    private void PART_ButtonHolder_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+#if WINAPPSDK
+        SetDragRegionForCustomTitleBar();
+#endif
+    }
+
     private void Configure()
     {
 #if WINDOWS_UWP && !HAS_UNO
         SetUWPTitleBar();
 #endif
-#if WINDOWS_WINAPPSDK
+#if WINAPPSDK
     SetWASDKTitleBar();
 #endif
     }
@@ -139,7 +169,7 @@ public partial class TitleBar : Control
 #if WINDOWS_UWP && !HAS_UNO
         ResetUWPTitleBar();
 #endif
-#if WINDOWS_WINAPPSDK
+#if WINAPPSDK
         ResetWASDKTitleBar();
 #endif
     }
@@ -185,7 +215,7 @@ public partial class TitleBar : Control
             VisualStateManager.GoToState(this, FooterCollapsedState, true);
         }
 
-#if WINDOWS_WINAPPSDK
+#if WINAPPSDK
         SetDragRegionForCustomTitleBar();
 #endif
     }

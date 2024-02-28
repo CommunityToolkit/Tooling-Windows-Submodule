@@ -6,42 +6,88 @@
 #pragma warning disable CA1060
 
 using System.Runtime.InteropServices;
-using WinRT.Interop;
-using Microsoft.UI;
-using Microsoft.UI.Windowing;
 
 namespace CommunityToolkit.App.Shared.Controls;
-
-public partial class TitleBar : Control
+internal static class NativeMethods
 {
-    [DllImport("Shcore.dll", SetLastError = true)]
-    internal static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
-
-    internal enum Monitor_DPI_Type : int
+    public enum WindowMessage : int
     {
-        MDT_Effective_DPI = 0,
-        MDT_Angular_DPI = 1,
-        MDT_Raw_DPI = 2,
-        MDT_Default = MDT_Effective_DPI
+        WM_NCLBUTTONDOWN = 0x00A1,
+        WM_NCRBUTTONDOWN = 0x00A4,
+        WM_SYSCOMMAND = 0x0112,
+        WM_SYSMENU = 0x0313,
+        WM_GETMINMAXINFO = 0x0024
+    }
+    [Flags]
+    public enum WindowStyle : uint
+    {
+        WS_SYSMENU = 0x80000
     }
 
-    private double GetScaleAdjustment()
+    [Flags]
+    public enum WindowLongIndexFlags : int
     {
-        IntPtr hWnd = WindowNative.GetWindowHandle(this.Window);
-        WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
-        DisplayArea displayArea = DisplayArea.GetFromWindowId(wndId, DisplayAreaFallback.Primary);
-        IntPtr hMonitor = Win32Interop.GetMonitorFromDisplayId(displayArea.DisplayId);
+        GWL_WNDPROC = -4,
+        GWL_STYLE = -16
+    }
 
-        // Get DPI.
-        int result = GetDpiForMonitor(hMonitor, Monitor_DPI_Type.MDT_Default, out uint dpiX, out uint _);
-        if (result != 0)
+    [Flags]
+    public enum SetWindowPosFlags : uint
+    {
+        /// <summary>
+        ///     Retains the current position (ignores X and Y parameters).
+        /// </summary>
+        SWP_NOMOVE = 0x0002
+    }
+
+    public enum SystemCommand
+    {
+        SC_MOUSEMENU = 0xF090,
+        SC_KEYMENU = 0xF100
+    }
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongW", SetLastError = false)]
+    public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = false)]
+    public static extern int GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+    public static int GetWindowLongAuto(IntPtr hWnd, int nIndex)
+    {
+        if (IntPtr.Size is 8)
         {
-            throw new Exception("Could not get DPI for monitor.");
+            return GetWindowLongPtr(hWnd, nIndex);
         }
-
-        uint scaleFactorPercent = (uint)(((long)dpiX * 100 + (96 >> 1)) / 96);
-        return scaleFactorPercent / 100.0;
+        else
+        {
+            return GetWindowLong(hWnd, nIndex);
+        }
     }
+
+    [DllImport("user32.dll", EntryPoint = "FindWindowExW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr FindWindowEx(IntPtr hWndParent, IntPtr hWndChildAfter, string lpszClass, string lpszWindow);
+
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongW", SetLastError = false)]
+    public static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = false)]
+    public static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+    public static IntPtr SetWindowLongAuto(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+    {
+        if (IntPtr.Size is 8)
+        {
+            return SetWindowLongPtr(hWnd, nIndex, dwNewLong);
+        }
+        else
+        {
+            return SetWindowLong(hWnd, nIndex, dwNewLong);
+        }
+    }
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, WindowMessage Msg, IntPtr wParam, IntPtr lParam);
 }
 #pragma warning restore CA1060
 #endif
