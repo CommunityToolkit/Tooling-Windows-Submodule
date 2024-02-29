@@ -3,16 +3,13 @@
     <Error Condition="$(ToolkitComponentName) == ''" Message="ToolkitComponentName is not defined. Please check your csproj." />
   </Target>
 
-  <PropertyGroup>
-    <DateForVersion Condition="'$(DateForVersion)' == ''">$([System.DateTime]::UtcNow.ToString(yyMMdd))</DateForVersion>
-    <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$(DateForVersion)</Version>
-    <Version Condition="'$(PreviewVersion)' != ''">$(Version)-$(PreviewVersion)</Version>
-  </PropertyGroup>
-
   <!-- Set up the MultiTarget system -->
   <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
   <PropertyGroup>
+    <DateForVersion Condition="'$(DateForVersion)' == ''">$([System.DateTime]::UtcNow.ToString(yyMMdd))</DateForVersion>
+    <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$(DateForVersion)</Version>
+    <Version Condition="'$(PreviewVersion)' != ''">$(Version)-$(PreviewVersion)</Version>
     <PackageId Condition="'$(PackageId)' == ''">$(PackageIdPrefix).$(PackageIdVariant).$(ToolkitComponentName)</PackageId>
   </PropertyGroup>
 
