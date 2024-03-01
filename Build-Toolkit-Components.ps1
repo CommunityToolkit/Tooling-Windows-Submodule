@@ -91,12 +91,12 @@ Param (
 )
 
 if ($MultiTargets -eq 'all') {
-  $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
 }
 
-if ($ExcludeMultiTargets -eq $null)
+if ($null -eq $ExcludeMultiTargets)
 {
-   $ExcludeMultiTargets = @()
+    $ExcludeMultiTargets = @()
 }
 
 $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
@@ -175,7 +175,7 @@ function Invoke-MSBuildWithBinlog {
 
 # Components are built individually
 foreach ($ComponentName in $Components) {
-     # Find all components source csproj (when wildcard), or find specific component csproj by name.
+    # Find all components source csproj (when wildcard), or find specific component csproj by name.
     foreach ($componentCsproj in Get-ChildItem -Path "$PSScriptRoot/../components/$ComponentName/$ComponentDir/*.csproj") {
         # Get component name from csproj path
         $componentPath = Get-Item "$componentCsproj/../../"
@@ -183,9 +183,19 @@ foreach ($ComponentName in $Components) {
         # Get supported MultiTarget for this component
         $supportedMultiTargets = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
 
-        # If this component doesn't list one of the provided MultiTargets, skip it
-        if ($MultiTargets -notin $supportedMultiTargets) {
-            Write-Warning "Skipping $($componentPath.BaseName), no supported MultiTargets were included for build."
+        # Flag to check if any of the requested targets are supported by the component
+        $isTargetSupported = $false
+
+        foreach ($requestedTarget in $MultiTargets) {
+            if ($requestedTarget -in $supportedMultiTargets) {
+                $isTargetSupported = $true
+                break
+            }
+        }
+
+        # If none of the requested targets are supported by the component, we can skip build to save time and avoid errors.
+        if (-not $isTargetSupported) {
+            Write-Warning "Skipping $($componentPath.BaseName), none of the requested MultiTargets are enabled for this component."
             continue
         }
 
