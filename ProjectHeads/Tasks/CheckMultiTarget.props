@@ -1,0 +1,131 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    MSBuild Inline C# Task Tips:
+
+    1. Avoid defining methods within methods for inline tasks. Use lambda functions instead for any reusable logic.
+    Example:
+    Instead of nested methods:
+    ```csharp
+    void MainLogic() {
+        Helper();
+        
+        void Helper() { /* ... */ }
+    }
+    ```
+
+    Use lambda:
+    ```csharp
+    Func<Type, ReturnType> Helper = (params) => { /* ... */ return result; };
+    ReturnType result = Helper(params);
+    ```
+
+    This ensures compatibility with MSBuild's code generation.
+
+    2. When using lambdas, be cautious of variable naming. If a lambda uses a parameter with the same name as an outer scope variable, it can lead to unexpected behavior.
+    Example:
+    Avoid:
+    ```csharp
+    string variable;
+    Func<string, string> Lambda = (variable) => { /* ... */ };
+    ```
+
+    Instead, use different names:
+    ```csharp
+    string variable;
+    Func<string, string> Lambda = (param) => { /* ... */ };
+    ```
+
+    3. Certain C# features, like string interpolation with the `$""` syntax, may not be supported depending on the MSBuild's CodeTaskFactory and its underlying C# compiler version. Consider using traditional string concatenation or other methods if you encounter issues.
+
+    4. Always use fully qualified namespaces in inline tasks to ensure all types are recognized correctly. This can avoid issues where certain types or methods are not found.
+-->
+  <UsingTask TaskName="CheckMultiTarget" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <FilePath ParameterType="Microsoft.Build.Framework.ITaskItem" Required="true" Output="true" />
+      <MultiTargetIdentifier ParameterType="System.String" Required="true" />
+      <RepositoryDirectory ParameterType="System.String" Required="true" />
+      <IsSupported ParameterType="System.Boolean" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        if (FilePath == null || string.IsNullOrEmpty(FilePath.ItemSpec))
+        {
+            Log.LogError("FilePath is null or empty.");
+            return false; // Exit the task
+        }
+
+        string currentDirectory = System.IO.Path.GetDirectoryName(FilePath.ItemSpec);
+        if (string.IsNullOrEmpty(currentDirectory))
+        {
+            Log.LogError("Failed to get directory name from FilePath.");
+            return false; // Exit the task
+        }
+
+        bool foundSrc = false;
+        while (currentDirectory.Contains("components"))
+        {
+            if (System.IO.Directory.Exists(System.IO.Path.Combine(currentDirectory, "src")))
+            {
+                foundSrc = true;
+                break;
+            }
+
+            var parentDir = System.IO.Directory.GetParent(currentDirectory);
+            if (parentDir != null)
+            {
+                currentDirectory = parentDir.FullName;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        if (!foundSrc)
+        {
+            Log.LogError(string.Format("Failed to find a parent component directory with 'src' for {0}.", FilePath.ItemSpec));
+            return false; // Exit the task
+        }
+
+        var parentComponent = currentDirectory;
+
+        string multiTargetPropsPath;
+        string multiTargetPropsContent;
+        string multiTargetIdentifier;
+
+        Func<string, string, string> GetMultiTargetPropsPath = (parent, subDir) => System.IO.Path.Combine(parent, subDir, "MultiTarget.props");
+        Func<string, string> ReadMultiTargetPropsOrDefault = path => System.IO.File.Exists(path) ? System.IO.File.ReadAllText(path) : string.Empty;
+        Func<string, string> ExtractMultiTargetIdentifier = content => {
+            System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(content, @"<MultiTarget>([^<]*)</MultiTarget>", System.Text.RegularExpressions.RegexOptions.Singleline);
+            return match.Success ? match.Groups[1].Value : string.Empty;
+        };
+
+        multiTargetPropsPath = GetMultiTargetPropsPath(parentComponent, "sample");
+        multiTargetPropsContent = ReadMultiTargetPropsOrDefault(multiTargetPropsPath);
+        multiTargetIdentifier = ExtractMultiTargetIdentifier(multiTargetPropsContent);
+
+        if (string.IsNullOrEmpty(multiTargetIdentifier))
+        {
+            multiTargetPropsPath = GetMultiTargetPropsPath(parentComponent, "src");
+            multiTargetPropsContent = ReadMultiTargetPropsOrDefault(multiTargetPropsPath);
+            multiTargetIdentifier = ExtractMultiTargetIdentifier(multiTargetPropsContent);
+        }
+
+        if (string.IsNullOrWhiteSpace(multiTargetIdentifier))
+        {
+            multiTargetPropsPath = System.IO.Path.Combine(RepositoryDirectory, "tooling", "MultiTarget", "Defaults.props");
+            multiTargetPropsContent = ReadMultiTargetPropsOrDefault(multiTargetPropsPath);
+            multiTargetIdentifier = ExtractMultiTargetIdentifier(multiTargetPropsContent);
+        }
+
+        IsSupported = multiTargetIdentifier.Split(';').Contains(MultiTargetIdentifier);
+        FilePath.SetMetadata("IsSupported", IsSupported.ToString());
+        ]]>
+
+      </Code>
+    </Task>
+  </UsingTask>
+
+</Project>

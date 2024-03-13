@@ -8,9 +8,9 @@
     
     Note: Projects which rely on target platforms that are excluded will be unable to build.
 .PARAMETER targets
-    List of targets to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property, as well as 'all', 'all-uwp', or blank.
+    List of targets to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property, as well as 'all', 'all-uwp', 'all-wasdk', or blank.
     When run as blank, the defaults (uwp, winappsdk, wasm) will be used.
-    'all' and 'all-uwp' shouldn't be used with other targets or each other.
+    'all', 'all-uwp', and 'all-wasdk' shouldn't be used with other targets or each other.
 .PARAMETER allowGitChanges
     Enabling this flag will allow changes to the props file to be checked into source control.
     By default the file is ignored so local changes to building don't accidently get checked in.
@@ -23,7 +23,7 @@
 #>
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
-    [ValidateSet('all', 'all-uwp', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('all', 'all-uwp', 'all-wasdk', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
     [string[]]$targets = @('uwp', 'winappsdk', 'wasm') # default settings
 )
 
@@ -59,6 +59,10 @@ if ($targets.Contains("all")) {
 
 if ($targets.Contains("all-uwp")) {
     $desiredTfmValues = $allTargetFrameworks.Replace($UwpTfm, "");
+}
+
+if ($targets.Contains("all-wasdk")) {
+    $desiredTfmValues = $allTargetFrameworks.Replace($WinAppSdkTfm, "");
 }
 
 if ($targets.Contains("wasm")) {

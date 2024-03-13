@@ -3,6 +3,9 @@
   <!-- Shared project -->
   <Import Project="$(ToolingDirectory)\CommunityToolkit.App.Shared\CommunityToolkit.App.Shared.projitems" Label="Shared" />
 
+  <!-- Gather sample docs from all components -->
+  <Import Project="$(ToolingDirectory)\ProjectHeads\Targets\AddMultiTargetCompatibleSampleDocs.targets" />
+
   <!-- Shared project dependencies -->
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
@@ -10,8 +13,8 @@
 
   <!-- Source generators -->
   <ItemGroup Condition="'$(IsWinAppSdk)' != 'true'">
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +29,7 @@
   <Choose>
     <When Condition="'$(ToolkitConvertersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230823-rc"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230907"/>
       </ItemGroup>
     </When>
     <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference 
@@ -43,7 +46,7 @@
   <Choose>
     <When Condition="'$(ToolkitSettingsControlsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230823-rc"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230907"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('SettingsControls')) == 'false'">
@@ -55,7 +58,7 @@
   <Choose>
     <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230823-rc"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230907"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
@@ -64,10 +67,10 @@
       </ItemGroup>
     </When>
   </Choose>
-   <Choose>
+  <Choose>
     <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230823-rc"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230907"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Triggers')) == 'false'">
@@ -76,6 +79,8 @@
       </ItemGroup>
     </When>
   </Choose>
+
+  <!-- Content inclusion -->
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
   <ItemGroup Condition="'$(IsAllExperimentHead)' == 'true'">
     <!-- These are also included in the Samples props file, but added here to workaround https://github.com/unoplatform/uno/issues/2502 -->
@@ -92,8 +97,6 @@
       <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension).dat</Link>
     </Content>
 
-    <!-- Include markdown files from all samples so the head can access them in the source generator -->
-    <AdditionalFiles Include="$(RepositoryDirectory)components\**\samples\**\*.md" Exclude="$(RepositoryDirectory)**\**\samples\**\obj\**\*.md;$(RepositoryDirectory)**\**\samples\**\bin\**\*.md"/>
     <AdditionalFiles Include="$(RepositoryDirectory)components\**\src\**\*.csproj" />
   </ItemGroup>
 

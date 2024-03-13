@@ -1,4 +1,7 @@
 <Project>
+<!--
+  Extra properties for WinUI projects.
+-->
   <PropertyGroup>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
@@ -8,6 +11,15 @@
   <PropertyGroup Condition="'$(IsWinAppSdk)' == 'true' OR '$(IsUwp)' == 'true'">
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsWinAppSdk)' == 'true'">
+    <!-- See https://github.com/microsoft/WindowsAppSDK/issues/3842 -->
+    <UseRidGraph>true</UseRidGraph>
+    
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 8">win-x86;win-x64;win-arm64</RuntimeIdentifiers> 
+    <RuntimeIdentifiers Condition="8 > $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))">win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsUno)' == 'true'">

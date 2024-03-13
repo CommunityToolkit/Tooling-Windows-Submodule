@@ -31,6 +31,13 @@ public partial class ToolkitSampleMetadataTests
             }
             """;
 
+    private static readonly string EmptySource = """        
+        namespace MyApp
+        {
+            public class MyClass { }
+        }
+        """;
+
     [TestMethod]
     public void MissingFrontMatterSection()
     {
@@ -183,7 +190,7 @@ icon: assets/icon.png
 # This is some test documentation...
 Without an invalid discussion-id.";
 
-        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
@@ -211,7 +218,7 @@ icon: assets/icon.png
 # This is some test documentation...
 Without an invalid issue-id.";
 
-        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
@@ -240,7 +247,7 @@ experimental: No
 # This is some test documentation...
 Without an invalid experimental value.";
 
-        var result = string.Empty.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
+        var result = EmptySource.RunSourceGenerator<ToolkitSampleMetadataGenerator>(SAMPLE_ASM_NAME, markdown);
 
         result.AssertNoCompilationErrors();
         result.AssertDiagnosticsAre(DiagnosticDescriptors.MarkdownYAMLFrontMatterException, DiagnosticDescriptors.DocumentationHasNoSamples);
@@ -271,7 +278,9 @@ Which is valid.
 > [!SAMPLE Sample]";
 
         string csproj = """
-<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Build.props))" Condition="Exists('$([MSBuild]::GetPathOfFileAbove(Directory.Build.props))')" />
+  
   <PropertyGroup>
     <ToolkitComponentName>Primitives</ToolkitComponentName>
   </PropertyGroup>

@@ -6,10 +6,12 @@
   <!-- Set up the MultiTarget system -->
   <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
+  <Sdk Condition="'$(IsUwp)' == 'true'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
+
   <!-- Import this component's source project -->
   <ItemGroup>
     <ProjectReference Include="$(MSBuildProjectDirectory)\..\src\*.csproj" />
-    <PackageReference Condition="'$(IsMacOS)' != 'true'" Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Condition="'$(IsMacOS)' != 'true'" Include="System.Collections.Immutable" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

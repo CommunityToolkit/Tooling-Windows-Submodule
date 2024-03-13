@@ -1,8 +1,8 @@
 <Project>
   <!-- Source generators -->
   <ItemGroup Condition="'$(IsWinAppSdk)' != 'true'">
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Test Dependencies -->
@@ -14,14 +14,14 @@
   </ItemGroup>
 
   <Choose>
-    <When Condition="'$(ToolkitExtensionSourceProject)' == ''">
+    <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230801-preview"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230907"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
       <ItemGroup>
-        <ProjectReference Include="$(ToolkitExtensionSourceProject)"/>
+        <ProjectReference Include="$(ToolkitExtensionsSourceProject)"/>
       </ItemGroup>
     </When>
   </Choose>

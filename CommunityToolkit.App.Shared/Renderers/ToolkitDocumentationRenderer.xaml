@@ -1,4 +1,4 @@
-<!--  Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information.  -->
+﻿<!--  Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information.  -->
 <Page x:Class="CommunityToolkit.App.Shared.Renderers.ToolkitDocumentationRenderer"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -17,8 +17,9 @@
       mc:Ignorable="d wasm">
 
     <Page.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <!--  Overriding the default Markdown styling to be inline with the default Windows typography / design guidelines  -->
-        <Style TargetType="renderer:MarkdownTextBlock">
+        <win:Style TargetType="renderer:MarkdownTextBlock">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="IsTabStop" Value="False" />
             <Setter Property="LinkForeground" Value="{ThemeResource AccentTextFillColorPrimaryBrush}" />
@@ -98,7 +99,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </win:Style>
 
         <DataTemplate x:Key="DocumentTemplate"
                       x:DataType="x:String">
@@ -234,7 +235,7 @@
                         </interactions:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>
-                <DropDownButton win:AutomationProperties.Name="Package info">
+                <muxc:DropDownButton win:AutomationProperties.Name="Package info">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon win:AutomationProperties.AccessibilityView="Raw"
                                   FontSize="14"
@@ -242,7 +243,7 @@
                         <TextBlock Margin="8,0,0,0"
                                    Text="Package info" />
                     </StackPanel>
-                    <DropDownButton.Flyout>
+                    <muxc:DropDownButton.Flyout>
                         <Flyout Placement="Bottom">
                             <StackPanel Orientation="Vertical"
                                         Spacing="4">
@@ -272,8 +273,8 @@
                                 </TextBlock>
                             </StackPanel>
                         </Flyout>
-                    </DropDownButton.Flyout>
-                </DropDownButton>
+                    </muxc:DropDownButton.Flyout>
+                </muxc:DropDownButton>
             </StackPanel>
             <ComboBox x:Name="SampleSelectionBox"
                       Grid.RowSpan="2"
@@ -301,15 +302,17 @@
             <muxc:InfoBar Title="Experimental"
                           Grid.Row="3"
                           Grid.ColumnSpan="2"
-                          Margin="0,16,0,0"
+                          Margin="0,16,0,16"
+                          BorderBrush="Transparent"
                           IsClosable="False"
-                          Visibility="Collapsed">
+                          IsOpen="{x:Bind BoolFalseIfNull(Metadata.IsExperimental), Mode=OneWay}"
+                          Message="This is component it part of Toolkit Labs and is considered experimental."
+                          Severity="Warning">
                 <muxc:InfoBar.ActionButton>
-                    <HyperlinkButton Content="Learn how you can use this experiment in your app"
-                                     NavigateUri="https://aka.ms/wct/wiki/previewpackages" />
+                    <HyperlinkButton Content="Learn more about Toolkit Labs"
+                                     NavigateUri="https://aka.ms/toolkit/labs/windows" />
                 </muxc:InfoBar.ActionButton>
             </muxc:InfoBar>
         </Grid>
     </Grid>
 </Page>
-

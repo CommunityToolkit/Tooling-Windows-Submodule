@@ -1,5 +1,5 @@
 <!-- An end-to-end setup of the MultiTarget system for library projects. -->
-<Project>
+<Project>  
   <PropertyGroup>
     <IsLibraryProject>true</IsLibraryProject>
     <IsDeployableHead>false</IsDeployableHead>
