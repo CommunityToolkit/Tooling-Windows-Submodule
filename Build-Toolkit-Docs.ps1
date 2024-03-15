@@ -1,6 +1,6 @@
 Param (
-    [Parameter(HelpMessage = "Where to output docs")]
-    [string]$OutputDir = "docs"
+  [Parameter(HelpMessage = "Where to output docs")]
+  [string]$OutputDir = "docs"
 )
 
 $tocContents = "items:`n"
@@ -15,7 +15,7 @@ foreach ($componentFolder in Get-ChildItem -Path $componentsRoot -Directory) {
   $tocContents = $tocContents + "- name: $componentName`n  items:`n"
   
   # Find each markdown file in component's samples folder
-  foreach ($markdownFile in Get-ChildItem -Recurse -Path "$componentFolder/samples/**/*.md" | Where-Object {$_.FullName -notlike "*\bin\*" -and $_FullName -notlike "*\obj\*"}) {
+  foreach ($markdownFile in Get-ChildItem -Recurse -Path "$componentFolder/samples/**/*.md" | Where-Object { $_.FullName -notlike "*\bin\*" -and $_FullName -notlike "*\obj\*" }) {
     $contents = Get-Content $markdownFile -Raw
 
     # Find title
@@ -27,22 +27,19 @@ foreach ($componentFolder in Get-ChildItem -Path $componentsRoot -Directory) {
     $endIndex = $contents | Select-String -Pattern "---" -AllMatches | ForEach-Object { $_.Matches[1].Index }
 
     # Insert Header
-    $contents = $contents.Substring(0, $endIndex+5) + "`n# $header`n" + $contents.Substring($endIndex+5)
+    $contents = $contents.Substring(0, $endIndex + 5) + "`n# $header`n" + $contents.Substring($endIndex + 5)
 
     # Find Sample Placeholders, replace with code content
-    foreach ($sample in ($contents | Select-String -Pattern '>\s*\[!SAMPLE\s*(?<sampleid>.*)\s*\]\s*' -AllMatches).Matches)
-    {
+    foreach ($sample in ($contents | Select-String -Pattern '>\s*\[!SAMPLE\s*(?<sampleid>.*)\s*\]\s*' -AllMatches).Matches) {
       $sampleid = $sample.Groups[1].Value
       $sampleString = $sample.Groups[0].Value
 
       # Find matching filename for CS
       foreach ($csFile in Get-ChildItem -Recurse -Path ($markdownFile.DirectoryName + '\**\*.xaml.cs').Replace('\', '/') |
-                Where-Object {$_.FullName -notlike "*\bin\*" -and $_FullName -notlike "*\obj\*"})
-      {
+        Where-Object { $_.FullName -notlike "*\bin\*" -and $_FullName -notlike "*\obj\*" }) {
         $csSample = Get-Content $csFile -Raw
         
-        if ($csSample -match '\[ToolkitSample\s?\(\s*id:\s*(?:"|nameof\()\s?' + $sampleid + '\s?(?:"|\))')
-        {
+        if ($csSample -match '\[ToolkitSample\s?\(\s*id:\s*(?:"|nameof\()\s?' + $sampleid + '\s?(?:"|\))') {
           # Get Relative Path
           $docPath = $(Join-Path "components" $($csfile.FullName.Replace($componentsRoot.Path, ''))).Replace('\', '/').Trim('/')
 
@@ -59,15 +56,22 @@ foreach ($componentFolder in Get-ChildItem -Path $componentsRoot -Directory) {
 
     # Make any learn links relative
     $contents = $contents.Replace('https://learn.microsoft.com', '')
-
-    # create output directory if it doesn't exist
+  
     $mdOutputPath = Join-Path $OutputDir $componentName
 
     if (-not (Test-Path $mdOutputPath)) {
       New-Item -ItemType Directory -Path $mdOutputPath | Out-Null
     }
 
-    $mdOutputFile = Join-Path $mdOutputPath $markdownFile.Name
+    $markdownFileName = $markdownFile.Name
+
+    # If the file is named the same as the component, rename it to index.md
+    # This is so that the URL for the component is /componentName instead of /componentName/componentName
+    if ($markdownFileName -eq "$componentName.md") {
+      $markdownFileName = "index.md"
+    }
+
+    $mdOutputFile = Join-Path $mdOutputPath $markdownFileName
 
     # Write file contents
     Write-Host 'Writing File:', $mdOutputFile
