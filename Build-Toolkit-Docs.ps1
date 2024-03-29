@@ -109,7 +109,7 @@ foreach ($componentFolder in Get-ChildItem -Path $componentsRoot -Directory) {
     $header = GetTitleFrontMatterFromMarkdownFile $markdownFiles[0]
     $mdOutputFile = ProcessMarkdownFile $markdownFiles[0]
     
-    $tocHref = $mdOutputFile.Trim('/').Replace($OutputDir, '').Trim('\')
+    $tocHref = $mdOutputFile.Trim('/').Replace($OutputDir, '').Trim('\').Replace('\', '/')
     $tocContents += AppendTocItem $header 1 @{ "href" = $tocHref }
   }
   else {
@@ -120,7 +120,7 @@ foreach ($componentFolder in Get-ChildItem -Path $componentsRoot -Directory) {
       $header = GetTitleFrontMatterFromMarkdownFile $markdownFile
       $mdOutputFile = ProcessMarkdownFile $markdownFile
     
-      $tocHref = $mdOutputFile.Trim('/').Replace($OutputDir, '').Trim('\')
+      $tocHref = $mdOutputFile.Trim('/').Replace($OutputDir, '').Trim('\').Replace('\', '/')
       $tocContents += AppendTocItem $header 2 @{ "href" = $tocHref }
     }
   }
