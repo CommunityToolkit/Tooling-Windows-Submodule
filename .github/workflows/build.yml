@@ -81,7 +81,7 @@ jobs:
         if: ${{ always() }}
 
       - name: Artifact - Diagnostic Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
           name: test-tooling-logs
@@ -229,7 +229,7 @@ jobs:
         if: ${{ always() && (steps.test-uwp.conclusion == 'success' || steps.test-winappsdk.conclusion == 'success') }}
 
       - name: Artifact - Diagnostic Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
           name: new-experiment-logs
@@ -294,7 +294,7 @@ jobs:
       # TODO: Do we want to run tests here? Can we do that on linux easily?
 
       - name: Artifact - Diagnostic Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
           name: linux-logs
