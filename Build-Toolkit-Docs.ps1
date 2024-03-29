@@ -93,9 +93,15 @@ $componentsRoot = Resolve-Path $PSScriptRoot/../components/
 
 # For each component
 foreach ($componentFolder in Get-ChildItem -Path $componentsRoot -Directory) {
+  # Add component to TOC
   $componentName = $componentFolder.Name
 
-  # Add component to TOC
+  # Check if /samples folder exists
+  if (-not (Test-Path "$componentFolder/samples")) {
+    continue
+  }
+
+  # Get markdown docs from samples folder
   $markdownFiles = Get-ChildItem -Recurse -Path "$componentFolder/samples/**/*.md" | Where-Object { $_.FullName -notlike "*\bin\*" -and $_FullName -notlike "*\obj\*" }
   
   # If there's only one markdown file, append it to the root of the TOC
