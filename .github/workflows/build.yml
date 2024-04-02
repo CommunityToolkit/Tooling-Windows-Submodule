@@ -96,7 +96,7 @@ jobs:
 
     steps:
       - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.2
+        uses: al-cheb/configure-pagefile-action@v1.4
         with:
           minimum-size: 32GB
           maximum-size: 32GB
@@ -148,7 +148,7 @@ jobs:
 
     steps:
       - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.2
+        uses: al-cheb/configure-pagefile-action@v1.4
         with:
           minimum-size: 32GB
           maximum-size: 32GB
