@@ -126,7 +126,7 @@ jobs:
         run: copy ./tooling/.github/workflows/config/* ./
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.3.1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Add project heads to ProjectTemplate
         working-directory: ./${{ env.PROJECT_DIRECTORY }}
@@ -182,7 +182,7 @@ jobs:
           mkdir ./components
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.3.1
+        uses: microsoft/setup-msbuild@v2
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
