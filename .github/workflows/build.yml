@@ -30,13 +30,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -60,7 +60,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: dotnet build
         working-directory: ./
@@ -81,7 +81,7 @@ jobs:
         if: ${{ always() }}
 
       - name: Artifact - Diagnostic Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
           name: test-tooling-logs
@@ -96,14 +96,14 @@ jobs:
 
     steps:
       - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.2
+        uses: al-cheb/configure-pagefile-action@v1.4
         with:
           minimum-size: 32GB
           maximum-size: 32GB
           disk-root: "C:"
 
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -116,7 +116,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'tooling'
 
@@ -126,7 +126,7 @@ jobs:
         run: copy ./tooling/.github/workflows/config/* ./
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.3.1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Add project heads to ProjectTemplate
         working-directory: ./${{ env.PROJECT_DIRECTORY }}
@@ -148,14 +148,14 @@ jobs:
 
     steps:
       - name: Configure Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.2
+        uses: al-cheb/configure-pagefile-action@v1.4
         with:
           minimum-size: 32GB
           maximum-size: 32GB
           disk-root: "C:"
           
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -168,7 +168,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'tooling'
 
@@ -182,7 +182,7 @@ jobs:
           mkdir ./components
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.3.1
+        uses: microsoft/setup-msbuild@v2
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
@@ -208,7 +208,7 @@ jobs:
 
       # Run tests
       - name: Setup VSTest Path
-        uses: darenm/Setup-VSTest@v1
+        uses: darenm/setup-vstest@3a16d909a1f3bbc65b52f8270d475d905e7d3e44
 
       - name: Install Testspace Module
         uses: testspace-com/setup-testspace@v1
@@ -229,7 +229,7 @@ jobs:
         if: ${{ always() && (steps.test-uwp.conclusion == 'success' || steps.test-winappsdk.conclusion == 'success') }}
 
       - name: Artifact - Diagnostic Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
           name: new-experiment-logs
@@ -243,7 +243,7 @@ jobs:
 
     steps:
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -253,7 +253,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'tooling'
 
@@ -294,7 +294,7 @@ jobs:
       # TODO: Do we want to run tests here? Can we do that on linux easily?
 
       - name: Artifact - Diagnostic Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
           name: linux-logs
