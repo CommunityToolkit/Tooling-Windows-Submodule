@@ -14,6 +14,10 @@
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\WinAppSdk.props" />
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+      <PublishAot>true</PublishAot>
+  </PropertyGroup>
+
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
