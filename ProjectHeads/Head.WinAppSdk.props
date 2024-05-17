@@ -15,7 +15,8 @@
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-      <PublishAot>true</PublishAot>
+      <!-- Set to true when WinAppSdk releases AoT support in 1.6+ -->
+      <PublishAot>false</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
