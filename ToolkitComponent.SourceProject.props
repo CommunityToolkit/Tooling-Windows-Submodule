@@ -15,6 +15,10 @@
 
   <Sdk Condition="'$(IsUwp)' == 'true'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
 
+  <PropertyGroup>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
+  </PropertyGroup>
+
   <!-- Auto Generate our own Assembly Info -->
   <PropertyGroup>
     <!-- Turn-off .NET based AssemblyInfo.cs generator, see below -->

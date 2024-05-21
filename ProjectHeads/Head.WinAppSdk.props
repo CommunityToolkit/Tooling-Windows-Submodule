@@ -14,6 +14,11 @@
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\WinAppSdk.props" />
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+      <!-- Set to true when WinAppSdk releases AoT support in 1.6+ -->
+      <PublishAot>false</PublishAot>
+  </PropertyGroup>
+
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
