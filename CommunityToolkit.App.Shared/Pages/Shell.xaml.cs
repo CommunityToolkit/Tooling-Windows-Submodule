@@ -21,7 +21,8 @@ public sealed partial class Shell : Page
     {
         this.InitializeComponent();
 #if WINDOWS_WINAPPSDK
-        appTitleBar.Window = App.currentWindow;
+        if (App.currentWindow is not null)
+            appTitleBar.Window = App.currentWindow;
 #else
         BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
 #endif
