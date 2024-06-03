@@ -12,10 +12,10 @@ namespace CommunityToolkit.App.Shared;
 public sealed partial class App : Application
 {
     // MacOS and iOS don't know the correct type without a full namespace declaration, confusing it with NSWindow and UIWindow.
-    // Using static will not work.
-#if WINAPPSDK
-    public static Microsoft.UI.Xaml.Window currentWindow = Microsoft.UI.Xaml.Window.Current;
-#else
+    // 'using static' will not work.
+#if WINUI3
+    public static Microsoft.UI.Xaml.Window? currentWindow = Microsoft.UI.Xaml.Window.Current;
+#elif WINUI2
     private static Windows.UI.Xaml.Window? currentWindow = Windows.UI.Xaml.Window.Current;
 #endif
 

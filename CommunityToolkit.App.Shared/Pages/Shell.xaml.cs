@@ -20,7 +20,7 @@ public sealed partial class Shell : Page
     public Shell()
     {
         this.InitializeComponent();
-#if WINAPPSDK
+#if WINDOWS_WINAPPSDK
         appTitleBar.Window = App.currentWindow;
 #else
         BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
