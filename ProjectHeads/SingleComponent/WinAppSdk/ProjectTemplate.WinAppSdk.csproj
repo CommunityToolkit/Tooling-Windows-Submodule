@@ -5,7 +5,7 @@
     <IsDeployableHead>true</IsDeployableHead>
     <IsWinAppSdk>true</IsWinAppSdk>
     <HasWinUI>true</HasWinUI>
-    <WinUIMajorVersion>2</WinUIMajorVersion>
+    <WinUIMajorVersion>3</WinUIMajorVersion>
 
     <IsSingleExperimentHead>true</IsSingleExperimentHead>
   </PropertyGroup>

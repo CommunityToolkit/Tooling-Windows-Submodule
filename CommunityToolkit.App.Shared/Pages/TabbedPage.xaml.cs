@@ -34,8 +34,9 @@ public sealed partial class TabbedPage : Page
     public TabbedPage()
     {
         this.InitializeComponent();
-#if WINAPPSDK
-        appTitleBar.Window = App.currentWindow;
+#if WINDOWS_WINAPPSDK
+        if (App.currentWindow is not null)
+            appTitleBar.Window = App.currentWindow;
 #else
         BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
 #endif

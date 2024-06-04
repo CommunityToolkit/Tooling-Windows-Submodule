@@ -2,18 +2,18 @@
     <PropertyGroup>
         <UwpTargetFramework>uap10.0.17763</UwpTargetFramework>
         <WinAppSdkTargetFramework>net8.0-windows10.0.22621.0;net7.0-windows10.0.22621.0;net6.0-windows10.0.22621.0;</WinAppSdkTargetFramework>
-        
-        <WasmHeadTargetFramework>net7.0</WasmHeadTargetFramework>
-        <LinuxHeadTargetFramework>net7.0</LinuxHeadTargetFramework>
-        <WpfHeadTargetFramework>net7.0</WpfHeadTargetFramework>
+
+        <WasmHeadTargetFramework>net8.0</WasmHeadTargetFramework>
+        <LinuxHeadTargetFramework>net8.0</LinuxHeadTargetFramework>
+        <WpfHeadTargetFramework>net8.0</WpfHeadTargetFramework>
 
         <!-- Used for comparison to current TargetFramework -->
-        <LinuxLibTargetFramework>net7.0</LinuxLibTargetFramework>
-        <WasmLibTargetFramework>net7.0</WasmLibTargetFramework>
-        <WpfLibTargetFramework>net7.0</WpfLibTargetFramework>
+        <LinuxLibTargetFramework>net8.0</LinuxLibTargetFramework>
+        <WasmLibTargetFramework>net8.0</WasmLibTargetFramework>
+        <WpfLibTargetFramework>net8.0</WpfLibTargetFramework>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
         <DotnetStandardCommonTargetFramework>netstandard2.0</DotnetStandardCommonTargetFramework>
-        <DotnetCommonTargetFramework>net7.0</DotnetCommonTargetFramework>
+        <DotnetCommonTargetFramework>net8.0</DotnetCommonTargetFramework>
     </PropertyGroup>
 </Project>
