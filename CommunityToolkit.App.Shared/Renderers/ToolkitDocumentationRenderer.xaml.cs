@@ -180,7 +180,7 @@ public sealed partial class ToolkitDocumentationRenderer : Page
             // Remove YAML - need to use array overload as single string not supported on .NET Standard 2.0
             var blocks = textContents.Split(new[] { "---" }, 2, StringSplitOptions.RemoveEmptyEntries);
 
-            return blocks.LastOrDefault() ?? "Couldn't find content after YAML Front Matter removal.";
+            return blocks.LastOrDefault()?.Replace("<br>", " ") ?? "Couldn't find content after YAML Front Matter removal.";
         }
         catch (Exception e)
         {
