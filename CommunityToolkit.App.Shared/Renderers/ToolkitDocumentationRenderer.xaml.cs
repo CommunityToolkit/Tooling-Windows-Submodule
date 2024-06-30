@@ -154,7 +154,7 @@ public sealed partial class ToolkitDocumentationRenderer : Page
         // TODO: https://github.com/CommunityToolkit/Labs-Windows/issues/142
         // MSBuild uses wildcard to find the files, and the wildcards decide where they end up
         // Single experiments use relative paths, the allExperiment head uses absolute paths that grab from all experiments
-        // The wildcard captures decide the paths. This discrepency is accounted for manually.
+        // The wildcard captures decide the paths. This discrepancy is accounted for manually.
         // Logic here is the exact same that MSBuild uses to find and include the files we need.
         var assemblyName = typeof(ToolkitSampleRenderer).Assembly.GetName().Name;
         if (string.IsNullOrWhiteSpace(assemblyName))
@@ -178,9 +178,9 @@ public sealed partial class ToolkitDocumentationRenderer : Page
             var textContents = await FileIO.ReadTextAsync(file);
 
             // Remove YAML - need to use array overload as single string not supported on .NET Standard 2.0
-            var blocks = textContents.Split(new[] { "---" }, StringSplitOptions.RemoveEmptyEntries);
+            var blocks = textContents.Split(new[] { "---" }, 2, StringSplitOptions.RemoveEmptyEntries);
 
-            return blocks.LastOrDefault() ?? "Couldn't find content after YAML Front Matter removal.";
+            return blocks.LastOrDefault()?.Replace("<br>", " ") ?? "Couldn't find content after YAML Front Matter removal.";
         }
         catch (Exception e)
         {
