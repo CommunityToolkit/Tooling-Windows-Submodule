@@ -8,6 +8,8 @@ namespace CommunityToolkit.App.Shared.Pages;
 
 public sealed partial class GettingStartedPage : Page
 {
+    public string AppVersion => $"Version {Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}";
+
     public GettingStartedPage()
     {
         this.InitializeComponent();
