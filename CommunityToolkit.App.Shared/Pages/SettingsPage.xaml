@@ -73,7 +73,7 @@
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                                Text="About" />
 
-                    <controls:SettingsExpander Description="© 2023. All rights reserved."
+                    <controls:SettingsExpander Description="© 2024. All rights reserved."
                                                Header="Windows Community Toolkit Gallery"
                                                IsExpanded="True">
                         <controls:SettingsExpander.HeaderIcon>
@@ -82,7 +82,7 @@
                         </controls:SettingsExpander.HeaderIcon>
                         <TextBlock win:IsTextSelectionEnabled="True"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                   Text="Version 8.0.0" />
+                                   Text="{x:Bind AppVersion}" />
                         <controls:SettingsExpander.Items>
                             <controls:SettingsCard HorizontalContentAlignment="Left"
                                                    ContentAlignment="Left">
