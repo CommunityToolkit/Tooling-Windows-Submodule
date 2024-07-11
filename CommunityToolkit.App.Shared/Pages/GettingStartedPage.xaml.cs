@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using CommunityToolkit.Tooling.SampleGen.Metadata;
+using Windows.ApplicationModel;
 
 namespace CommunityToolkit.App.Shared.Pages;
 
