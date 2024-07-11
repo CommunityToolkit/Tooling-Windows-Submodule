@@ -72,7 +72,7 @@ public static class NavigationViewHelper
             {
                 Content = subcategoryGroup.Key,
                 SelectsOnInvoked = false,
-                IsExpanded = true,
+                IsExpanded = false,
                 Style = (Style)App.Current.Resources["SubcategoryNavigationViewItemStyle"],
             }, subcategoryGroup.ToArray());
         }
