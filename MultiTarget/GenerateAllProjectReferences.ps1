@@ -28,8 +28,14 @@ foreach ($componentName in $Components) {
     continue;
   }
 
+  # Don't generate project reference if component isn't available
+  if (!(Test-Path "$PSScriptRoot/../../components/$componentName/")) {
+    continue;
+  }
+
   # Find all components source csproj (when wildcard), or find specific component csproj by name.
   foreach ($componentPath in Get-Item "$PSScriptRoot/../../components/$componentName/") {
+    $componentName = $componentPath.BaseName;
     Write-Output "Generating project references for component $componentName at $componentPath";
 
     # Find source and sample csproj files
