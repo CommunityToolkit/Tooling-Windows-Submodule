@@ -16,7 +16,8 @@ Param (
 
     [Parameter(HelpMessage = "Only projects that support these targets will have references generated for use by deployable heads.")]
     [ValidateSet("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")]
-    [string[]] $MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
+    [Alias("mt")]
+    [string[]] $MultiTargets = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
 )
 
 $templateContents = Get-Content -Path $templatePath;
@@ -40,35 +41,44 @@ $templateContents = $templateContents -replace [regex]::escape($projectRootPlace
 $componentPath = Get-Item "$projectPath/../../"
 
 # Load multitarget preferences for component
-$multiTargets = & $PSScriptRoot\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
+$multiTargetPrefs = & $PSScriptRoot\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
 
-if ($null -eq $multiTargets) {
+if ($null -eq $multiTargetPrefs) {
     Write-Error "Couldn't get MultiTarget property for $componentPath";
     exit(-1);
 }
 
-# Ensure multiTargets is not empty
-if ($multiTargets.Length -eq 0) {
+# Ensure multiTargetPrefs is not empty
+if ($multiTargetPrefs.Length -eq 0) {
     Write-Error "MultiTarget property is empty for $projectPath";
     exit(-1);
 }
 
-$templateContents = $templateContents -replace [regex]::escape("[IntendedTargets]"), $multiTargets;
+$templateContents = $templateContents -replace [regex]::escape("[IntendedTargets]"), $multiTargetPrefs;
 
 function ShouldMultiTarget([string] $target) {
-    return ($multiTargets.Contains($target) -and $MultiTarget.Contains($target)).ToString().ToLower()
+    return ($multiTargetPrefs.Contains($target) -and $MultiTargets.Contains($target))
 }
 
-Write-Host "Generating project references for $([System.IO.Path]::GetFileNameWithoutExtension($csprojFileName)): $($multiTargets -Join ', ')"
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetWasm]"), "'$(ShouldMultiTarget "wasm")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetUwp]"), "'$(ShouldMultiTarget "uwp")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetWasdk]"), "'$(ShouldMultiTarget "wasdk")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetWpf]"), "'$(ShouldMultiTarget "wpf")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetLinuxGtk]"), "'$(ShouldMultiTarget "linuxgtk")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetMacOS]"), "'$(ShouldMultiTarget "macos")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetiOS]"), "'$(ShouldMultiTarget "ios")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetDroid]"), "'$(ShouldMultiTarget "android")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetNetstandard]"), "'$(ShouldMultiTarget "netstandard")'";
+function ShouldMultiTargetMsBuildValue([string] $target) {
+    return $(ShouldMultiTarget $target).ToString().ToLower()
+}
+
+$targeted = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard").Where({ ShouldMultiTarget $_ })
+
+if ($targeted.Count -gt 0) {
+    Write-Host "Generating project references for $([System.IO.Path]::GetFileNameWithoutExtension($csprojFileName)): $($targeted -Join ', ')"
+}
+
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetWasm]"), "'$(ShouldMultiTargetMsBuildValue "wasm")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetUwp]"), "'$(ShouldMultiTargetMsBuildValue "uwp")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetWasdk]"), "'$(ShouldMultiTargetMsBuildValue "wasdk")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetWpf]"), "'$(ShouldMultiTargetMsBuildValue "wpf")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetLinuxGtk]"), "'$(ShouldMultiTargetMsBuildValue "linuxgtk")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetMacOS]"), "'$(ShouldMultiTargetMsBuildValue "macos")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetiOS]"), "'$(ShouldMultiTargetMsBuildValue "ios")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetDroid]"), "'$(ShouldMultiTargetMsBuildValue "android")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetNetstandard]"), "'$(ShouldMultiTargetMsBuildValue "netstandard")'";
 
 # Save to disk
 Set-Content -Path $outputPath -Value $templateContents;

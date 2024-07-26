@@ -58,11 +58,13 @@
 #>
 Param (
     [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-    [string[]]$MultiTargets = @('all'),
+    [Alias("mt")]
+    [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
     
     [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-    [string[]]$ExcludeMultiTargets = @('wpf', 'linuxgtk', 'macos', 'ios', 'android'),
+    [string[]]$ExcludeMultiTargets = @() # default settings
 
+    [Alias("c")]
     [string[]]$Components = @("all"),
 
     [string[]]$ExcludeComponents,
@@ -76,10 +78,13 @@ Param (
     [Alias("bl")]
     [switch]$EnableBinLogs,
 
+    [Alias("blo")]
     [string]$BinlogOutput,
-
+    
+    [Alias("p")]
     [hashtable]$AdditionalProperties,
 
+    [Alias("winui")]
     [int]$WinUIMajorVersion = 2,
 
     [string]$ComponentDir = "src",
