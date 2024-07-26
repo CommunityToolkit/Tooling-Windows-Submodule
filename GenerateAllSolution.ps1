@@ -7,26 +7,30 @@
 
     Otherwise it is recommended to focus on an individual component's solution instead.
 .PARAMETER IncludeHeads
-    List of TFM based projects to include. This can be 'all', 'uwp', or 'winappsdk'.
+    List of TFM based projects to include. This can be 'all', 'uwp', or 'wasdk'.
 
-    Defaults to 'all' for local-use.
+    Defaults to 'all'.
 .PARAMETER UseDiagnostics
     Add extra diagnostic output to running slngen, such as a binlog, etc...
 .EXAMPLE
-    C:\PS> .\GenerateAllSolution -IncludeHeads winappsdk
+    C:\PS> .\GenerateAllSolution -IncludeHeads wasdk
     Build a solution that doesn't contain UWP projects.
 .NOTES
     Author: Windows Community Toolkit Labs Team
     Date:   April 27, 2022
 #>
 Param (
-    [Parameter(HelpMessage = "The heads to include for building platform samples and tests.", ParameterSetName = "IncludeHeads")]
-    [ValidateSet('all', 'uwp', 'winappsdk')]
-    [string]$IncludeHeads = 'all',
+    [Parameter(HelpMessage = "The heads to include for building the sample gallery and tests.", ParameterSetName = "IncludeHeads")]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')]
+    [string[]]$IncludeHeads = @('all'),
 
     [Parameter(HelpMessage = "Add extra diagnostic output to slngen generator.")]
     [switch]$UseDiagnostics = $false
 )
+
+if ($IncludeHeads.Contains('all')) {
+    $IncludeHeads = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')
+}
 
 # Generate required props for "All" solution.
 & ./tooling/MultiTarget/GenerateAllProjectReferences.ps1
@@ -55,18 +59,21 @@ $projects = [System.Collections.ArrayList]::new()
 # Common/Dependencies for shared infrastructure
 [void]$projects.Add(".\tooling\CommunityToolkit*\*.*proj")
 
-# App Head and Test Head
-if ($IncludeHeads -ne 'winappsdk')
-{
-    [void]$projects.Add(".\tooling\ProjectHeads\AllComponents\**\*.Uwp.csproj")
-}
+# TODO: this handles separate project heads, but won't directly handle the unified Skia head from Uno.
+# Once we have that, just do a transform on the csproj filename inside this loop to decide the same csproj for those separate MultiTargets.
+foreach ($multitarget in $IncludeHeads) {
+    # capitalize first letter, avoid case sensitivity issues on linux
+    $csprojFileNamePartForMultiTarget = $multitarget.substring(0,1).ToUpper() + $multitarget.Substring(1).ToLower()
 
-if ($IncludeHeads -ne 'uwp')
-{
-    [void]$projects.Add(".\tooling\ProjectHeads\AllComponents\**\*.WinAppSdk.csproj")
-}
+    $path = ".\tooling\ProjectHeads\AllComponents\**\*.$csprojFileNamePartForMultiTarget.csproj";
 
-[void]$projects.Add(".\tooling\ProjectHeads\AllComponents\**\*.Wasm.csproj")
+    if (Test-Path $path) {
+        [void]$projects.Add($path)
+    }
+    else {
+        Write-Warning "No project head could be found at $path for MultiTarget $multitarget. Skipping."
+    }
+}
 
 # Individual projects
 [void]$projects.Add(".\components\**\src\*.csproj")
