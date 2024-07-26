@@ -67,7 +67,7 @@ $templateContents = $templateContents -replace [regex]::escape("[CanTargetWpf]")
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetLinuxGtk]"), "'$(ShouldMultiTarget "linuxgtk")'";
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetMacOS]"), "'$(ShouldMultiTarget "macos")'";
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetiOS]"), "'$(ShouldMultiTarget "ios")'";
-$templateContents = $templateContents -replace [regex]::escape("[CanTargetDroid]"), "'$(ShouldMultiTarget "droid")'";
+$templateContents = $templateContents -replace [regex]::escape("[CanTargetDroid]"), "'$(ShouldMultiTarget "android")'";
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetNetstandard]"), "'$(ShouldMultiTarget "netstandard")'";
 
 # Save to disk
