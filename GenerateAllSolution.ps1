@@ -20,6 +20,9 @@
 .PARAMETER ExcludeComponents
     The names of the components to exclude when generating solution and project references. Defaults to none.
 
+.PARAMETER WinUIMajorVersion
+  Specifies the WinUI major version to use when building an Uno head. Also decides the package id and dependency variant. The default value is '2'.
+
 .PARAMETER UseDiagnostics
     Add extra diagnostic output to running slngen, such as a binlog, etc...
 
@@ -32,23 +35,21 @@
     Date:   April 27, 2022
 #>
 Param (
-    [Parameter(HelpMessage = "The heads to include for building the sample gallery and tests.", ParameterSetName = "MultiTargets")]
     [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')]
     [Alias("mt")]
-    [string[]]$MultiTargets = @('all'),
+    [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
 
-    [Parameter(HelpMessage = "The target frameworks to disable.")]
     [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-    [string[]]$ExcludeMultiTargets = @() # default settings
+    [string[]]$ExcludeMultiTargets = @(), # default settings
 
-    [Parameter(HelpMessage = "The names of the components to generate project and solution references for. Defaults to all components.")]
     [Alias("c")]
     [string[]]$Components = @('all'),
 
-    [Parameter(HelpMessage = "The names of the components to exclude when generating solution and project references.")]
+    [Alias("winui")]
+    [int]$WinUIMajorVersion = 2,
+
     [string[]]$ExcludeComponents,
 
-    [Parameter(HelpMessage = "Add extra diagnostic output to slngen generator.")]
     [switch]$UseDiagnostics = $false
 )
 
@@ -66,6 +67,7 @@ $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
 # Generate required props for "All" solution.
 & ./tooling/MultiTarget/GenerateAllProjectReferences.ps1 -MultiTargets $MultiTargets -Components $Components -ExcludeComponents $ExcludeComponents
 & ./tooling/MultiTarget/UseTargetFrameworks.ps1 -MultiTargets $MultiTargets
+& ./tooling/MultiTarget/UseUnoWinUI.ps1 $WinUIMajorVersion
 
 # Set up constant values
 $generatedSolutionFilePath = 'CommunityToolkit.AllComponents.sln'
