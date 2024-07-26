@@ -7,10 +7,10 @@
     that works on all supported platforms.
     
     Note: Projects which rely on target platforms that are excluded will be unable to build.
-.PARAMETER include
+.PARAMETER MultiTargets
     List of include to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property.
     By default, uwp, wasdk, and wasm will included.
-.PARAMETER exclude
+.PARAMETER ExcludeMultiTargets
     List to exclude from build. Possible values match those provided to the <MultiTarget> MSBuild property.
     By default, none will excluded.
 .EXAMPLE
@@ -23,12 +23,13 @@
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
     [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-    [string[]]$include = @('uwp', 'wasdk', 'wasm'), # default settings
+    [Alias("mt")]
+    [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
 
     [Parameter(HelpMessage = "The target frameworks to disable.")]
     [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-    [string[]]$exclude = @() # default settings
-)3
+    [string[]]$ExcludeMultiTargets = @() # default settings
+)
 
 $UwpTfm = "UwpTargetFramework";
 $WinAppSdkTfm = "WinAppSdkTargetFramework";
@@ -42,53 +43,53 @@ $NetstandardTfm = "DotnetStandardCommonTargetFramework";
 
 $fileContents = Get-Content -Path $PSScriptRoot/AvailableTargetFrameworks.props
 
-# 'all' represents many '$include' values
-if ($include.Contains("all")) {
-    $include = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+# 'all' represents many '$MultiTargets' values
+if ($MultiTargets.Contains("all")) {
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
 }
 
 # Exclude as needed
-foreach ($excluded in $exclude) {
-    $include = $include.Where({ $_ -ne $excluded });
+foreach ($excluded in $ExcludeMultiTargets) {
+    $MultiTargets = $MultiTargets.Where({ $_ -ne $excluded });
 }
 
-Write-Output "Setting enabled TargetFrameworks: $include"
+Write-Output "Setting enabled TargetFrameworks: $MultiTargets"
 
 $desiredTfmValues = @();
 
-if ($include.Contains("wasm")) {
+if ($MultiTargets.Contains("wasm")) {
     $desiredTfmValues += $WasmTfm;
 }
 
-if ($include.Contains("uwp")) {
+if ($MultiTargets.Contains("uwp")) {
     $desiredTfmValues += $UwpTfm;
 }
 
-if ($include.Contains("wasdk")) {
+if ($MultiTargets.Contains("wasdk")) {
     $desiredTfmValues += $WinAppSdkTfm;
 }
 
-if ($include.Contains("wpf")) {
+if ($MultiTargets.Contains("wpf")) {
     $desiredTfmValues += $WpfTfm;
 }
 
-if ($include.Contains("linuxgtk")) {
+if ($MultiTargets.Contains("linuxgtk")) {
     $desiredTfmValues += $GtkTfm;
 }
 
-if ($include.Contains("macos")) {
+if ($MultiTargets.Contains("macos")) {
     $desiredTfmValues += $macOSTfm;
 }
 
-if ($include.Contains("ios")) {
+if ($MultiTargets.Contains("ios")) {
     $desiredTfmValues += $iOSTfm;
 }
 
-if ($include.Contains("android")) {
+if ($MultiTargets.Contains("android")) {
     $desiredTfmValues += $DroidTfm;
 }
 
-if ($include.Contains("netstandard")) {
+if ($MultiTargets.Contains("netstandard")) {
     $desiredTfmValues += $NetstandardTfm;
 }
 
