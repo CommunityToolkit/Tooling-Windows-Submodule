@@ -3,19 +3,19 @@
     Changes the target frameworks to build for each package created within the repository.
 .DESCRIPTION
     By default, only the UWP, Windows App SDK, and WASM heads are built to simplify dependencies 
-    needed to build projects within the repository. The CI will enable all include to build a package
+    needed to build projects within the repository. The CI will enable all targets to build a package
     that works on all supported platforms.
     
     Note: Projects which rely on target platforms that are excluded will be unable to build.
 .PARAMETER MultiTargets
-    List of include to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property.
+    List of targets to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property.
     By default, uwp, wasdk, and wasm will included.
 .PARAMETER ExcludeMultiTargets
     List to exclude from build. Possible values match those provided to the <MultiTarget> MSBuild property.
     By default, none will excluded.
 .EXAMPLE
     C:\PS> .\UseTargetFrameworks wasdk
-    Build include for just the WindowsAppSDK.
+    Build TFMs for only the Windows App SDK.
 .NOTES
     Author: Windows Community Toolkit Labs Team
     Date:   April 8, 2022
