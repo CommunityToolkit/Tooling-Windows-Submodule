@@ -3,11 +3,14 @@
 // See the LICENSE file in the project root for more information.
 
 using CommunityToolkit.Tooling.SampleGen.Metadata;
+using Windows.ApplicationModel;
 
 namespace CommunityToolkit.App.Shared.Pages;
 
 public sealed partial class GettingStartedPage : Page
 {
+    public string AppVersion => $"Version {Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}";
+
     public GettingStartedPage()
     {
         this.InitializeComponent();

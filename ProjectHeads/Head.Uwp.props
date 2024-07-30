@@ -128,7 +128,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14"/>
-        <PackageReference Include="PolySharp" Version="1.13.1">
+        <PackageReference Include="PolySharp" Version="1.14.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
