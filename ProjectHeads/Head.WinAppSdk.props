@@ -15,7 +15,6 @@
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-      <PublishAot>true</PublishAot>
       <RuntimeIdentifier Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 8">win-$(Platform)</RuntimeIdentifier> 
       <RuntimeIdentifier Condition="8 > $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))">win10-$(Platform)</RuntimeIdentifier>
   </PropertyGroup>

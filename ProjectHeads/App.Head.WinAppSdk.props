@@ -3,6 +3,10 @@
     <DependencyVariant>WinUI</DependencyVariant>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+      <PublishAot>true</PublishAot>
+  </PropertyGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.props" />
   <Import Project="$(MSBuildThisFileDirectory)\Head.WinAppSdk.props" />
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.WinAppSdk.Dependencies.props" />
