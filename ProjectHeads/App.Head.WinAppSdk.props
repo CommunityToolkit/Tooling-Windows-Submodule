@@ -3,7 +3,7 @@
     <DependencyVariant>WinUI</DependencyVariant>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+  <PropertyGroup>
       <PublishAot>true</PublishAot>
   </PropertyGroup>
 
