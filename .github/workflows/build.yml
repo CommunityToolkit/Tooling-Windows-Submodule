@@ -188,6 +188,12 @@ jobs:
           $namesOfProcessesForDumpCollection = @(
               "CommunityToolkit.Tests.Uwp.exe",
               "CommunityToolkit.Tests.WinAppSdk.exe",
+              "CiTestExp.Tests.Uwp.exe",
+              "CiTestExp.Tests.WinAppSdk.exe",
+              "Labs.CiTestExp.Tests.Uwp.exe",
+              "Labs.CiTestExp.Tests.AppSdk.exe",
+              "Labs.CiTestExp.Tests.Uwp_1.0.0.0_x64__1v6rh0sdhj24c.exe",
+              "Labs.CiTestExp.Tests.AppSdk_1.0.0.0_x64__1v6rh0sdhj24c.exe",
               "VSTest.Console.exe")
           
           Enable-CrashDumpsForProcesses $namesOfProcessesForDumpCollection
