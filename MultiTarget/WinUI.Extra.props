@@ -38,6 +38,11 @@
     <!-- These suppressions are for references between generated assemblies and that VS can keep in the Error List once resolved -->
     <NoWarn>$(NoWarn);WMC1006;CS8034;</NoWarn>
   </PropertyGroup>
+  
+  <!-- Disable warnings for 'This call site is reachable on all platforms.' caused by underlying platform. -->
+  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <NoWarn>$(NoWarn);CA1416;</NoWarn>
+  </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="$(ToolingDirectory)\GlobalUsings_WinUI.cs" />
