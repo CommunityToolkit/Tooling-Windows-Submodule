@@ -41,7 +41,7 @@
     <IsGtkLib Condition="'$(IsGtkLib)' == '' AND '$(TargetFramework)' == '$(LinuxLibTargetFramework)' AND '$(LinuxLibTargetFramework)' != '' AND '$(MultiTargetsLinuxGtk)' == 'true'">true</IsGtkLib>
     <IsGtk Condition="'$(IsGtk)' == '' AND ('$(IsGtkHead)' == 'true' or '$(IsGtkLib)' == 'true')">true</IsGtk>
 
-    <IsUwp Condition="'$(IsUwp)' == '' AND '$(TargetFramework)' == '$(UwpTargetFramework)' AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
+    <IsUwp Condition="'$(IsUwp)' == '' AND $(UwpTargetFramework.Contains('$(TargetFramework);')) AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
     <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFramework.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFramework)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
 
     <IsDroid Condition="'$(IsDroid)' == '' AND '$(TargetFramework)' == '$(AndroidLibTargetFramework)' AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
