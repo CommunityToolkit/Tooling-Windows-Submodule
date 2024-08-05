@@ -1,5 +1,6 @@
 <Project>
   <ItemGroup>
-    <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.UI.Xaml" Version="2.7.0" />
+    <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.UI.Xaml" Version="2.8.7-prerelease.240725004" />
+    <PackageReference Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" Include="Microsoft.Windows.CsWinRT" Version="2.1.0-prerelease.240722.1" PrivateAssets="all" />
   </ItemGroup>
 </Project>
