@@ -67,7 +67,7 @@ Param (
     [Alias("c")]
     [string[]]$Components = @("all"),
 
-    [string[]]$ExcludeComponents,
+    [string[]]$ExcludeComponents = @(),
 
     [string]$DateForVersion = (Get-Date -UFormat %y%m%d),
 
@@ -108,10 +108,6 @@ $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
 
 if ($Components -eq @('all')) {
     $Components = @('**')
-}
-
-if ($ExcludeComponents) {
-    $Components = $Components | Where-Object { $_ -notin $ExcludeComponents }
 }
 
 # Check if NupkgOutput is supplied without PreviewVersion
@@ -184,9 +180,14 @@ foreach ($ComponentName in $Components) {
     foreach ($componentCsproj in Get-ChildItem -Path "$PSScriptRoot/../components/$ComponentName/$ComponentDir/*.csproj") {
         # Get component name from csproj path
         $componentPath = Get-Item "$componentCsproj/../../"
+        $componentName = $($componentPath.BaseName);
+
+        if ($componenName -in $ExcludeComponents) {
+            continue;
+        }
 
         # Get supported MultiTarget for this component
-        $supportedMultiTargets = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
+        $supportedMultiTargets = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $componentName
 
         # Flag to check if any of the requested targets are supported by the component
         $isTargetSupported = $false
