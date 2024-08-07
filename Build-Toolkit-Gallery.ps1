@@ -51,7 +51,7 @@ Param (
   [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
   
   [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-  [string[]]$ExcludeMultiTargets = @() # default settings
+  [string[]]$ExcludeMultiTargets = @(), # default settings
 
   [ValidateSet('all', 'Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')]
   [string[]]$Heads = @('Uwp', 'Wasdk', 'Wasm'),
