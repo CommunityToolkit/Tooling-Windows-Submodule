@@ -14,9 +14,9 @@
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\WinAppSdk.props" />
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-      <!-- Set to true when WinAppSdk releases AoT support in 1.6+ -->
-      <PublishAot>false</PublishAot>
+  <PropertyGroup>
+      <RuntimeIdentifier Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 8">win-$(Platform)</RuntimeIdentifier> 
+      <RuntimeIdentifier Condition="8 > $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))">win10-$(Platform)</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
