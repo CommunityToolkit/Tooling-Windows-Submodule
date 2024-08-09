@@ -59,4 +59,23 @@
       <HintPath Condition="Exists('c:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\Extensions\Xamarin.VisualStudio')">c:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\Extensions\Xamarin.VisualStudio\Xamarin.Mac.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+    <!--
+    Workaround for WindowsAppSdk 1.6
+    Track https://github.com/CommunityToolkit/Labs-Windows/pull/561#issuecomment-2274727870
+    -->
+  <Target Condition="'$(IsWinAppSdk)' == 'true'" Name="CsWinRTRemoveXamlDllReferences" AfterTargets="ResolveTargetingPackAssets;ResolveReferences" BeforeTargets="XamlPreCompile;CoreCompile" Outputs="@(Reference)">
+      <ItemGroup>
+          <Reference Remove="@(Reference)"
+              Condition="'%(Reference.Filename)%(Reference.Extension)' == 'Microsoft.Windows.UI.Xaml.dll'" />
+          <ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)"
+              Condition="'%(ReferencePathWithRefAssemblies.Filename)%(ReferencePathWithRefAssemblies.Extension)' == 'Microsoft.Windows.UI.Xaml.dll'" />
+          <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"
+              Condition="'%(ReferenceCopyLocalPaths.Filename)%(ReferenceCopyLocalPaths.Extension)' == 'Microsoft.Windows.UI.Xaml.dll'" />
+          <ReferencePath Remove="@(ReferencePath)"
+              Condition="'%(ReferencePath.Filename)%(ReferencePath.Extension)' == 'Microsoft.Windows.UI.Xaml.dll'" />
+          <RuntimePackAsset Remove="@(RuntimePackAsset)"
+Condition="'%(RuntimePackAsset.Filename)%(RuntimePackAsset.Extension)' == 'Microsoft.Windows.UI.Xaml.dll'" />
+      </ItemGroup>
+  </Target>
 </Project>
