@@ -12,7 +12,7 @@
     Specifies the MultiTarget TFM(s) to exclude for building the components. The default value excludes targets that require additional tooling or workloads to build: 'wpf', 'linuxgtk', 'macos', 'ios', and 'android'. Run uno-check to install the required workloads.
 
 .PARAMETER Heads
-  The heads to include in the build. Default is 'Uwp', 'WinAppSdk', 'Wasm'.
+  The heads to include in the build. Default is 'Uwp', 'Wasdk', 'Wasm'.
 
 .PARAMETER ExcludeHeads
   The heads to exclude from the build. Default is none.
@@ -47,26 +47,31 @@
 #>
 Param (
   [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-  [string[]]$MultiTargets = @('all'),
+  [Alias("mt")]
+  [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
   
   [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-  [string[]]$ExcludeMultiTargets = @('wpf', 'linuxgtk', 'macos', 'ios', 'android'),
+  [string[]]$ExcludeMultiTargets = @() # default settings
 
-  [ValidateSet('all', 'Uwp', 'WinAppSdk', 'Wasm', 'Tests.Uwp', 'Tests.WinAppSdk')]
-  [string[]]$Heads = @('Uwp', 'WinAppSdk', 'Wasm'),
+  [ValidateSet('all', 'Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')]
+  [string[]]$Heads = @('Uwp', 'Wasdk', 'Wasm'),
 
-  [ValidateSet('Uwp', 'WinAppSdk', 'Wasm', 'Tests.Uwp', 'Tests.WinAppSdk')]
+  [ValidateSet('Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')]
   [string[]]$ExcludeHeads,
 
   [Alias("bl")]
   [switch]$EnableBinLogs,
 
+  [Alias("blo")]
   [string]$BinlogOutput,
 
+  [Alias("p")]
   [hashtable]$AdditionalProperties,
 
+  [Alias("winui")]
   [int]$WinUIMajorVersion = 2,
 
+  [Alias("c")]
   [string[]]$Components = @("all"),
 
   [string[]]$ExcludeComponents,
@@ -113,7 +118,7 @@ if ($Components -notcontains 'Converters') {
 & $PSScriptRoot\MultiTarget\GenerateAllProjectReferences.ps1 -MultiTarget $MultiTargets -Components $Components
 
 if ($Heads -eq 'all') {
-  $Heads = @('Uwp', 'WinAppSdk', 'Wasm', 'Tests.Uwp', 'Tests.WinAppSdk')
+  $Heads = @('Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')
 }
 
 function Invoke-MSBuildWithBinlog {

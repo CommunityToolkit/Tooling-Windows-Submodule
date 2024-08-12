@@ -7,24 +7,28 @@
     that works on all supported platforms.
     
     Note: Projects which rely on target platforms that are excluded will be unable to build.
-.PARAMETER targets
-    List of targets to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property, as well as 'all', 'all-uwp', 'all-wasdk', or blank.
-    When run as blank, the defaults (uwp, winappsdk, wasm) will be used.
-    'all', 'all-uwp', and 'all-wasdk' shouldn't be used with other targets or each other.
-.PARAMETER allowGitChanges
-    Enabling this flag will allow changes to the props file to be checked into source control.
-    By default the file is ignored so local changes to building don't accidently get checked in.
+.PARAMETER MultiTargets
+    List of targets to set as TFM platforms to build for. Possible values match those provided to the <MultiTarget> MSBuild property.
+    By default, uwp, wasdk, and wasm will included.
+.PARAMETER ExcludeMultiTargets
+    List to exclude from build. Possible values match those provided to the <MultiTarget> MSBuild property.
+    By default, none will excluded.
 .EXAMPLE
-    C:\PS> .\UseTargetFrameworks winappsdk
-    Build targets for just the WindowsAppSDK.
+    C:\PS> .\UseTargetFrameworks wasdk
+    Build TFMs for only the Windows App SDK.
 .NOTES
     Author: Windows Community Toolkit Labs Team
     Date:   April 8, 2022
 #>
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
-    [ValidateSet('all', 'all-uwp', 'all-wasdk', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-    [string[]]$targets = @('uwp', 'winappsdk', 'wasm') # default settings
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [Alias("mt")]
+    [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
+
+    [Parameter(HelpMessage = "The target frameworks to disable.")]
+    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [string[]]$ExcludeMultiTargets = @() # default settings
 )
 
 $UwpTfm = "UwpTargetFramework";
@@ -39,7 +43,57 @@ $NetstandardTfm = "DotnetStandardCommonTargetFramework";
 
 $fileContents = Get-Content -Path $PSScriptRoot/AvailableTargetFrameworks.props
 
-$allTargetFrameworks = @(
+# 'all' represents many '$MultiTargets' values
+if ($MultiTargets.Contains("all")) {
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+}
+
+# Exclude as needed
+foreach ($excluded in $ExcludeMultiTargets) {
+    $MultiTargets = $MultiTargets.Where({ $_ -ne $excluded });
+}
+
+Write-Output "Setting enabled TargetFrameworks: $MultiTargets"
+
+$desiredTfmValues = @();
+
+if ($MultiTargets.Contains("wasm")) {
+    $desiredTfmValues += $WasmTfm;
+}
+
+if ($MultiTargets.Contains("uwp")) {
+    $desiredTfmValues += $UwpTfm;
+}
+
+if ($MultiTargets.Contains("wasdk")) {
+    $desiredTfmValues += $WinAppSdkTfm;
+}
+
+if ($MultiTargets.Contains("wpf")) {
+    $desiredTfmValues += $WpfTfm;
+}
+
+if ($MultiTargets.Contains("linuxgtk")) {
+    $desiredTfmValues += $GtkTfm;
+}
+
+if ($MultiTargets.Contains("macos")) {
+    $desiredTfmValues += $macOSTfm;
+}
+
+if ($MultiTargets.Contains("ios")) {
+    $desiredTfmValues += $iOSTfm;
+}
+
+if ($MultiTargets.Contains("android")) {
+    $desiredTfmValues += $DroidTfm;
+}
+
+if ($MultiTargets.Contains("netstandard")) {
+    $desiredTfmValues += $NetstandardTfm;
+}
+
+$targetFrameworksToRemove = @(
     $WasmTfm,
     $UwpTfm,
     $WinAppSdkTfm,
@@ -49,61 +103,7 @@ $allTargetFrameworks = @(
     $iOSTfm,
     $DroidTfm,
     $NetstandardTfm
-);
-
-$desiredTfmValues = @();
-
-if ($targets.Contains("all")) {
-    $desiredTfmValues = $allTargetFrameworks;
-}
-
-if ($targets.Contains("all-uwp")) {
-    $desiredTfmValues = $allTargetFrameworks.Replace($UwpTfm, "");
-}
-
-if ($targets.Contains("all-wasdk")) {
-    $desiredTfmValues = $allTargetFrameworks.Replace($WinAppSdkTfm, "");
-}
-
-if ($targets.Contains("wasm")) {
-    $desiredTfmValues += $WasmTfm;
-}
-
-if ($targets.Contains("uwp")) {
-    $desiredTfmValues += $UwpTfm;
-}
-
-if ($targets.Contains("wasdk")) {
-    $desiredTfmValues += $WinAppSdkTfm;
-}
-
-if ($targets.Contains("wpf")) {
-    $desiredTfmValues += $WpfTfm;
-}
-
-if ($targets.Contains("linuxgtk")) {
-    $desiredTfmValues += $GtkTfm;
-}
-
-if ($targets.Contains("macos")) {
-    $desiredTfmValues += $macOSTfm;
-}
-
-if ($targets.Contains("ios")) {
-    $desiredTfmValues += $iOSTfm;
-}
-
-if ($targets.Contains("android")) {
-    $desiredTfmValues += $DroidTfm;
-}
-
-if ($targets.Contains("netstandard")) {
-    $desiredTfmValues += $NetstandardTfm;
-}
-
-Write-Output "Setting enabled TargetFrameworks: $targets"
-
-$targetFrameworksToRemove = $allTargetFrameworks.Where({ -not $desiredTfmValues.Contains($_) })
+).Where({ -not $desiredTfmValues.Contains($_) })
 
 $targetFrameworksToRemoveRegexPartial = $targetFrameworksToRemove -join "|";
 
