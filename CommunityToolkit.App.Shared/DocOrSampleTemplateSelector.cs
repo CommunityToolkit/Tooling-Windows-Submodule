@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace CommunityToolkit.App.Shared;
 
-public class DocOrSampleTemplateSelector : DataTemplateSelector
+public partial class DocOrSampleTemplateSelector : DataTemplateSelector
 {
     public DataTemplate? Document { get; set; }
     public DataTemplate? Sample { get; set; }

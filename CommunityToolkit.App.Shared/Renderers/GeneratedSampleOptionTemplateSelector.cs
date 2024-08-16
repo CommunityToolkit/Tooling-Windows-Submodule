@@ -9,7 +9,7 @@ namespace CommunityToolkit.App.Shared.Renderers;
 /// <summary>
 /// Selects a sample option template for the provided <see cref="IGeneratedToolkitSampleOptionViewModel"/>.
 /// </summary>
-internal class GeneratedSampleOptionTemplateSelector : DataTemplateSelector
+internal partial class GeneratedSampleOptionTemplateSelector : DataTemplateSelector
 {
     public DataTemplate? BoolOptionTemplate { get; set; }
 
