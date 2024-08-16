@@ -17,7 +17,7 @@
         <WpfLibTargetFramework>net8.0</WpfLibTargetFramework>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
-        
-        
+        <DotnetStandardCommonTargetFramework>netstandard2.0</DotnetStandardCommonTargetFramework>
+        <DotnetCommonTargetFramework>net8.0</DotnetCommonTargetFramework>
     </PropertyGroup>
 </Project>
