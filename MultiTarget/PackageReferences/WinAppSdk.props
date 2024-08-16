@@ -5,6 +5,6 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2730-prerelease" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.1" />
   </ItemGroup>
 </Project>
