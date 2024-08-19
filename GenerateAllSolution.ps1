@@ -142,7 +142,9 @@ if ($UseDiagnostics.IsPresent)
     $sdkoptions = "-d"
     $diagnostics = @(
         '-bl:slngen.binlog'
-        '--consolelogger:ShowEventId;Summary;Verbosity=Detailed'
+        # Console logger + binlog causes exception and failure
+        # Track https://github.com/microsoft/slngen/issues/451
+        #'--consolelogger:ShowEventId;Summary;Verbosity=Detailed'
     )
 }
 else

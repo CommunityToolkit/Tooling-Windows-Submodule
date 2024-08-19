@@ -6,7 +6,7 @@ using CommunityToolkit.App.Shared.Helpers;
 
 namespace CommunityToolkit.App.Shared.Converters;
 
-public class StringToUriConverter : IValueConverter
+public partial class StringToUriConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {

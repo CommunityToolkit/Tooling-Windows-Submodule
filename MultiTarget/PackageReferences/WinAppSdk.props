@@ -1,9 +1,10 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240531000-experimental1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240807006-preview1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2730-prerelease" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.0-prerelease-ci.240731.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.1" />
   </ItemGroup>
 </Project>
