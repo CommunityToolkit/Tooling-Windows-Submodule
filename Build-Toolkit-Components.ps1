@@ -136,13 +136,13 @@ function Invoke-MSBuildWithBinlog {
         # Ensure output is relative to $pwd, not to the csproj of each component. 
         $NupkgOutput = (Resolve-Path $NupkgOutput).Path
 
-        $msbuildArgs += "-t:Clean,Build,Pack"
+        $msbuildArgs += "-t:Build,Pack"
         $msbuildArgs += "/p:PackageOutputPath=$NupkgOutput"
         $msbuildArgs += "/p:DateForVersion=$DateForVersion"
         $msbuildArgs += "/p:PreviewVersion=$PreviewVersion"
     }
     else {
-        $msbuildArgs += "-t:Clean,Build"
+        $msbuildArgs += "-t:Build"
     }
 
     # Add additional properties to the msbuild arguments
