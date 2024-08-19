@@ -12,11 +12,11 @@ namespace CommunityToolkit.App.Shared;
 public sealed partial class App : Application
 {
     // MacOS and iOS don't know the correct type without a full namespace declaration, confusing it with NSWindow and UIWindow.
-    // Using static will not work.
-#if WINAPPSDK
-    public static Microsoft.UI.Xaml.Window currentWindow = Microsoft.UI.Xaml.Window.Current;
-#else
-    private static Windows.UI.Xaml.Window currentWindow = Windows.UI.Xaml.Window.Current;
+    // 'using static' will not work.
+#if WINUI3
+    public static Microsoft.UI.Xaml.Window? currentWindow = Microsoft.UI.Xaml.Window.Current;
+#elif WINUI2
+    private static Windows.UI.Xaml.Window? currentWindow = Windows.UI.Xaml.Window.Current;
 #endif
 
     /// <summary>
@@ -41,28 +41,34 @@ public sealed partial class App : Application
         currentWindow.AppWindow.SetIcon("Assets/Icon.ico");
         currentWindow.SystemBackdrop = new MicaBackdrop();
 #if ALL_SAMPLES
-        currentWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-        currentWindow.AppWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+        if (currentWindow is not null)
+        {
+            currentWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            currentWindow.AppWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+        }
 #endif
 #endif
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active
-        if (currentWindow.Content is not Frame rootFrame)
+        if (currentWindow is not null && currentWindow.Content is not Frame)
         {
             // Create a Frame to act as the navigation context and navigate to the first page
-            currentWindow.Content = rootFrame = new Frame();
-
-            rootFrame.NavigationFailed += OnNavigationFailed;
+            currentWindow.Content = new Frame();
         }
 
+        if (currentWindow?.Content is Frame rootFrame)
+        {
+            rootFrame.NavigationFailed += OnNavigationFailed;
+
 #if !WINAPPSDK
-        if (e.PrelaunchActivated == false)
+            if (e.PrelaunchActivated == false)
 #endif
-            rootFrame.Navigate(typeof(AppLoadingView), e.Arguments);
+                rootFrame.Navigate(typeof(AppLoadingView), e.Arguments);
+        }
 
         // Ensure the current window is active
-        currentWindow.Activate();
+        currentWindow?.Activate();
     }
 
     /// <summary>

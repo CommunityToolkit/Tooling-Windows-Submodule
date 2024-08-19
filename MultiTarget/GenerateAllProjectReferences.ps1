@@ -3,7 +3,9 @@ Param (
   [string]$projectPropsOutputDir = "$PSScriptRoot/Generated",
 
   [Parameter(HelpMessage = "Only projects that support these targets will have references generated for use by deployable heads.")]
-  [string[]]$MultiTarget = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard"),
+  [Alias("mt")]
+  [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+  [string[]]$MultiTargets = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard"),
 
   [Parameter(HelpMessage = "The names of the components to generate references for. Defaults to all components.")]
   [string[]]$Components = @("all"),
@@ -28,8 +30,14 @@ foreach ($componentName in $Components) {
     continue;
   }
 
+  # Don't generate project reference if component isn't available
+  if (!(Test-Path "$PSScriptRoot/../../components/$componentName/")) {
+    continue;
+  }
+
   # Find all components source csproj (when wildcard), or find specific component csproj by name.
   foreach ($componentPath in Get-Item "$PSScriptRoot/../../components/$componentName/") {
+    $componentName = $componentPath.BaseName;
     Write-Output "Generating project references for component $componentName at $componentPath";
 
     # Find source and sample csproj files
@@ -39,11 +47,11 @@ foreach ($componentName in $Components) {
     # Generate <ProjectReference>s for sample project
     # Use source project MultiTarget as first fallback.
     if ($null -ne $componentSampleCsproj -and (Test-Path $componentSampleCsproj)) {
-      & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $componentSampleCsproj -outputPath "$projectPropsOutputDir/$($componentSampleCsproj.BaseName).props" -MultiTarget $MultiTarget
+      & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $componentSampleCsproj -outputPath "$projectPropsOutputDir/$($componentSampleCsproj.BaseName).props" -MultiTargets $MultiTargets
     }
 
     # Generate <ProjectReference>s for src project
-    & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $componentSourceCsproj -outputPath "$projectPropsOutputDir/$($componentSourceCsproj.BaseName).props" -MultiTarget $MultiTarget
+    & $PSScriptRoot\GenerateMultiTargetAwareProjectReferenceProps.ps1 -projectPath $componentSourceCsproj -outputPath "$projectPropsOutputDir/$($componentSourceCsproj.BaseName).props" -MultiTargets $MultiTargets
   }
 }
 
