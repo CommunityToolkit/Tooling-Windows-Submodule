@@ -9,7 +9,14 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsWinAppSdk)' == 'true' OR '$(IsUwp)' == 'true'">
+    <!--
+    For net5.0+ targets, TargetPlatformMinVersion was renamed to SupportedOSPlatformVersion. See https://github.com/dotnet/designs/pull/157
+
+    The dotnet SDK uses the TargetPlatformVersion property to provide a default SupportedOSPlatformVersion value if none is explicitly provided.
+    See https://github.com/dotnet/designs/blob/bba3216250cb29b0063bac3ebb57a542ee21ad4f/accepted/2020/minimum-os-version/minimum-os-version.md?plain=1#L73C27-L73C48
+    -->
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <SupportedOSPlatformVersion>$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
   </PropertyGroup>
 
