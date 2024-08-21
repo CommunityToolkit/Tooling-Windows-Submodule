@@ -134,7 +134,9 @@ function Invoke-MSBuildWithBinlog {
         $msbuildArgs += "-t:Clean,Build,Pack"
         $msbuildArgs += "/p:PackageOutputPath=$NupkgOutput"
         $msbuildArgs += "/p:DateForVersion=$DateForVersion"
-        $msbuildArgs += "/p:PreviewVersion=$PreviewVersion"
+        if ($PreviewVersion) {
+             $msbuildArgs += "/p:PreviewVersion=$PreviewVersion"
+        }
     }
     else {
         $msbuildArgs += "-t:Clean,Build"
