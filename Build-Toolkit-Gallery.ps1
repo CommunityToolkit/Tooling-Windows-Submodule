@@ -99,8 +99,7 @@ if ($ExcludeComponents) {
     $Components = $Components | Where-Object { $_ -notin $ExcludeComponents }
 }
 
-# Certain Components are required to build the gallery app.
-# Add them if not already included.
+# Certain ProjectReferences should always be generated (are required to build gallery) if csproj is available.
 if ($Components -notcontains 'SettingsControls') {
   $Components += 'SettingsControls'
 }
