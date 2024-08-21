@@ -15,7 +15,7 @@
     Specifies the date for versioning in 'YYMMDD' format. The default value is the current date.
 
 .PARAMETER PreviewVersion
-    Specifies the preview version to use if packaging is enabled. Appended with a dash after the version number (formatted Version-PreviewVersion). This parameter is required when NupkgOutput is supplied.
+    Specifies the preview version to use if packaging is enabled. Appended with a dash after the version number (formatted Version-PreviewVersion). This parameter is optional.
 
 .PARAMETER NupkgOutput
     Specifies the output directory for .nupkg files. This parameter is optional. When supplied, the components will also be packed and nupkg files will be output to the specified directory.
@@ -112,11 +112,6 @@ if ($Components -eq @('all')) {
 
 if ($ExcludeComponents) {
     $Components = $Components | Where-Object { $_ -notin $ExcludeComponents }
-}
-
-# Check if NupkgOutput is supplied without PreviewVersion
-if ($NupkgOutput -and -not $PreviewVersion) {
-    throw "PreviewVersion is required when NupkgOutput is supplied."
 }
 
 # Use the specified MultiTarget TFM and WinUI version
