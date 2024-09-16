@@ -17,6 +17,7 @@
 
   <PropertyGroup>
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
+    <CsWinRTAotWarningLevel Condition="'$(IsAotCompatible)' == 'true'">2</CsWinRTAotWarningLevel>
   </PropertyGroup>
 
   <!-- Auto Generate our own Assembly Info -->
