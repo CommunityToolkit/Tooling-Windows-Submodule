@@ -30,14 +30,14 @@ public sealed partial class GeneratedSampleOptionsRenderer : UserControl
     /// The backing <see cref="DependencyProperty"/> for <see cref="SampleOptions"/>.
     /// </summary>
     public static readonly DependencyProperty SampleOptionsProperty =
-        DependencyProperty.Register(nameof(SampleOptions), typeof(List<IGeneratedToolkitSampleOptionViewModel>), typeof(GeneratedSampleOptionsRenderer), new PropertyMetadata(new List<IGeneratedToolkitSampleOptionViewModel>()));
+        DependencyProperty.Register(nameof(SampleOptions), typeof(IGeneratedToolkitSampleOptionViewModel[]), typeof(GeneratedSampleOptionsRenderer), new PropertyMetadata(new List<IGeneratedToolkitSampleOptionViewModel>()));
 
     /// <summary>
     /// The generated sample options that should be displayed to the user.
     /// </summary>
-    public List<IGeneratedToolkitSampleOptionViewModel> SampleOptions
+    public IGeneratedToolkitSampleOptionViewModel[] SampleOptions
     {
-        get => (List<IGeneratedToolkitSampleOptionViewModel>)GetValue(SampleOptionsProperty);
+        get => (IGeneratedToolkitSampleOptionViewModel[])GetValue(SampleOptionsProperty);
         set => SetValue(SampleOptionsProperty, value);
     }
 
