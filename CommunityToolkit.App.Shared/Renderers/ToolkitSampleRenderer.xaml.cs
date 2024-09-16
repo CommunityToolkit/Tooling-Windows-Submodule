@@ -197,7 +197,7 @@ public sealed partial class ToolkitSampleRenderer : Page
             {
                 SampleOptionsPaneInstance = new GeneratedSampleOptionsRenderer
                 {
-                    SampleOptions = propertyContainer.GeneratedPropertyMetadata.ToList()
+                    SampleOptions = propertyContainer.GeneratedPropertyMetadata
                 };
             }
         }

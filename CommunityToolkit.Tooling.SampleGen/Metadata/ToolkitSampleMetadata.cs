@@ -50,7 +50,7 @@ public sealed class ToolkitSampleMetadata
     /// <summary>
     /// Gets or sets the generated sample options that were declared alongside this sample, if any.
     /// </summary>
-    public IEnumerable<IGeneratedToolkitSampleOptionViewModel>? GeneratedSampleOptions { get; set; }
+    public IGeneratedToolkitSampleOptionViewModel[]? GeneratedSampleOptions { get; set; }
 
     /// <summary>
     /// Contains the metadata needed to identify and display a toolkit sample.
@@ -74,7 +74,7 @@ public sealed class ToolkitSampleMetadata
         Func<object> sampleControlFactory,
         Type? sampleOptionsPaneType = null,
         Func<object, object>? sampleOptionsPaneFactory = null,
-        IEnumerable<IGeneratedToolkitSampleOptionViewModel>? generatedSampleOptions = null)
+        IGeneratedToolkitSampleOptionViewModel[]? generatedSampleOptions = null)
     {
         Id = id;
         DisplayName = displayName;
