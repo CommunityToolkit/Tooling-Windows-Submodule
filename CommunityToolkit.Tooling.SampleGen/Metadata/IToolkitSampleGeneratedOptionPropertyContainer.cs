@@ -16,5 +16,5 @@ public interface IToolkitSampleGeneratedOptionPropertyContainer
     /// as a proxy between the current actual value and the
     /// generated properties which consume them.
     /// </summary>
-    public IEnumerable<IGeneratedToolkitSampleOptionViewModel>? GeneratedPropertyMetadata { get; set; }
+    public IGeneratedToolkitSampleOptionViewModel[]? GeneratedPropertyMetadata { get; set; }
 }

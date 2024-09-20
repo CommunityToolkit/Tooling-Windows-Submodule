@@ -193,10 +193,13 @@ public sealed partial class ToolkitSampleRenderer : Page
             // Generated properties reference these in getters and setters.
             propertyContainer.GeneratedPropertyMetadata = Metadata.GeneratedSampleOptions;
 
-            SampleOptionsPaneInstance = new GeneratedSampleOptionsRenderer
+            if (propertyContainer.GeneratedPropertyMetadata is not null)
             {
-                SampleOptions = propertyContainer.GeneratedPropertyMetadata
-            };
+                SampleOptionsPaneInstance = new GeneratedSampleOptionsRenderer
+                {
+                    SampleOptions = propertyContainer.GeneratedPropertyMetadata
+                };
+            }
         }
         else
         {
