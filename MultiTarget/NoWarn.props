@@ -3,4 +3,12 @@
   <PropertyGroup Condition="'$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
     <NoWarn>$(NoWarn);CA1416;</NoWarn>
   </PropertyGroup>
+
+  <!--
+     WinUI 2 preview suppression
+    'Microsoft.UI.Xaml.*' is for evaluation purposes only and is subject to change or removal in future updates.
+  -->
+  <PropertyGroup Condition="'$(IsUwp)' == 'true'">
+    <NoWarn>$(NoWarn);CS8305;</NoWarn>
+  </PropertyGroup>
 </Project>
