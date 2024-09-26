@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.1" />
