@@ -17,7 +17,7 @@ on:
 
 env:
   DOTNET_VERSION: ${{ '8.0.x' }}
-  ENABLE_DIAGNOSTICS: true
+  ENABLE_DIAGNOSTICS: false
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
 
