@@ -107,7 +107,7 @@ $targetFrameworksToRemove = @(
 
 $targetFrameworksToRemoveRegexPartial = $targetFrameworksToRemove -join "|";
 
-$newFileContents = $fileContents -replace "<(?:$targetFrameworksToRemoveRegexPartial)>.+?>", '';
+$newFileContents = $fileContents -replace "<(?:$targetFrameworksToRemoveRegexPartial).+?>.+?>", '';
 
 Set-Content -Force -Path $PSScriptRoot/EnabledTargetFrameworks.props -Value $newFileContents;
 
