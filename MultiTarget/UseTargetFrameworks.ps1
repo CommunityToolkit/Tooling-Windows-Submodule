@@ -42,6 +42,7 @@ $DroidTfm = "AndroidLibTargetFramework";
 $NetstandardTfm = "DotnetStandardCommonTargetFramework";
 
 $fileContents = Get-Content -Path $PSScriptRoot/AvailableTargetFrameworks.props
+$newFileContents = $fileContents;
 
 # 'all' represents many '$MultiTargets' values
 if ($MultiTargets.Contains("all")) {
@@ -105,10 +106,12 @@ $targetFrameworksToRemove = @(
     $NetstandardTfm
 ).Where({ -not $desiredTfmValues.Contains($_) })
 
-$targetFrameworksToRemoveRegexPartial = $targetFrameworksToRemove -join "|";
-
-$newFileContents = $fileContents -replace "<(?:$targetFrameworksToRemoveRegexPartial)>.+?>", '';
+# When targetFrameworksToRemoveRegexPartial is empty, the regex will match everything.
+# To work around this, check if there's anything to remove before doing it.
+if ($targetFrameworksToRemove.Length -gt 0) {
+    $targetFrameworksToRemoveRegexPartial = "$($targetFrameworksToRemove -join "|")";
+    $newFileContents = $fileContents -replace "<(?:$targetFrameworksToRemoveRegexPartial).+?>.+?>", '';
+}
 
 Set-Content -Force -Path $PSScriptRoot/EnabledTargetFrameworks.props -Value $newFileContents;
-
 Write-Output "Done. Please close and regenerate your solution. Do not commit these changes to the tooling repository."

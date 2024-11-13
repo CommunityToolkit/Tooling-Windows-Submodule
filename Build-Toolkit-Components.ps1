@@ -124,7 +124,21 @@ function Invoke-MSBuildWithBinlog {
     )
 
     # Reset build args to default
-    $msbuildArgs = @("-r", "-m", "/p:DebugType=Portable")
+    $msbuildArgs = @("/p:DebugType=Portable")
+
+    # Add "-r" parameter if not running on linux
+    if ($($PSVersionTable.Platform) -ne "Unix") {
+        $msbuildArgs += "-r"
+    }
+    # Otherwise, add "-restore" parameter
+    else {
+        $msbuildArgs += "-restore"
+    }
+
+    # Add "-m" parameter if not running on linux
+    if ($($PSVersionTable.Platform) -ne "Unix") {
+        $msbuildArgs += "-m"
+    }
 
     # Add packing to the msbuild arguments if NupkgOutput is supplied
     if ($NupkgOutput) {
@@ -170,7 +184,13 @@ function Invoke-MSBuildWithBinlog {
         $msbuildArgs += "/v:detailed"
     }
 
-    msbuild $msbuildArgs $TargetHeadPath
+    # If platform is linux, use dotnet instead of msbuild
+    if ($($PSVersionTable.Platform) -eq "Unix") {
+        dotnet build $msbuildArgs $TargetHeadPath
+    }
+    else {
+        msbuild $msbuildArgs $TargetHeadPath
+    }
 }
 
 # Components are built individually

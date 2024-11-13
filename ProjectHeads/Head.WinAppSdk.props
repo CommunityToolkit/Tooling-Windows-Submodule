@@ -9,6 +9,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppContainer>true</WindowsAppContainer>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\WinAppSdk.props" />

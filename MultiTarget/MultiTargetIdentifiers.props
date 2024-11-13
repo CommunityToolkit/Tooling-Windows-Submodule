@@ -57,8 +57,8 @@
       This property is only for changing the version used by Uno.
       Force the version to 2 for UWP and 3 for WinAppSDK.
      -->
-    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true'">2</WinUIMajorVersion>
-    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true'">3</WinUIMajorVersion>
+    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $(WinUIMajorVersion) == ''">2</WinUIMajorVersion>
+    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true' AND $(WinUIMajorVersion) == ''">3</WinUIMajorVersion>
 
     <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">true</UseUwp>
     <UseUwpTools Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">true</UseUwpTools>
