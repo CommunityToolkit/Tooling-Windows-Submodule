@@ -131,7 +131,7 @@ public partial class ToolkitSampleGeneratedPaneTests
             {
                 public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
                 {
-                    ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMultiChoiceOptionMetadataViewModel(name: "MyVisibility", options: new[] { new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Visible", "3"),new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Collapsed", "7") }, title: "Visibility") })
+                    ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMultiChoiceOptionMetadataViewModel(name: "MyVisibility", options: new[] { new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Visible", 3),new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Collapsed", 7) }, title: "Visibility") })
                 };
             }
             """, "Unexpected code generated");
