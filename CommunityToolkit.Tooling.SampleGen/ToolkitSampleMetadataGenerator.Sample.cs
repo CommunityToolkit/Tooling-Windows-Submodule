@@ -196,20 +196,22 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
         ctx.AddSource("ToolkitSampleRegistry.g.cs", source);
     }
 
-    private static void ReportSampleDiagnostics(SourceProductionContext ctx,
-                                          IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
-                                          IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute,
-                                          IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
+    private static void ReportSampleDiagnostics(
+        SourceProductionContext ctx,
+        IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
+        IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute,
+        IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
     {
         ReportDiagnosticsForInvalidAttributeUsage(ctx, toolkitSampleAttributeData, optionsPaneAttribute, generatedOptionPropertyData);
         ReportDiagnosticsForLinkedOptionsPane(ctx, toolkitSampleAttributeData, optionsPaneAttribute);
         ReportDiagnosticsGeneratedOptionsPane(ctx, toolkitSampleAttributeData, generatedOptionPropertyData);
     }
 
-    private static void ReportDiagnosticsForInvalidAttributeUsage(SourceProductionContext ctx,
-                                                                  IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
-                                                                  IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute,
-                                                                  IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
+    private static void ReportDiagnosticsForInvalidAttributeUsage(
+        SourceProductionContext ctx,
+        IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
+        IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute,
+        IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
     {
         var toolkitAttributesOnUnsupportedType = toolkitSampleAttributeData.Where(x => x.Symbol is INamedTypeSymbol namedSym && !IsValidXamlControl(namedSym));
         var optionsAttributeOnUnsupportedType = optionsPaneAttribute.Where(x => x.Item2 is INamedTypeSymbol namedSym && !IsValidXamlControl(namedSym));
@@ -229,8 +231,9 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
     }
 
-    private static void ReportDiagnosticsForConflictingSampleId(SourceProductionContext ctx,
-                                                              IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData)
+    private static void ReportDiagnosticsForConflictingSampleId(
+        SourceProductionContext ctx,
+        IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData)
     {
         foreach (var sampleIdGroup in toolkitSampleAttributeData.GroupBy(x => x.Attribute.Id))
         {
@@ -239,20 +242,23 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
         }
     }
 
-    private static void ReportDiagnosticsForLinkedOptionsPane(SourceProductionContext ctx,
-                                                              IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
-                                                              IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute)
+    private static void ReportDiagnosticsForLinkedOptionsPane(
+        SourceProductionContext ctx,
+        IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
+        IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute)
     {
         // Check for options pane attributes with no matching sample ID
-        var optionsPaneAttributeWithMissingOrInvalidSampleId = optionsPaneAttribute.Where(x => toolkitSampleAttributeData.All(sample => sample.Attribute.Id != x.Item1?.SampleId));
+        var optionsPaneAttributeWithMissingOrInvalidSampleId = optionsPaneAttribute.Where(x =>
+            toolkitSampleAttributeData.All(sample => sample.Attribute.Id != x.Item1?.SampleId));
 
         foreach (var item in optionsPaneAttributeWithMissingOrInvalidSampleId)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.OptionsPaneAttributeWithMissingOrInvalidSampleId, item.Item2.Locations.FirstOrDefault()));
     }
 
-    private static void ReportDiagnosticsGeneratedOptionsPane(SourceProductionContext ctx,
-                                                              IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
-                                                              IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
+    private static void ReportDiagnosticsGeneratedOptionsPane(
+        SourceProductionContext ctx,
+        IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
+        IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
     {
         ReportGeneratedMultiChoiceOptionsPaneDiagnostics(ctx, generatedOptionPropertyData);
 
@@ -263,18 +269,20 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionAttributeOnNonSample, item.Item1.Locations.FirstOrDefault()));
 
         // Check for generated options with an empty or invalid name.
-        var generatedOptionsWithBadName = generatedOptionPropertyData.Where(x => string.IsNullOrWhiteSpace(x.Item2.Name) || // Must not be null or empty
-                                                                                !x.Item2.Name.Any(char.IsLetterOrDigit) || // Must be alphanumeric
-                                                                                x.Item2.Name.Any(char.IsWhiteSpace) || // Must not have whitespace
-                                                                                SyntaxFacts.GetKeywordKind(x.Item2.Name) != SyntaxKind.None); // Must not be a reserved keyword
+        var generatedOptionsWithBadName = generatedOptionPropertyData
+            .Where(x => string.IsNullOrWhiteSpace(x.Item2.Name) || // Must not be null or empty
+                        !x.Item2.Name.Any(char.IsLetterOrDigit) || // Must be alphanumeric
+                        x.Item2.Name.Any(char.IsWhiteSpace) || // Must not have whitespace
+                        SyntaxFacts.GetKeywordKind(x.Item2.Name) != SyntaxKind.None); // Must not be a reserved keyword
 
         foreach (var item in generatedOptionsWithBadName)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithBadName, item.Item1.Locations.FirstOrDefault(), item.Item1.ToString()));
 
         // Check for generated options with duplicate names.
-        var generatedOptionsWithDuplicateName = generatedOptionPropertyData.GroupBy(x => x.Item1, SymbolEqualityComparer.Default) // Group by containing symbol (allow reuse across samples)
-                                                                           .SelectMany(y => y.GroupBy(x => x.Item2.Name) // In this symbol, group options by name.
-                                                                                             .Where(x => x.Count() > 1)); // Options grouped by name should only contain 1 item.
+        var generatedOptionsWithDuplicateName = generatedOptionPropertyData
+            .GroupBy(x => x.Item1, SymbolEqualityComparer.Default) // Group by containing symbol (allow reuse across samples)
+            .SelectMany(y => y.GroupBy(x => x.Item2.Name) // In this symbol, group options by name.
+                .Where(x => x.Count() > 1)); // Options grouped by name should only contain 1 item.
 
         foreach (var item in generatedOptionsWithDuplicateName)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneOptionWithDuplicateName, item.SelectMany(x => x.Item1.Locations).FirstOrDefault(), item.Key));
@@ -332,7 +340,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             yield return item switch
             {
                 ToolkitSampleMultiChoiceOptionAttribute multiChoiceAttr =>
-                    $@"new {typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel).FullName}(name: ""{multiChoiceAttr.Name}"", options: new[] {{ {string.Join(",", multiChoiceAttr.Choices.Select(x => $@"new {typeof(MultiChoiceOption).FullName}(""{x.Label}"", ""{x.Value}"")").ToArray())} }}, title: ""{multiChoiceAttr.Title}"")",
+                    $@"new {typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel).FullName}(name: ""{multiChoiceAttr.Name}"", options: new[] {{ {string.Join(",", multiChoiceAttr.Choices.Select(x => $@"new {typeof(MultiChoiceOption).FullName}(""{x.Label}"", {(x.Value is string ? $"\"{x.Value}\"" : x.Value)})").ToArray())} }}, title: ""{multiChoiceAttr.Title}"")",
                 ToolkitSampleBoolOptionAttribute boolAttribute =>
                     $@"new {typeof(ToolkitSampleBoolOptionMetadataViewModel).FullName}(name: ""{boolAttribute.Name}"", defaultState: {boolAttribute.DefaultState?.ToString().ToLower()}, title: ""{boolAttribute.Title}"")",
                 ToolkitSampleNumericOptionAttribute numericAttribute =>
