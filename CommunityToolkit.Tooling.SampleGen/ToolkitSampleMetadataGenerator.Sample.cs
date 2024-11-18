@@ -68,9 +68,12 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                         if (x.AttributeData.AttributeClass.TypeArguments.FirstOrDefault() is { } typeSymbol)
                         {
                             var parameters = x.AttributeData.ConstructorArguments.Select(GeneratorExtensions.PrepareParameterTypeForActivator).ToList();
-                            var members = typeSymbol.GetMembers().OfType<IFieldSymbol>().Select(t => (t.Name, t.ConstantValue!)).ToList();
+                            var members = typeSymbol.GetMembers().OfType<IFieldSymbol>().Select(t => new MultiChoiceOption(t.Name, t.ToDisplayString())).ToArray();
+                            parameters.Add(typeSymbol.ToDisplayString());
                             parameters.Add(members);
-                            var multiChoiceOptionAttribute = (ToolkitSampleMultiChoiceOptionAttribute)Activator.CreateInstance(typeof(ToolkitSampleMultiChoiceOptionAttribute), parameters.ToArray());
+                            var multiChoiceOptionAttribute = (ToolkitSampleMultiChoiceOptionAttribute)Activator.CreateInstance(
+                                typeof(ToolkitSampleMultiChoiceOptionAttribute), BindingFlags.NonPublic | BindingFlags.Instance,
+                                null, parameters.ToArray(), null);
                             item = (x.Symbol, multiChoiceOptionAttribute);
                         }
                     }
@@ -298,7 +301,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
     {
         foreach (var item in generatedOptionPropertyData)
         {
-            if (item.Item2 is ToolkitSampleMultiChoiceOptionAttribute multiChoiceAttr && multiChoiceAttr.Choices.Length == 0)
+            if (item.Item2 is ToolkitSampleMultiChoiceOptionAttribute { Choices.Length: 0 })
             {
                 ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SamplePaneMultiChoiceOptionWithNoChoices, item.Item1.Locations.FirstOrDefault(), item.Item2.Title));
             }
@@ -315,7 +318,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                 {
                     public static System.Collections.Generic.Dictionary<string, {{typeof(ToolkitSampleMetadata).FullName}}> Listing { get; } = new()
                     {
-                        {{string.Join(",\n        ", sampleMetadata.Select(MetadataToRegistryCall).ToArray())}}
+                {{string.Join(",\n", sampleMetadata.Select(MetadataToRegistryCall).ToArray())}}
                     };
                 }
                 """;
@@ -326,11 +329,16 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
         var metadata = kvp.Value;
         var sampleControlTypeParam = $"typeof({metadata.SampleAssemblyQualifiedName})";
         var sampleControlFactoryParam = $"() => new {metadata.SampleAssemblyQualifiedName}()";
-        var generatedSampleOptionsParam = $"new {typeof(IGeneratedToolkitSampleOptionViewModel).FullName}[] {{ {string.Join(", ", BuildNewGeneratedSampleOptionMetadataSource(metadata).ToArray())} }}";
         var sampleOptionsParam = metadata.SampleOptionsAssemblyQualifiedName is null ? "null" : $"typeof({metadata.SampleOptionsAssemblyQualifiedName})";
         var sampleOptionsPaneFactoryParam = metadata.SampleOptionsAssemblyQualifiedName is null ? "null" : $"x => new {metadata.SampleOptionsAssemblyQualifiedName}(({metadata.SampleAssemblyQualifiedName})x)";
 
-        return @$"[""{kvp.Key}""] = new {typeof(ToolkitSampleMetadata).FullName}(""{metadata.Id}"", ""{metadata.DisplayName}"", ""{metadata.Description}"", {sampleControlTypeParam}, {sampleControlFactoryParam}, {sampleOptionsParam}, {sampleOptionsPaneFactoryParam}, {generatedSampleOptionsParam})";
+        return $$"""
+                        ["{{kvp.Key}}"] = new {{typeof(ToolkitSampleMetadata).FullName}}("{{metadata.Id}}", "{{metadata.DisplayName}}", "{{metadata.Description}}", {{sampleControlTypeParam}}, {{sampleControlFactoryParam}}, {{sampleOptionsParam}}, {{sampleOptionsPaneFactoryParam}},
+                             new {{typeof(IGeneratedToolkitSampleOptionViewModel).FullName}}[] 
+                             {
+                 {{string.Join(",\n", BuildNewGeneratedSampleOptionMetadataSource(metadata).ToArray())}}
+                             })
+                 """;
     }
 
     private static IEnumerable<string> BuildNewGeneratedSampleOptionMetadataSource(ToolkitSampleRecord sample)
@@ -340,13 +348,22 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             yield return item switch
             {
                 ToolkitSampleMultiChoiceOptionAttribute multiChoiceAttr =>
-                    $@"new {typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel).FullName}(name: ""{multiChoiceAttr.Name}"", options: new[] {{ {string.Join(",", multiChoiceAttr.Choices.Select(x => $@"new {typeof(MultiChoiceOption).FullName}(""{x.Label}"", {(x.Value is string ? $"\"{x.Value}\"" : x.Value)})").ToArray())} }}, title: ""{multiChoiceAttr.Title}"")",
+                    $$"""
+                                      new {{typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel).FullName}}(name: "{{multiChoiceAttr.Name}}", 
+                                          options: new[]
+                                          {
+                      {{string.Join(",\n", multiChoiceAttr.Choices.Select(x =>
+                          $"""
+                                                   new {typeof(MultiChoiceOption).FullName}("{x.Label}", {(multiChoiceAttr.TypeName is "string" ? $"\"{x.Value}\"" : x.Value)})
+                           """).ToArray())}}
+                                          }, title: "{{multiChoiceAttr.Title}}")
+                      """,
                 ToolkitSampleBoolOptionAttribute boolAttribute =>
-                    $@"new {typeof(ToolkitSampleBoolOptionMetadataViewModel).FullName}(name: ""{boolAttribute.Name}"", defaultState: {boolAttribute.DefaultState?.ToString().ToLower()}, title: ""{boolAttribute.Title}"")",
+                    $@"                new {typeof(ToolkitSampleBoolOptionMetadataViewModel).FullName}(name: ""{boolAttribute.Name}"", defaultState: {boolAttribute.DefaultState?.ToString().ToLower()}, title: ""{boolAttribute.Title}"")",
                 ToolkitSampleNumericOptionAttribute numericAttribute =>
-                    $@"new {typeof(ToolkitSampleNumericOptionMetadataViewModel).FullName}(name: ""{numericAttribute.Name}"", initial: {numericAttribute.Initial}, min: {numericAttribute.Min}, max: {numericAttribute.Max}, step: {numericAttribute.Step}, showAsNumberBox: {numericAttribute.ShowAsNumberBox.ToString().ToLower()}, title: ""{numericAttribute.Title}"")",
+                    $@"                new {typeof(ToolkitSampleNumericOptionMetadataViewModel).FullName}(name: ""{numericAttribute.Name}"", initial: {numericAttribute.Initial}, min: {numericAttribute.Min}, max: {numericAttribute.Max}, step: {numericAttribute.Step}, showAsNumberBox: {numericAttribute.ShowAsNumberBox.ToString().ToLower()}, title: ""{numericAttribute.Title}"")",
                 ToolkitSampleTextOptionAttribute textAttribute =>
-                    $@"new {typeof(ToolkitSampleTextOptionMetadataViewModel).FullName}(name: ""{textAttribute.Name}"", placeholderText: ""{textAttribute.PlaceholderText}"", title: ""{textAttribute.Title}"")",
+                    $@"                new {typeof(ToolkitSampleTextOptionMetadataViewModel).FullName}(name: ""{textAttribute.Name}"", placeholderText: ""{textAttribute.PlaceholderText}"", title: ""{textAttribute.Title}"")",
                 _ => throw new NotSupportedException($"Unsupported or unhandled type {item.GetType()}.")
             };
         }

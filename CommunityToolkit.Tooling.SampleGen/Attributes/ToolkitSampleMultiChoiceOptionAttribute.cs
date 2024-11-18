@@ -40,12 +40,13 @@ public sealed class ToolkitSampleMultiChoiceOptionAttribute : ToolkitSampleOptio
     /// Creates a new instance of <see cref="ToolkitSampleMultiChoiceOptionAttribute"/>.
     /// </summary>
     /// <param name="bindingName">The name of the generated property, which you can bind to in XAML.</param>
+    /// <param name="typeName"></param>
     /// <param name="choices">A list of the choices to display to the user. Can be literal values, or labeled values. Use a " : " separator (single colon surrounded by at least 1 whitespace) to separate a label from a value.</param>
-    public ToolkitSampleMultiChoiceOptionAttribute(string bindingName, List<(string, object)> choices)
+    internal ToolkitSampleMultiChoiceOptionAttribute(string bindingName, string typeName, MultiChoiceOption[] choices)
         : base(bindingName, null)
     {
-        TypeName = "int";
-        Choices = choices.Select(x => new MultiChoiceOption(x.Item1, x.Item2)).ToArray();
+        TypeName = typeName;
+        Choices = choices;
     }
 
     /// <summary>

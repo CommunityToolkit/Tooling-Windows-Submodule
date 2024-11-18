@@ -40,10 +40,16 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
                 if (x.AttributeData.AttributeClass?.ContainingNamespace.ToDisplayString() == typeof(ToolkitSampleEnumOptionAttribute<>).Namespace
                     && x.AttributeData.AttributeClass?.MetadataName == typeof(ToolkitSampleEnumOptionAttribute<>).Name)
                 {
-                    var parameters = x.AttributeData.ConstructorArguments.Select(GeneratorExtensions.PrepareParameterTypeForActivator).ToList();
-                    parameters.Add(new List<(string, object)>());
-                    var multiChoiceOptionAttribute = (ToolkitSampleMultiChoiceOptionAttribute)Activator.CreateInstance(typeof(ToolkitSampleMultiChoiceOptionAttribute), parameters.ToArray());
-                    item = (multiChoiceOptionAttribute, x.Symbol, typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel));
+                    if (x.AttributeData.AttributeClass.TypeArguments.FirstOrDefault() is { } typeSymbol)
+                    {
+                        var parameters = x.AttributeData.ConstructorArguments.Select(GeneratorExtensions.PrepareParameterTypeForActivator).ToList();
+                        parameters.Add(typeSymbol.ToDisplayString());
+                        parameters.Add(Array.Empty<MultiChoiceOption>());
+                        var multiChoiceOptionAttribute = (ToolkitSampleMultiChoiceOptionAttribute)Activator.CreateInstance(
+                            typeof(ToolkitSampleMultiChoiceOptionAttribute), BindingFlags.NonPublic | BindingFlags.Instance,
+                            null, parameters.ToArray(), null);
+                            item = (multiChoiceOptionAttribute, x.Symbol, typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel));
+                    }
                 }
                 else if (x.AttributeData.TryReconstructAs<ToolkitSampleBoolOptionAttribute>() is { } boolOptionAttribute)
                 {
@@ -186,13 +192,13 @@ public class ToolkitSampleOptionGenerator : IIncrementalGenerator
                     {
                         public {{typeName}} {{propertyName}}
                         {
-                            get => (({{typeName}})(({{viewModelType.FullName}})GeneratedPropertyMetadata!.First(x => x.Name == "{{propertyName}}"))!.Value!)!;
+                            get => ({{typeName}})(({{viewModelType.FullName}})GeneratedPropertyMetadata!.First(x => x.Name is "{{propertyName}}"))!.Value!;
                             set
                             {
-                 			    if (GeneratedPropertyMetadata?.FirstOrDefault(x => x.Name == nameof({{propertyName}})) is {{viewModelType.FullName}} metadata)
+                 			    if (GeneratedPropertyMetadata?.FirstOrDefault(x => x.Name is "{{propertyName}}") is {{viewModelType.FullName}} metadata)
                  			    {
                                     metadata.Value = value;
-                                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof({{propertyName}})));
+                                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("{{propertyName}}"));
                  			    }
                             }
                         }
