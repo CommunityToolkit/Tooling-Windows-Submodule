@@ -91,7 +91,6 @@ public partial class ToolkitSampleGeneratedPaneTests
             namespace MyApp
             {
                 [ToolkitSampleEnumOption<Windows.UI.Xaml.Controls.Visibility>("MyVisibility", Title = "Visibility")]
-                
                 [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
                 {
@@ -123,7 +122,7 @@ public partial class ToolkitSampleGeneratedPaneTests
         result.AssertDiagnosticsAre();
         result.AssertNoCompilationErrors();
 
-        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"), """
+        Assert.AreEqual("""
             #nullable enable
             namespace CommunityToolkit.Tooling.SampleGen;
             
@@ -131,16 +130,27 @@ public partial class ToolkitSampleGeneratedPaneTests
             {
                 public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
                 {
-                    ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMultiChoiceOptionMetadataViewModel(name: "MyVisibility", options: new[] { new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Visible", 3),new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Collapsed", 7) }, title: "Visibility") })
+                   ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null,
+                        new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] 
+                        {
+                            new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMultiChoiceOptionMetadataViewModel(name: "MyVisibility", 
+                                options: new[]
+                                {
+                                    new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Visible", Windows.UI.Xaml.Controls.Visibility.Visible),
+                                    new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Collapsed", Windows.UI.Xaml.Controls.Visibility.Collapsed)
+                                }, title: "Visibility")
+                        })
                 };
             }
-            """, "Unexpected code generated");
+            """,
+            result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"),
+            "Unexpected code generated");
     }
 
     [TestMethod]
     public void PaneOption_GeneratesTitleProperty()
     {
-        // The sample registry is designed to be declared in the sample project, and generated in the project head where its displayed in the UI as data.
+        // The sample registry is designed to be declared in the sample project, and generated in the project head where it's displayed in the UI as data.
         // To test the contents of the generated sample registry, we must replicate this setup.
         var sampleProjectAssembly = """
             using System.ComponentModel;
@@ -153,9 +163,7 @@ public partial class ToolkitSampleGeneratedPaneTests
                 [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
                 {
-                    public Sample()
-                    {
-                    }
+                    public Sample() { }
                 }
             }
 
@@ -179,18 +187,24 @@ public partial class ToolkitSampleGeneratedPaneTests
         result.AssertDiagnosticsAre();
         result.AssertNoCompilationErrors();
 
-        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"), """
-        #nullable enable
-        namespace CommunityToolkit.Tooling.SampleGen;
-
-        public static class ToolkitSampleRegistry
-        {
-            public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
+        Assert.AreEqual("""
+            #nullable enable
+            namespace CommunityToolkit.Tooling.SampleGen;
+            
+            public static class ToolkitSampleRegistry
             {
-                ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
-            };
-        }
-        """, "Unexpected code generated");
+                public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
+                {
+                   ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null,
+                        new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] 
+                        {
+                            new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize")
+                        })
+                };
+            }
+            """,
+            result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"),
+            "Unexpected code generated");
     }
 
     [TestMethod]
