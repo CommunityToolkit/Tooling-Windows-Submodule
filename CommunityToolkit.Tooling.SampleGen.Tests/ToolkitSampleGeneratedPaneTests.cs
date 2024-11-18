@@ -4,9 +4,7 @@
 
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
@@ -52,6 +50,94 @@ public partial class ToolkitSampleGeneratedPaneTests
     }
 
     [TestMethod]
+    public void PaneOption_GeneratesEnumWithoutDiagnostics()
+    {
+        var source = """
+            using Windows.UI.Xaml;
+            using CommunityToolkit.Tooling.SampleGen;
+            using CommunityToolkit.Tooling.SampleGen.Attributes;
+            
+            namespace MyApp
+            {
+                [ToolkitSampleEnumOption<Windows.UI.Xaml.Controls.Visibility>("MyVisibility", Title = "Visibility")]
+                
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
+                public partial class Sample : Windows.UI.Xaml.Controls.UserControl
+                {
+                }
+            }
+
+            namespace Windows.UI.Xaml.Controls
+            {
+                public class UserControl { }
+                public enum Visibility { Visible = 3, Collapsed = 7 }
+            }
+            """;
+
+        var result = source.RunSourceGenerator<ToolkitSampleOptionGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre();
+    }
+    
+    [TestMethod]
+    public void PaneOption_GeneratesEnumProperty()
+    {
+        var sampleProjectAssembly = """
+            using Windows.UI.Xaml;
+            using CommunityToolkit.Tooling.SampleGen;
+            using CommunityToolkit.Tooling.SampleGen.Attributes;
+            
+            namespace MyApp
+            {
+                [ToolkitSampleEnumOption<Windows.UI.Xaml.Controls.Visibility>("MyVisibility", Title = "Visibility")]
+                
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
+                public partial class Sample : Windows.UI.Xaml.Controls.UserControl
+                {
+                    public Sample()
+                    {
+                        var y = this.MyVisibility;
+                    }
+                }
+            }
+
+            namespace Windows.UI.Xaml.Controls
+            {
+                public class UserControl { }
+                public enum Visibility { Visible = 3, Collapsed = 7 }
+            }
+            """.ToSyntaxTree()
+            .CreateCompilation("MyApp.Samples")
+            .ToMetadataReference();
+
+        // Create application head that references generated sample project
+        var headCompilation = string.Empty
+            .ToSyntaxTree()
+            .CreateCompilation("MyApp.Head")
+            .AddReferences(sampleProjectAssembly);
+
+        // Run source generator
+        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>();
+
+        result.AssertDiagnosticsAre();
+        result.AssertNoCompilationErrors();
+
+        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"), """
+            #nullable enable
+            namespace CommunityToolkit.Tooling.SampleGen;
+            
+            public static class ToolkitSampleRegistry
+            {
+                public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
+                {
+                    ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMultiChoiceOptionMetadataViewModel(name: "MyVisibility", options: new[] { new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Visible", "3"),new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Collapsed", "7") }, title: "Visibility") })
+                };
+            }
+            """, "Unexpected code generated");
+    }
+
+    [TestMethod]
     public void PaneOption_GeneratesTitleProperty()
     {
         // The sample registry is designed to be declared in the sample project, and generated in the project head where its displayed in the UI as data.
@@ -77,7 +163,7 @@ public partial class ToolkitSampleGeneratedPaneTests
             {
                 public class UserControl { }
             }
-        """.ToSyntaxTree()
+            """.ToSyntaxTree()
             .CreateCompilation("MyApp.Samples")
             .ToMetadataReference();
 
@@ -99,8 +185,8 @@ public partial class ToolkitSampleGeneratedPaneTests
 
         public static class ToolkitSampleRegistry
         {
-            public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing
-            { get; } = new() {
+            public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
+            {
                 ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
             };
         }

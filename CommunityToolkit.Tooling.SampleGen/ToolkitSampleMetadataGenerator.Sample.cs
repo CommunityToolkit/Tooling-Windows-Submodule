@@ -8,7 +8,6 @@ using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Linq;
 
 namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -50,11 +49,12 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
         // Skip diagnostics for symbols in referenced assemblies. We can't place diagnostics here even if we tried,
         // and running diagnostics here will cause errors when executing in the sample project, due to not finding sample metadata in the provided symbols.
         Execute(symbolsInReferencedAssemblies, skipDiagnostics: true);
+        return;
 
         void Execute(IncrementalValuesProvider<ISymbol> types, bool skipDiagnostics = false, bool skipRegistry = false)
         {
             // Get all attributes + the original type symbol.
-            var allAttributeData = types.SelectMany(static (sym, _) => sym.GetAttributes().Select(x => (sym, x)));
+            var allAttributeData = types.SelectMany(static (sym, _) => sym.GetAttributes().Select(x => (Symbol: sym, AttributeData: x)));
 
             // Find and reconstruct generated pane option attributes + the original type symbol.
             var generatedPaneOptions = allAttributeData
@@ -62,39 +62,52 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                 {
                     (ISymbol Symbol, ToolkitSampleOptionBaseAttribute Attribute) item = default;
 
+                    if (x.AttributeData.AttributeClass?.ContainingNamespace.ToDisplayString() == typeof(ToolkitSampleEnumOptionAttribute<>).Namespace
+                       && x.AttributeData.AttributeClass?.MetadataName == typeof(ToolkitSampleEnumOptionAttribute<>).Name)
+                    {
+                        if (x.AttributeData.AttributeClass.TypeArguments.FirstOrDefault() is { } typeSymbol)
+                        {
+                            var parameters = x.AttributeData.ConstructorArguments.Select(GeneratorExtensions.PrepareParameterTypeForActivator).ToList();
+                            var members = typeSymbol.GetMembers().OfType<IFieldSymbol>().Select(t => (t.Name, t.ConstantValue!)).ToList();
+                            parameters.Add(members);
+                            var multiChoiceOptionAttribute = (ToolkitSampleMultiChoiceOptionAttribute)Activator.CreateInstance(typeof(ToolkitSampleMultiChoiceOptionAttribute), parameters.ToArray());
+                            item = (x.Symbol, multiChoiceOptionAttribute);
+                        }
+                    }
                     // Reconstruct declared sample option attribute class instances from Roslyn symbols.
-                    if (x.Item2.TryReconstructAs<ToolkitSampleBoolOptionAttribute>() is ToolkitSampleBoolOptionAttribute boolOptionAttribute)
+                    else if (x.AttributeData.TryReconstructAs<ToolkitSampleBoolOptionAttribute>() is { } boolOptionAttribute)
                     {
-                        item = (x.Item1, boolOptionAttribute);
+                        item = (x.Symbol, boolOptionAttribute);
                     }
-                    else if (x.Item2.TryReconstructAs<ToolkitSampleMultiChoiceOptionAttribute>() is ToolkitSampleMultiChoiceOptionAttribute multiChoiceOptionAttribute)
+                    else if (x.AttributeData.TryReconstructAs<ToolkitSampleMultiChoiceOptionAttribute>() is { } multiChoiceOptionAttribute)
                     {
-                        item = (x.Item1, multiChoiceOptionAttribute);
+                        item = (x.Symbol, multiChoiceOptionAttribute);
                     }
-                    else if (x.Item2.TryReconstructAs<ToolkitSampleNumericOptionAttribute>() is ToolkitSampleNumericOptionAttribute numericOptionAttribute)
+                    else if (x.AttributeData.TryReconstructAs<ToolkitSampleNumericOptionAttribute>() is { } numericOptionAttribute)
                     {
-                        item = (x.Item1, numericOptionAttribute);
+                        item = (x.Symbol, numericOptionAttribute);
                     }
-                    else if (x.Item2.TryReconstructAs<ToolkitSampleTextOptionAttribute>() is ToolkitSampleTextOptionAttribute textOptionAttribute)
+                    else if (x.AttributeData.TryReconstructAs<ToolkitSampleTextOptionAttribute>() is { } textOptionAttribute)
                     {
-                        item = (x.Item1, textOptionAttribute);
+                        item = (x.Symbol, textOptionAttribute);
                     }
 
                     // Add extra property data, like Title, back to Attribute
-                    if (item.Attribute is not null && x.Item2.TryGetNamedArgument(nameof(ToolkitSampleOptionBaseAttribute.Title), out string? title) && !string.IsNullOrWhiteSpace(title))
+                    if (item.Attribute is not null && x.AttributeData.TryGetNamedArgument(nameof(ToolkitSampleOptionBaseAttribute.Title), out string? title) && !string.IsNullOrWhiteSpace(title))
                     {
                         item.Attribute.Title = title;
                     }
 
                     return item;
                 })
+                .Where(static x => x != default)
                 .Collect();
 
             // Find and reconstruct sample attributes
             var toolkitSampleAttributeData = allAttributeData
                 .Select(static (data, _) =>
                 {
-                    if (data.Item2.TryReconstructAs<ToolkitSampleAttribute>() is ToolkitSampleAttribute sampleAttribute)
+                    if (data.Item2.TryReconstructAs<ToolkitSampleAttribute>() is { } sampleAttribute)
                         return (Attribute: sampleAttribute, AttachedQualifiedTypeName: data.Item1.ToString(), Symbol: data.Item1);
 
                     return default;
@@ -119,19 +132,18 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             {
                 var (((((optionsPaneAttributes, toolkitSampleAttributes), generatedPaneOptions), markdownFiles), csprojFiles), currentAssembly) = data;
 
-                var toolkitSampleAttributeData = toolkitSampleAttributes.Where(x => x != default).Distinct();
-                var optionsPaneAttributeData = optionsPaneAttributes.Where(x => x != default).Distinct();
-                var generatedOptionPropertyData = generatedPaneOptions.Where(x => x.Attribute is not null && x.Symbol is not null);
+                var toolkitSampleAttributeData = toolkitSampleAttributes.Distinct();
+                var optionsPaneAttributeData = optionsPaneAttributes.Distinct();
 
-                var markdownFileData = markdownFiles.Where(x => x != default).Distinct();
-                var csprojFileData = csprojFiles.Where(x => x != default).Distinct();
+                var markdownFileData = markdownFiles.Distinct();
+                var csprojFileData = csprojFiles.Distinct();
 
                 var markdownProjPairings = markdownFileData.Select<AdditionalText, (AdditionalText Document, AdditionalText? CsProj)>((docFile, _) =>
                 {
                     // TODO: We use these splits a lot to extra path info, so we should probably make a helper function?
-                    var rootPathFile = docFile.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Split(new char[] { '/', '\\' }).FirstOrDefault();
+                    var rootPathFile = docFile.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Split('/', '\\').FirstOrDefault();
 
-                    var csproj = csprojFileData.FirstOrDefault(csProjFile => csProjFile.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Split(new char[] { '/', '\\' }).FirstOrDefault() == rootPathFile);
+                    var csproj = csprojFileData.FirstOrDefault(csProjFile => csProjFile.Path.Split(new string[] { @"\components\", "/components/", @"\tooling\", "/tooling/" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Split('/', '\\').FirstOrDefault() == rootPathFile);
 
                     return (docFile, csproj);
                 });
@@ -150,7 +162,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                                 sample.Attribute.Description,
                                 sample.AttachedQualifiedTypeName,
                                 optionsPaneAttributeData.FirstOrDefault(x => x.Item1?.SampleId == sample.Attribute.Id).Item2?.ToString(),
-                                generatedOptionPropertyData.Where(x => x.Symbol.Equals(sample.Symbol, SymbolEqualityComparer.Default)).Select(x => x.Item2)
+                                generatedPaneOptions.Where(x => x.Symbol.Equals(sample.Symbol, SymbolEqualityComparer.Default)).Select(x => x.Item2)
                             )
                     );
 
@@ -158,7 +170,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
                 if (isExecutingInSampleProject && !skipDiagnostics)
                 {
-                    ReportSampleDiagnostics(ctx, toolkitSampleAttributeData, optionsPaneAttributeData, generatedOptionPropertyData);
+                    ReportSampleDiagnostics(ctx, toolkitSampleAttributeData, optionsPaneAttributeData, generatedPaneOptions);
                     ReportDocumentDiagnostics(ctx, sampleMetadata, markdownFileData, toolkitSampleAttributeData, docFrontMatter);
                 }
 
@@ -181,7 +193,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             return;
 
         var source = BuildRegistrationCallsFromMetadata(sampleMetadata);
-        ctx.AddSource($"ToolkitSampleRegistry.g.cs", source);
+        ctx.AddSource("ToolkitSampleRegistry.g.cs", source);
     }
 
     private static void ReportSampleDiagnostics(SourceProductionContext ctx,
@@ -232,7 +244,7 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                                                               IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute)
     {
         // Check for options pane attributes with no matching sample ID
-        var optionsPaneAttributeWithMissingOrInvalidSampleId = optionsPaneAttribute.Where(x => !toolkitSampleAttributeData.Any(sample => sample.Attribute.Id == x.Item1?.SampleId));
+        var optionsPaneAttributeWithMissingOrInvalidSampleId = optionsPaneAttribute.Where(x => toolkitSampleAttributeData.All(sample => sample.Attribute.Id != x.Item1?.SampleId));
 
         foreach (var item in optionsPaneAttributeWithMissingOrInvalidSampleId)
             ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.OptionsPaneAttributeWithMissingOrInvalidSampleId, item.Item2.Locations.FirstOrDefault()));
@@ -287,16 +299,18 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
     private static string BuildRegistrationCallsFromMetadata(IDictionary<string, ToolkitSampleRecord> sampleMetadata)
     {
-        return $@"#nullable enable
-namespace CommunityToolkit.Tooling.SampleGen;
+        return $$"""
+                #nullable enable
+                namespace CommunityToolkit.Tooling.SampleGen;
 
-public static class ToolkitSampleRegistry
-{{
-    public static System.Collections.Generic.Dictionary<string, {typeof(ToolkitSampleMetadata).FullName}> Listing
-    {{ get; }} = new() {{
-        {string.Join(",\n        ", sampleMetadata.Select(MetadataToRegistryCall).ToArray())}
-    }};
-}}";
+                public static class ToolkitSampleRegistry
+                {
+                    public static System.Collections.Generic.Dictionary<string, {{typeof(ToolkitSampleMetadata).FullName}}> Listing { get; } = new()
+                    {
+                        {{string.Join(",\n        ", sampleMetadata.Select(MetadataToRegistryCall).ToArray())}}
+                    };
+                }
+                """;
     }
 
     private static string MetadataToRegistryCall(KeyValuePair<string, ToolkitSampleRecord> kvp)
@@ -315,26 +329,18 @@ public static class ToolkitSampleRegistry
     {
         foreach (var item in sample.GeneratedSampleOptions ?? Enumerable.Empty<ToolkitSampleOptionBaseAttribute>())
         {
-            if (item is ToolkitSampleMultiChoiceOptionAttribute multiChoiceAttr)
+            yield return item switch
             {
-                yield return $@"new {typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel).FullName}(name: ""{multiChoiceAttr.Name}"", options: new[] {{ {string.Join(",", multiChoiceAttr.Choices.Select(x => $@"new {typeof(MultiChoiceOption).FullName}(""{x.Label}"", ""{x.Value}"")").ToArray())} }}, title: ""{multiChoiceAttr.Title}"")";
-            }
-            else if (item is ToolkitSampleBoolOptionAttribute boolAttribute)
-            {
-                yield return $@"new {typeof(ToolkitSampleBoolOptionMetadataViewModel).FullName}(name: ""{boolAttribute.Name}"", defaultState: {boolAttribute.DefaultState?.ToString().ToLower()}, title: ""{boolAttribute.Title}"")";
-            }
-            else if (item is ToolkitSampleNumericOptionAttribute numericAttribute)
-            {
-                yield return $@"new {typeof(ToolkitSampleNumericOptionMetadataViewModel).FullName}(name: ""{numericAttribute.Name}"", initial: {numericAttribute.Initial}, min: {numericAttribute.Min}, max: {numericAttribute.Max}, step: {numericAttribute.Step}, showAsNumberBox: {numericAttribute.ShowAsNumberBox.ToString().ToLower()}, title: ""{numericAttribute.Title}"")";
-            }
-            else if (item is ToolkitSampleTextOptionAttribute textAttribute)
-            {
-                yield return $@"new {typeof(ToolkitSampleTextOptionMetadataViewModel).FullName}(name: ""{textAttribute.Name}"", placeholderText: ""{textAttribute.PlaceholderText}"", title: ""{textAttribute.Title}"")";
-            }
-            else
-            {
-                throw new NotSupportedException($"Unsupported or unhandled type {item.GetType()}.");
-            }
+                ToolkitSampleMultiChoiceOptionAttribute multiChoiceAttr =>
+                    $@"new {typeof(ToolkitSampleMultiChoiceOptionMetadataViewModel).FullName}(name: ""{multiChoiceAttr.Name}"", options: new[] {{ {string.Join(",", multiChoiceAttr.Choices.Select(x => $@"new {typeof(MultiChoiceOption).FullName}(""{x.Label}"", ""{x.Value}"")").ToArray())} }}, title: ""{multiChoiceAttr.Title}"")",
+                ToolkitSampleBoolOptionAttribute boolAttribute =>
+                    $@"new {typeof(ToolkitSampleBoolOptionMetadataViewModel).FullName}(name: ""{boolAttribute.Name}"", defaultState: {boolAttribute.DefaultState?.ToString().ToLower()}, title: ""{boolAttribute.Title}"")",
+                ToolkitSampleNumericOptionAttribute numericAttribute =>
+                    $@"new {typeof(ToolkitSampleNumericOptionMetadataViewModel).FullName}(name: ""{numericAttribute.Name}"", initial: {numericAttribute.Initial}, min: {numericAttribute.Min}, max: {numericAttribute.Max}, step: {numericAttribute.Step}, showAsNumberBox: {numericAttribute.ShowAsNumberBox.ToString().ToLower()}, title: ""{numericAttribute.Title}"")",
+                ToolkitSampleTextOptionAttribute textAttribute =>
+                    $@"new {typeof(ToolkitSampleTextOptionMetadataViewModel).FullName}(name: ""{textAttribute.Name}"", placeholderText: ""{textAttribute.PlaceholderText}"", title: ""{textAttribute.Title}"")",
+                _ => throw new NotSupportedException($"Unsupported or unhandled type {item.GetType()}.")
+            };
         }
     }
 
