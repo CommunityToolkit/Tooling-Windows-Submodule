@@ -7,7 +7,7 @@
     <!-- All Uno-based project heads and MultiTarget-enabled library projects need to reference this file, while native (UWP/WinAppSdk) heads don't. -->
     <ItemGroup Condition="'$(IsUno)' == 'true'">
         <PackageReference Include="Uno.UI" Version="$(CommonUnoPackageVersion)" />
-        <PackageReference Include="Uno.Fonts.Fluent" Version="2.4.5" />
+        <PackageReference Include="Uno.Fonts.Fluent" Version="2.4.5" />    
     </ItemGroup>
 
     <PropertyGroup Condition="'$(IsUno)' == 'true'">
