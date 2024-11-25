@@ -1,23 +1,23 @@
 <Project>
     <PropertyGroup>
         <UwpTargetFramework Condition="'$(UwpTargetFramework)' == ''">uap10.0.17763</UwpTargetFramework>
-        <WinAppSdkTargetFramework Condition="'$(WinAppSdkTargetFramework)' == ''">net8.0-windows10.0.19041.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0;</WinAppSdkTargetFramework>
+        <WinAppSdkTargetFramework Condition="'$(WinAppSdkTargetFramework)' == ''">net9.0-windows10.0.19041.0;net8.0-windows10.0.19041.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0;</WinAppSdkTargetFramework>
         
-        <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">net8.0</WasmHeadTargetFramework>
-        <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">net8.0</LinuxHeadTargetFramework>
-        <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">net8.0</WpfHeadTargetFramework>
+        <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">net9.0;</WasmHeadTargetFramework>
+        <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">net9.0;</LinuxHeadTargetFramework>
+        <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">net9.0;</WpfHeadTargetFramework>
         
-        <AndroidLibTargetFramework Condition="'$(AndroidLibTargetFramework)' == ''">net8.0-android34.0</AndroidLibTargetFramework>
-        <MacOSLibTargetFramework Condition="'$(MacOSLibTargetFramework)' == ''">net8.0-maccatalyst</MacOSLibTargetFramework>
-        <iOSLibTargetFramework Condition="'$(iOSLibTargetFramework)' == ''">net8.0-ios</iOSLibTargetFramework>
+        <AndroidLibTargetFramework Condition="'$(AndroidLibTargetFramework)' == ''">net9.0-android;</AndroidLibTargetFramework>
+        <MacOSLibTargetFramework Condition="'$(MacOSLibTargetFramework)' == ''">net9.0-maccatalyst;</MacOSLibTargetFramework>
+        <iOSLibTargetFramework Condition="'$(iOSLibTargetFramework)' == ''">net9.0-ios;</iOSLibTargetFramework>
 
         <!-- Used for comparison to current TargetFramework -->
-        <LinuxLibTargetFramework Condition="'$(LinuxLibTargetFramework)' == ''">net8.0</LinuxLibTargetFramework>
-        <WasmLibTargetFramework Condition="'$(WasmLibTargetFramework)' == ''">net8.0</WasmLibTargetFramework>
-        <WpfLibTargetFramework Condition="'$(WpfLibTargetFramework)' == ''">net8.0</WpfLibTargetFramework>
+        <LinuxLibTargetFramework Condition="'$(LinuxLibTargetFramework)' == ''">net9.0;</LinuxLibTargetFramework>
+        <WasmLibTargetFramework Condition="'$(WasmLibTargetFramework)' == ''">net9.0;</WasmLibTargetFramework>
+        <WpfLibTargetFramework Condition="'$(WpfLibTargetFramework)' == ''">net9.0;</WpfLibTargetFramework>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
         <DotnetStandardCommonTargetFramework Condition="'$(DotnetStandardCommonTargetFramework)' == ''">netstandard2.0</DotnetStandardCommonTargetFramework>
-        <DotnetCommonTargetFramework Condition="'$(DotnetCommonTargetFramework)' == ''">net8.0</DotnetCommonTargetFramework>
+        <DotnetCommonTargetFramework Condition="'$(DotnetCommonTargetFramework)' == ''">net9.0;</DotnetCommonTargetFramework>
     </PropertyGroup>
 </Project>
