@@ -1,4 +1,4 @@
-<!-- Nuget package dependencies for all deployable UWP project heads -->
+<!-- Nuget package dependencies for all deployable WASDK project heads -->
 <!-- Due to the quirks of non-sdk style projects, we cannot create a unified Dependencies.props for deployable head. -->
 <Project>
   <ItemGroup>
