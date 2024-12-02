@@ -53,17 +53,17 @@
 
     <IsUno Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true' OR '$(IsDroid)' == 'true' OR '$(IsMacOS)' == 'true' OR '$(IsiOS)' == 'true'">true</IsUno>
 
-    <HasWinUI Condition="'$(HasWinUI)' == '' AND ('$(IsUwp)' == 'true' OR '$(IsWinAppSdk)' == 'true' OR '$(IsUno)' == 'true')">true</HasWinUI>
 
     <!--
       This property is only for changing the version used by Uno.
       Force the version to 2 for UWP and 3 for WinAppSDK.
      -->
-    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $(WinUIMajorVersion) == ''">2</WinUIMajorVersion>
-    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true' AND $(WinUIMajorVersion) == ''">3</WinUIMajorVersion>
+    <WinUIMajorVersion Condition="'$(IsUwp)' == 'true'">2</WinUIMajorVersion>
+    <WinUIMajorVersion Condition="'$(IsWinAppSdk)' == 'true'">3</WinUIMajorVersion>
+
+    <HasWinUI Condition="'$(HasWinUI)' == '' AND '$(WinUIMajorVersion)' == '2' AND '$(HasWinUI2)' == 'false'">false</HasWinUI>
+    <HasWinUI Condition="'$(HasWinUI)' == '' AND ('$(IsUwp)' == 'true' OR '$(IsWinAppSdk)' == 'true' OR '$(IsUno)' == 'true')">true</HasWinUI>
 
     <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">true</UseUwp>
-    
-    <HasWinUI2 Condition="'$(HasWinUI2)' == '' AND '$(HasWinUI)' == 'true' AND '$(WinUIMajorVersion)' == '2'">true</HasWinUI2>
   </PropertyGroup>
 </Project>
