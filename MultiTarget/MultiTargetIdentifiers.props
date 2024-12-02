@@ -63,5 +63,7 @@
     <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true' AND $(WinUIMajorVersion) == ''">3</WinUIMajorVersion>
 
     <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">true</UseUwp>
+    
+    <HasWinUI2 Condition="'$(HasWinUI2)' == '' AND '$(HasWinUI)' == 'true' AND '$(WinUIMajorVersion)' == '2'">true</HasWinUI2>
   </PropertyGroup>
 </Project>
