@@ -1,0 +1,6 @@
+<Project>
+  <ItemGroup>
+    <Compile Condition="'$(EnableGlobalUsings)' != 'false' AND '$(HasWinUI)' == 'true'" Include="$(ToolingDirectory)\GlobalUsings_WinUI.cs" />
+    <Compile Condition="'$(EnableGlobalUsings)' != 'false'" Include="$(ToolingDirectory)\GlobalUsings.cs" />
+  </ItemGroup>
+</Project>
