@@ -17,6 +17,7 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetIdentifiers.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\NoWarn.props"/>
+  <Import Project="$(ToolingDirectory)\MultiTarget\GlobalUsings.props" />
 
   <!-- Add platform package dependencies -->
   <Import Project="$(ToolingDirectory)\MultiTarget\PackageReferences\Uno.props" Condition="$(IsUno) == 'true'" />
