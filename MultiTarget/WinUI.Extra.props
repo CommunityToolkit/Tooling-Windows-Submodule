@@ -62,10 +62,6 @@
     <NoWarn>$(NoWarn);CA1416;</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="$(ToolingDirectory)\GlobalUsings_WinUI.cs" />
-  </ItemGroup>
-
   <!-- Workaround for Mac: https://developercommunity.visualstudio.com/t/XamarinMac-binaries-are-missing-in-173/10164443#T-N10164676 10/6/22 -->
   <ItemGroup Condition=" $(TargetFramework.StartsWith('xamarinmac')) ">
     <Reference Include="Xamarin.Mac">
