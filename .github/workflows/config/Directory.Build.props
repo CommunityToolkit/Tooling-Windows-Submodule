@@ -36,8 +36,4 @@
     <IsPublishable>true</IsPublishable>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="$(RepositoryDirectory)tooling\GlobalUsings.cs" />
-  </ItemGroup>
 </Project>
