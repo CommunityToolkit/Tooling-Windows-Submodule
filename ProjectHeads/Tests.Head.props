@@ -1,4 +1,7 @@
 <Project>
+  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\Extra.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\GlobalUsings.props" />
+
   <!-- Source generators -->
   <ItemGroup Condition="'$(IsWinAppSdk)' != 'true'">
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />

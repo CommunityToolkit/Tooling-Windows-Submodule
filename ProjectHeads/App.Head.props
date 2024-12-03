@@ -1,5 +1,8 @@
 <!-- Common props for any deployable app project head. -->
 <Project>
+  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\Extra.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\GlobalUsings.props" />
+
   <!-- Shared project -->
   <Import Project="$(ToolingDirectory)\CommunityToolkit.App.Shared\CommunityToolkit.App.Shared.projitems" Label="Shared" />
 
