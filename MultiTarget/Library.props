@@ -27,6 +27,7 @@
   <!-- Configure WinUI -->
   <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.AutoIncludeXamlPages.props" Condition="$(HasWinUI) == 'true'" />
   <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.Extra.props" Condition="$(HasWinUI) == 'true'" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\Extra.props" />
 
   <!-- Import Uno and native dependencies for all multitargeted library projects. -->
   <Import Project="$(MSBuildProjectDirectory)\Dependencies.props" Condition="Exists('$(MSBuildProjectDirectory)\Dependencies.props')" />

@@ -8,45 +8,6 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(IsWinAppSdk)' == 'true' OR '$(IsUwp)' == 'true'">
-    <!--
-    For net5.0+ targets, TargetPlatformMinVersion was renamed to SupportedOSPlatformVersion. See https://github.com/dotnet/designs/pull/157
-
-    The dotnet SDK uses the TargetPlatformVersion property to provide a default SupportedOSPlatformVersion value if none is explicitly provided.
-    See https://github.com/dotnet/designs/blob/bba3216250cb29b0063bac3ebb57a542ee21ad4f/accepted/2020/minimum-os-version/minimum-os-version.md?plain=1#L73C27-L73C48
-    -->
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <SupportedOSPlatformVersion>$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
-    <TargetPlatformVersion Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'">10.0.26100.0</TargetPlatformVersion>
-    <TargetPlatformVersion Condition="'$(MultiTargetPlatformIdentifier)' != 'windows'">10.0.19041.0</TargetPlatformVersion>
-  </PropertyGroup>
-
-  <!-- Workaround, improved error message when consuming from Uno projects with mismatched TFMs -->
-  <!-- See https://github.com/CommunityToolkit/Windows/issues/388 -->
-  <ItemGroup>
-    <None PackagePath="lib/net9.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
-    <None PackagePath="lib/net8.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
-    <None PackagePath="lib/net7.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(IsUwp)' == 'true'">
-    <Platforms>x86;x64;arm64</Platforms>
-    
-    <WindowsSdkPackageVersion Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'">10.0.26100.54</WindowsSdkPackageVersion>
-    <RuntimeIdentifiers Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'">win-x86;win-x64;win-arm64</RuntimeIdentifiers> 
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(IsWinAppSdk)' == 'true'">
-    <!-- See https://github.com/microsoft/WindowsAppSDK/issues/3842 -->
-    <UseRidGraph>true</UseRidGraph>
-    
-    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 8">win-x86;win-x64;win-arm64</RuntimeIdentifiers> 
-    <RuntimeIdentifiers Condition="8 > $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))">win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-
-    <!--- Workaround for ADO 53865998 - See https://github.com/CommunityToolkit/Tooling-Windows-Submodule/issues/215 - Don't include extraneous WebView2 dll -->
-    <WebView2NeverCopyLoaderDllToOutputDirectory>true</WebView2NeverCopyLoaderDllToOutputDirectory>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(IsUno)' == 'true'">
     <!-- Xaml Trimming: https://platform.uno/docs/articles/features/resources-trimming.html -->
     <UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
@@ -56,19 +17,4 @@
     <!-- These suppressions are for references between generated assemblies and that VS can keep in the Error List once resolved -->
     <NoWarn>$(NoWarn);WMC1006;CS8034;</NoWarn>
   </PropertyGroup>
-  
-  <!-- Disable warnings for 'This call site is reachable on all platforms.' caused by underlying platform. -->
-  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">
-    <NoWarn>$(NoWarn);CA1416;</NoWarn>
-  </PropertyGroup>
-
-  <!-- Workaround for Mac: https://developercommunity.visualstudio.com/t/XamarinMac-binaries-are-missing-in-173/10164443#T-N10164676 10/6/22 -->
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('xamarinmac')) ">
-    <Reference Include="Xamarin.Mac">
-      <HintPath Condition="Exists('c:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\Xamarin.VisualStudio')">c:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\Xamarin.VisualStudio\Xamarin.Mac.dll</HintPath>
-      <HintPath Condition="Exists('c:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\Extensions\Xamarin.VisualStudio')">c:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\Extensions\Xamarin.VisualStudio\Xamarin.Mac.dll</HintPath>
-      <HintPath Condition="Exists('c:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Xamarin.VisualStudio')">c:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Xamarin.VisualStudio\Xamarin.Mac.dll</HintPath>
-      <HintPath Condition="Exists('c:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\Extensions\Xamarin.VisualStudio')">c:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\Extensions\Xamarin.VisualStudio\Xamarin.Mac.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
