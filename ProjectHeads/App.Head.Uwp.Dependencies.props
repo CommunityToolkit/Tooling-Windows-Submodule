@@ -3,7 +3,7 @@
 <Project>
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls.Markdown" Version="7.1.2" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed" Version="3.0.0-local.240918" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed" Version="3.0.0-preview1" />
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
   </ItemGroup>
 </Project>
