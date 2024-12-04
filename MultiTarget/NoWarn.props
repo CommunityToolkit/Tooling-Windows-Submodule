@@ -1,7 +1,7 @@
 <Project>  
   <!-- Disable warnings for 'This call site is reachable on all platforms.' caused by underlying platform. -->
   <PropertyGroup Condition="'$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-    <NoWarn>$(NoWarn);CA1416;</NoWarn>
+    <NoWarn>$(NoWarn);CA1416;NETSDK1219;</NoWarn>
   </PropertyGroup>
 
   <!--
