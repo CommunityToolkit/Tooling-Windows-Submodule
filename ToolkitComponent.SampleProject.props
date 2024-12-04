@@ -6,7 +6,7 @@
   <!-- Set up the MultiTarget system -->
   <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
-  <Sdk Condition="'$(IsUwp)' == 'true'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
+  <Sdk Condition="'$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
 
   <!-- Import this component's source project -->
   <ItemGroup>

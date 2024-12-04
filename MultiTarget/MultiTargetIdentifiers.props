@@ -41,7 +41,7 @@
     <IsGtkLib Condition="'$(IsGtkLib)' == '' AND $(LinuxLibTargetFramework.Contains('$(TargetFramework);')) AND '$(LinuxLibTargetFramework)' != '' AND '$(MultiTargetsLinuxGtk)' == 'true'">true</IsGtkLib>
     <IsGtk Condition="'$(IsGtk)' == '' AND ('$(IsGtkHead)' == 'true' or '$(IsGtkLib)' == 'true')">true</IsGtk>
 
-    <IsUwp Condition="'$(IsUwp)' == '' AND '$(TargetFramework)' == '$(UwpTargetFramework)' AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
+    <IsUwp Condition="'$(IsUwp)' == '' AND $(UwpTargetFramework.Contains('$(TargetFramework);')) AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
     <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFramework.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFramework)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
 
     <IsDroid Condition="'$(IsDroid)' == '' AND $(AndroidLibTargetFramework.Contains('$(TargetFramework);')) AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
@@ -57,7 +57,9 @@
       This property is only for changing the version used by Uno.
       Force the version to 2 for UWP and 3 for WinAppSDK.
      -->
-    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true'">2</WinUIMajorVersion>
-    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true'">3</WinUIMajorVersion>
+    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $(WinUIMajorVersion) == ''">2</WinUIMajorVersion>
+    <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true' AND $(WinUIMajorVersion) == ''">3</WinUIMajorVersion>
+
+    <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">true</UseUwp>
   </PropertyGroup>
 </Project>

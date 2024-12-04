@@ -4,7 +4,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:behaviors="using:CommunityToolkit.App.Shared.Behaviors"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:interactions="using:Microsoft.Xaml.Interactions.Core"
       xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:local="using:CommunityToolkit.App.Shared"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -104,9 +103,9 @@
                             </StackPanel>
                         </Button.Content>
                         <interactivity:Interaction.Behaviors>
-                            <interactions:EventTriggerBehavior EventName="Click">
+                            <interactivity:EventTriggerBehavior EventName="Click">
                                 <behaviors:NavigateToUriAction NavigateUri="https://aka.ms/toolkit/docs" />
-                            </interactions:EventTriggerBehavior>
+                            </interactivity:EventTriggerBehavior>
                         </interactivity:Interaction.Behaviors>
                     </Button>
                     <Button win:AutomationProperties.Name="Learn more on GitHub">
@@ -122,9 +121,9 @@
                             </StackPanel>
                         </Button.Content>
                         <interactivity:Interaction.Behaviors>
-                            <interactions:EventTriggerBehavior EventName="Click">
+                            <interactivity:EventTriggerBehavior EventName="Click">
                                 <behaviors:NavigateToUriAction NavigateUri="https://aka.ms/toolkit/windows" />
-                            </interactions:EventTriggerBehavior>
+                            </interactivity:EventTriggerBehavior>
                         </interactivity:Interaction.Behaviors>
                     </Button>
 
@@ -141,9 +140,9 @@
                             </StackPanel>
                         </Button.Content>
                         <interactivity:Interaction.Behaviors>
-                            <interactions:EventTriggerBehavior EventName="Click">
+                            <interactivity:EventTriggerBehavior EventName="Click">
                                 <behaviors:NavigateToUriAction NavigateUri="https://aka.ms/wct/discord" />
-                            </interactions:EventTriggerBehavior>
+                            </interactivity:EventTriggerBehavior>
                         </interactivity:Interaction.Behaviors>
                     </Button>
                 </StackPanel>
