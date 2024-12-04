@@ -1,20 +1,20 @@
 <Project>
     <PropertyGroup>
         <UwpTargetFramework Condition="'$(UwpTargetFramework)' == ''">uap10.0.17763;net8.0-windows10.0.26100.0;</UwpTargetFramework>
+        <WinAppSdkTargetFramework Condition="'$(WinAppSdkTargetFramework)' == ''">net9.0-windows10.0.19041.0;net8.0-windows10.0.19041.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0;</WinAppSdkTargetFramework>
         
-        
-        <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">net8.0</WasmHeadTargetFramework>
-        <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">net8.0</LinuxHeadTargetFramework>
-        <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">net8.0</WpfHeadTargetFramework>
+        <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">net9.0;</WasmHeadTargetFramework>
+        <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">net9.0;</LinuxHeadTargetFramework>
+        <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">net9.0;</WpfHeadTargetFramework>
         
         
         
         
 
         <!-- Used for comparison to current TargetFramework -->
-        <LinuxLibTargetFramework Condition="'$(LinuxLibTargetFramework)' == ''">net8.0</LinuxLibTargetFramework>
-        <WasmLibTargetFramework Condition="'$(WasmLibTargetFramework)' == ''">net8.0</WasmLibTargetFramework>
-        <WpfLibTargetFramework Condition="'$(WpfLibTargetFramework)' == ''">net8.0</WpfLibTargetFramework>
+        <LinuxLibTargetFramework Condition="'$(LinuxLibTargetFramework)' == ''">net9.0;</LinuxLibTargetFramework>
+        <WasmLibTargetFramework Condition="'$(WasmLibTargetFramework)' == ''">net9.0;</WasmLibTargetFramework>
+        <WpfLibTargetFramework Condition="'$(WpfLibTargetFramework)' == ''">net9.0;</WpfLibTargetFramework>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
         

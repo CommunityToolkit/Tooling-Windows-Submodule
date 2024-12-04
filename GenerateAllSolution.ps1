@@ -62,6 +62,20 @@ if ($null -eq $ExcludeMultiTargets)
     $ExcludeMultiTargets = @()
 }
 
+# Both uwp and wasdk share a targetframework. Both cannot be enabled at once.
+# If both are supplied, remove one based on WinUIMajorVersion.
+if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
+{
+    if ($WinUIMajorVersion -eq 2)
+    {
+        $ExcludeMultiTargets = $ExcludeMultiTargets + 'wasdk'
+    }
+    else
+    {
+        $ExcludeMultiTargets = $ExcludeMultiTargets + 'uwp'
+    }
+}
+
 $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
 
 # Generate required props for "All" solution.
