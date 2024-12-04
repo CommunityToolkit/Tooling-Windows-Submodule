@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOTNET_VERSION: ${{ '8.0.x' }}
+  DOTNET_VERSION: ${{ '9.0.x' }}
   DOTNET_INSTALL_DIR: dotnet-install
   DOTNET_ROOT: dotnet-install
   ENABLE_DIAGNOSTICS: false
