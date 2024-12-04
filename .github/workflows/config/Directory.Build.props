@@ -17,8 +17,9 @@
     <Copyright>(c) .NET Foundation and Contributors.  All rights reserved.</Copyright>
     <PackageProjectUrl>https://github.com/CommunityToolkit/Tooling-Windows-Submodule</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/CommunityToolkit/Tooling-Windows-Submodule/releases</PackageReleaseNotes>
-    <!-- TODO: Remove when closing https://github.com/CommunityToolkit/Labs-Windows/issues/256 -->
-    <NoWarn>$(NoWarn);NU1505;NU1504</NoWarn>
+
+    <!-- See https://github.com/CommunityToolkit/Labs-Windows/pull/605#issuecomment-2498743676 -->
+    <WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>
