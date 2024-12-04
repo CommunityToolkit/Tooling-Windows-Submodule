@@ -61,6 +61,5 @@
     <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true' AND $(WinUIMajorVersion) == ''">3</WinUIMajorVersion>
 
     <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">true</UseUwp>
-    <UseUwpTools Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">true</UseUwpTools>
   </PropertyGroup>
 </Project>
