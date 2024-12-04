@@ -78,7 +78,7 @@ if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
 
 $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
 
-# Generate required props for "All" solution.
+# Generate required props for "All" solution preferences.
 & ./tooling/MultiTarget/GenerateAllProjectReferences.ps1 -MultiTargets $MultiTargets -Components $Components -ExcludeComponents $ExcludeComponents
 & ./tooling/MultiTarget/UseTargetFrameworks.ps1 -MultiTargets $MultiTargets
 & ./tooling/MultiTarget/UseUnoWinUI.ps1 $WinUIMajorVersion
