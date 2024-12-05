@@ -89,7 +89,6 @@ if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
 }
 
 $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
-$ExcludeMultiTargets = $ExcludeMultiTargets | Where-Object { $_ -notin $MultiTargets }
 
 # Generate required props for preferences
 & $PSScriptRoot/../MultiTarget/UseTargetFrameworks.ps1 -MultiTargets $MultiTargets
