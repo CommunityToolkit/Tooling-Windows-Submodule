@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web" TreatAsLocalProperty="TargetFramework">
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly" TreatAsLocalProperty="TargetFramework">
 
   <PropertyGroup>
     <IsDeployableHead>true</IsDeployableHead>
