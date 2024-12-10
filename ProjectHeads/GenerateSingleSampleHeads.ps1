@@ -10,7 +10,7 @@
     Folder for the project to copy the project heads to.
 
 .PARAMETER MultiTargets
-    Specifies the MultiTarget TFM(s) to include for building the components. The default value is 'all'.
+    Specifies the MultiTarget TFM(s) to include for building the components. The default value is 'uwp', 'wasm', 'wasdk'.
 
 .PARAMETER ExcludeMultiTargets
     Specifies the MultiTarget TFM(s) to exclude for building the components. The default value excludes targets that require additional tooling or workloads to build. Run uno-check to install the required workloads.
