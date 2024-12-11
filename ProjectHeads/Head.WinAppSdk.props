@@ -5,6 +5,7 @@
     <Platforms>x86;x64;arm64</Platforms>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
+    <MultiTargetPlatformIdentifier>windows</MultiTargetPlatformIdentifier>
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppContainer>true</WindowsAppContainer>

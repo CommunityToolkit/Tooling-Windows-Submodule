@@ -1,9 +1,9 @@
 <Project>
   <ItemGroup>
     <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.UI.Xaml" Version="2.8.7-prerelease.241119001" />
-    <PackageReference Condition="'$(IsWindowsTfm)' == 'true'" Include="Microsoft.Windows.CsWinRT" Version="2.1.6" PrivateAssets="all" />
+    <PackageReference Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'" Include="Microsoft.Windows.CsWinRT" Version="2.1.6" PrivateAssets="all" />
 
     <!-- Temp workaround until next Windows SDK servicing update -->
-    <PackageReference Condition="'$(HasWinUI)' == 'true' AND '$(IsWindowsTfm)' == 'true'" Include="Microsoft.Windows.SDK.CPP" Version="10.0.26100.2454" PrivateAssets="all" />
+    <PackageReference Condition="'$(HasWinUI)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'" Include="Microsoft.Windows.SDK.CPP" Version="10.0.26100.2454" PrivateAssets="all" />
   </ItemGroup>
 </Project>

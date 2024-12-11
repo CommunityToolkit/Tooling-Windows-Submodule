@@ -43,8 +43,11 @@
 
     <IsUwp Condition="'$(IsUwp)' == '' AND $(UwpTargetFramework.Contains('$(TargetFramework);')) AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
     <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFramework.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFramework)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
-    <TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</TargetPlatformIdentifier>
-    <IsWindowsTfm Condition="$(TargetPlatformIdentifier) == 'windows'">true</IsWindowsTfm>
+    
+    <MultiTargetPlatformIdentifier Condition="'$(MultiTargetPlatformIdentifier)' == ''">$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</MultiTargetPlatformIdentifier>
+
+    <!-- TODO: Investigate. Should be named IsWindows, but ran into unexpected issues in VS. Property name may be taken and internally used by an SDK. -->
+    <IsWindowsTfm Condition="$(MultiTargetPlatformIdentifier) == 'windows'">true</IsWindowsTfm>
 
     <IsDroid Condition="'$(IsDroid)' == '' AND $(AndroidLibTargetFramework.Contains('$(TargetFramework);')) AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
     <IsMacOS Condition="'$(IsMacOS)' == '' AND $(MacOSLibTargetFramework.Contains('$(TargetFramework);')) AND '$(MacOSLibTargetFramework)' != '' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
@@ -62,6 +65,6 @@
     <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $(WinUIMajorVersion) == ''">2</WinUIMajorVersion>
     <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true' AND $(WinUIMajorVersion) == ''">3</WinUIMajorVersion>
 
-    <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND '$(IsWindowsTfm)' == 'true'">true</UseUwp>
+    <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">true</UseUwp>
   </PropertyGroup>
 </Project>

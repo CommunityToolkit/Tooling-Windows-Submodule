@@ -1,6 +1,6 @@
 <Project>  
   <!-- Disable warnings for 'This call site is reachable on all platforms.' caused by underlying platform. -->
-  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND '$(IsWindowsTfm)' == 'true'">
+  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">
     <NoWarn>$(NoWarn);CA1416;NETSDK1219;</NoWarn>
   </PropertyGroup>
 
