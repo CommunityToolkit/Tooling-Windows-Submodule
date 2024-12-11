@@ -43,6 +43,7 @@
 
     <IsUwp Condition="'$(IsUwp)' == '' AND $(UwpTargetFramework.Contains('$(TargetFramework);')) AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
     <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFramework.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFramework)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
+    <IsWindowsTfm Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">true</IsWindowsTfm>
 
     <IsDroid Condition="'$(IsDroid)' == '' AND $(AndroidLibTargetFramework.Contains('$(TargetFramework);')) AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
     <IsMacOS Condition="'$(IsMacOS)' == '' AND $(MacOSLibTargetFramework.Contains('$(TargetFramework);')) AND '$(MacOSLibTargetFramework)' != '' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
@@ -60,6 +61,6 @@
     <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $(WinUIMajorVersion) == ''">2</WinUIMajorVersion>
     <WinUIMajorVersion Condition="'$(HasWinUI)' == 'true' AND '$(IsWinAppSdk)' == 'true' AND $(WinUIMajorVersion) == ''">3</WinUIMajorVersion>
 
-    <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">true</UseUwp>
+    <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND '$(IsWindowsTfm)' == 'true'">true</UseUwp>
   </PropertyGroup>
 </Project>

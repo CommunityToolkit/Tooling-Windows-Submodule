@@ -17,8 +17,8 @@
     -->
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion>$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
-    <TargetPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.26100.0</TargetPlatformVersion>
-    <TargetPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition="'$(IsWindowsTfm)' == 'true'">10.0.26100.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition="'$(IsWindowsTfm)' != 'true'">10.0.19041.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <!-- Workaround, improved error message when consuming from Uno projects with mismatched TFMs -->
@@ -32,8 +32,8 @@
   <PropertyGroup Condition="'$(IsUwp)' == 'true'">
     <Platforms>x86;x64;arm64</Platforms>
     
-    <WindowsSdkPackageVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.26100.54</WindowsSdkPackageVersion>
-    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">win-x86;win-x64;win-arm64</RuntimeIdentifiers> 
+    <WindowsSdkPackageVersion Condition="'$(IsWindowsTfm)' == 'true'">10.0.26100.54</WindowsSdkPackageVersion>
+    <RuntimeIdentifiers Condition="'$(IsWindowsTfm)' == 'true'">win-x86;win-x64;win-arm64</RuntimeIdentifiers> 
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsWinAppSdk)' == 'true'">
@@ -58,7 +58,7 @@
   </PropertyGroup>
   
   <!-- Disable warnings for 'This call site is reachable on all platforms.' caused by underlying platform. -->
-  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND '$(IsWindowsTfm)' == 'true'">
     <NoWarn>$(NoWarn);CA1416;</NoWarn>
   </PropertyGroup>
 
