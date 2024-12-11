@@ -46,9 +46,6 @@
     
     <MultiTargetPlatformIdentifier Condition="'$(MultiTargetPlatformIdentifier)' == ''">$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</MultiTargetPlatformIdentifier>
 
-    <!-- TODO: Investigate. Should be named IsWindows, but ran into unexpected issues in VS. Property name may be taken and internally used by an SDK. -->
-    <IsWindowsTfm Condition="$(MultiTargetPlatformIdentifier) == 'windows'">true</IsWindowsTfm>
-
     <IsDroid Condition="'$(IsDroid)' == '' AND $(AndroidLibTargetFramework.Contains('$(TargetFramework);')) AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
     <IsMacOS Condition="'$(IsMacOS)' == '' AND $(MacOSLibTargetFramework.Contains('$(TargetFramework);')) AND '$(MacOSLibTargetFramework)' != '' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
     <IsiOS Condition="'$(IsiOS)' == '' AND $(iOSLibTargetFramework.Contains('$(TargetFramework);')) AND '$(iOSLibTargetFramework)' != '' AND '$(MultiTargetsiOS)' == 'true'">true</IsiOS>
