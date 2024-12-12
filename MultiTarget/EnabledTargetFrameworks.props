@@ -3,8 +3,8 @@
         <!-- See https://github.com/CommunityToolkit/Tooling-Windows-Submodule/pull/235#issuecomment-2530131559 -->
         <UwpTargetFramework Condition="'$(UwpTargetFramework)' == '' AND '$(BuildingInsideVisualStudio)' == 'true'">uap10.0.17763;</UwpTargetFramework>
         <UwpTargetFramework Condition="'$(UwpTargetFramework)' == '' AND '$(BuildingInsideVisualStudio)' != 'true'">uap10.0.17763;net8.0-windows10.0.26100.0;</UwpTargetFramework>
-        <WinAppSdkTargetFramework Condition="'$(WinAppSdkTargetFramework)' == ''">net9.0-windows10.0.19041.0;net8.0-windows10.0.19041.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0;</WinAppSdkTargetFramework>
-        
+        <WinAppSdkTargetFramework Condition="'$(WinAppSdkTargetFramework)' == ''">net9.0-windows10.0.19041.0;net8.0-windows10.0.19041.0;</WinAppSdkTargetFramework>        
+
         <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">net9.0;</WasmHeadTargetFramework>
         <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">net9.0;</LinuxHeadTargetFramework>
         <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">net9.0;</WpfHeadTargetFramework>
