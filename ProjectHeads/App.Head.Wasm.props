@@ -36,6 +36,11 @@
     <WasmShellEnableJiterpreter Condition="'$(WasmShellMonoRuntimeExecutionMode)' == 'Interpreter'">true</WasmShellEnableJiterpreter>
   </PropertyGroup>
 
+  <!-- .NET 9.0 SDK automatically includes wwwroot\index.html, conflicting with Uno bootstrapper's generated index.html. -->
+  <ItemGroup>
+    <Content Remove="wwwroot\index.html" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(Configuration)'=='Release'">
     <WasmShellEnableAotProfile Condition="Exists('aot.profile')" Include="aot.profile" />
 
@@ -66,7 +71,6 @@
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.5.66" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="9.0.8" />
     <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.0" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>
