@@ -1,0 +1,13 @@
+<Project>
+	<!-- Condition must be on a <When> statement in its own file for this to work in Visual Studio. https://stackoverflow.com/a/16557059 -->
+	<Choose>
+    <!-- Temp workaround until next Windows SDK servicing update -->
+		<When Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'" >
+			<ItemGroup>
+				<PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.6" PrivateAssets="all" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+		</Otherwise>
+	</Choose>
+</Project>
