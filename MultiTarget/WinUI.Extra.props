@@ -47,6 +47,16 @@
     <WebView2NeverCopyLoaderDllToOutputDirectory>true</WebView2NeverCopyLoaderDllToOutputDirectory>
   </PropertyGroup>
 
+  <!-- Workaround for the latest Microsoft.Xaml.Behaviors.WinUI.Managed 3.0.0-preview1 referencing a broken version of WebView2. -->
+  <Target Name="RemoveWebViewDlls"
+            BeforeTargets="GetCopyToOutputDirectoryItems"
+            AfterTargets="AddPriPayloadFilesToCopyToOutputDirectoryItems">
+    <ItemGroup>
+      <_ExtraPriPayloadFiles Remove="@(_ExtraPriPayloadFiles)" Condition="'%(_ExtraPriPayloadFiles.FileName)%(_ExtraPriPayloadFiles.Extension)' == 'WebView2Loader.dll'"/>
+      <_AllChildProjectItemsWithTargetPath Remove="@(_AllChildProjectItemsWithTargetPath)" Condition="'%(_AllChildProjectItemsWithTargetPath.FileName)%(_AllChildProjectItemsWithTargetPath.Extension)' == 'WebView2Loader.dll'"/>
+    </ItemGroup>
+  </Target>
+
   <PropertyGroup Condition="'$(IsUno)' == 'true'">
     <!-- Xaml Trimming: https://platform.uno/docs/articles/features/resources-trimming.html -->
     <UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
