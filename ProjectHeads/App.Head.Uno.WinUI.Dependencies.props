@@ -3,6 +3,6 @@
 <Project>
   <ItemGroup>
     <!--<PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.Markdown" Version="7.1.100-dev.15.g12261e2626" />-->
-    <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Interactivity" Version="3.0.0-dev.17.g7c09b9114d" />
+    <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Interactivity.WinUI" Version="3.0.0-dev.17.g7c09b9114d" />
   </ItemGroup>
 </Project>
