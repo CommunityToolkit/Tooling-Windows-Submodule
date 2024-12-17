@@ -11,6 +11,7 @@
 
     <!-- These are parts of the MultiTarget system which need to be extracted into a common dependency between both ./tooling/MultiTarget and ./tooling/ProjectHeads. -->
     <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\Uwp.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\NoWarn.props" />
     <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
     <PropertyGroup>
