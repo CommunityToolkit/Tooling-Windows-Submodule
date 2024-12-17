@@ -34,8 +34,7 @@ Param (
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
 
-    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-    [string[]]$ExcludeMultiTargets = @(), # default settings
+    [string[]]$ExcludeMultiTargets,
 
     [Alias("winui")]
     [int]$WinUIMajorVersion = 2,
