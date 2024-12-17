@@ -15,6 +15,12 @@
 
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\WinAppSdk.props" />
   <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\NoWarn.props" />
+
+  <PropertyGroup>
+    <!-- Platform-generated XAML creates AoT-unsafe code when Behaviors are used. -->
+    <NoWarn>$(NoWarn);IL2026</NoWarn>
+  </PropertyGroup>
 
   <PropertyGroup>
       <RuntimeIdentifier Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) >= 8">win-$(Platform)</RuntimeIdentifier> 
