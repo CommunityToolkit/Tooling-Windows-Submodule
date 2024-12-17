@@ -73,7 +73,6 @@ jobs:
           domain: ${{ github.repository_owner }}
 
       - name: Run tests against Source Generators
-        id: test-generator
         run: dotnet test --logger "trx;LogFileName=sourceGeneratorTestResults.trx" -p:Configuration=Release
 
       - name: Create test reports
@@ -238,7 +237,7 @@ jobs:
       - name: Create test reports
         run: |
           testspace '[New Experiment]./TestResults/*.trx'
-        if: ${{ (matrix.multitarget == 'uwp' || matrix.multitarget == 'wasdk') && (steps.test-generator.conclusion == 'success' || steps.test-platform.conclusion == 'success') }}
+        if: ${{ (matrix.multitarget == 'uwp' || matrix.multitarget == 'wasdk') && (steps.test-platform.conclusion == 'success') }}
 
       - name: Artifact - Diagnostic Logs
         uses: actions/upload-artifact@v4
