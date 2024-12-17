@@ -221,7 +221,7 @@ jobs:
 
       - name: Run tests in the generated experiment against WinAppSDK
         id: test-winappsdk
-        run:  vstest.console.exe ./components/${{ env.TEST_PROJECT_NAME }}/**/${{ env.TEST_PROJECT_NAME }}.Tests.Wasdk.build.appxrecipe /Framework:FrameworkUap10 /logger:"trx;LogFileName=${{ env.TEST_PROJECT_NAME }}WinAppSdk.trx"
+        run:  vstest.console.exe ./components/${{ env.TEST_PROJECT_NAME }}/**/${{ env.TEST_PROJECT_NAME }}.Tests.Wasdk.build.appxrecipe /Framework:FrameworkUap10 /logger:"trx;LogFileName=${{ env.TEST_PROJECT_NAME }}Wasdk.trx"
 
       - name: Create test reports
         run: |
