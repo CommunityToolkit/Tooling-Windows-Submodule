@@ -214,7 +214,7 @@ jobs:
 
       - name: Add project heads to ${{ env.TEST_PROJECT_NAME }}
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
-        run: ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1 -MultiTargets ${{ matrix.multitarget }} -WinUIMajorVersion ${{ matrix.winui }} -componentPath ${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}
+        run: ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1 -MultiTargets ${{ matrix.multitarget }} -WinUIMajorVersion ${{ matrix.winui }} -componentPath "${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}"
 
       - name: MSBuild
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
