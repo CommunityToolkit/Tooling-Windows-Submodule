@@ -29,6 +29,12 @@
     <None PackagePath="lib/net7.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
   </ItemGroup>
 
+  <!-- Fixes an issue where the WebView2 reference causes Microsoft.VCLibs.Desktop to be pulled in on uap -->
+  <PropertyGroup Condition="'$(IsUwp)' == 'true' OR '$(MultiTargetPlatformIdentifier)' != 'windows'">
+    <WebView2UseWinRT>false</WebView2UseWinRT>
+    <WebView2UseDispatchAdapter>false</WebView2UseDispatchAdapter>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(IsUwp)' == 'true'">
     <Platforms>x86;x64;arm64</Platforms>
     
