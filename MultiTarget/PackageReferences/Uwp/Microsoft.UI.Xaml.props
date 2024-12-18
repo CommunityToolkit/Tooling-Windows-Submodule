@@ -1,7 +1,7 @@
 <Project>
 	<!-- Condition must be on a <When> statement in its own file for this to work in Visual Studio. https://stackoverflow.com/a/16557059 -->
 	<Choose>
-		<When Condition="'$(HasWinUI)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'uap'" >
+		<When Condition="'$(HasWinUI)' == 'true' AND '$(MultiTargetPlatformIdentifier)' != 'windows'" >
 			<ItemGroup>
 				<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.6" />
 			</ItemGroup>
