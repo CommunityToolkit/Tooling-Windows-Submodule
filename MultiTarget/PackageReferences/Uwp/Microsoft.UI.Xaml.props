@@ -1,8 +1,14 @@
 <Project>
 	<!-- Condition must be on a <When> statement in its own file for this to work in Visual Studio. https://stackoverflow.com/a/16557059 -->
 	<Choose>
-		<When Condition="'$(HasWinUI)' == 'true'" >
+		<When Condition="'$(HasWinUI)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'uap'" >
 			<ItemGroup>
+				<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.6" />
+			</ItemGroup>
+		</When>
+		<When Condition="'$(HasWinUI)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'" >
+			<ItemGroup>
+				<!-- This preview version breaks uap builds by referencing Microsoft.VCLibs.Desktop when it shouldn't -->
 				<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7-prerelease.241119001" />
 			</ItemGroup>
 		</When>
