@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>$(WasmHeadTargetFramework)</TargetFramework>
+    <TargetFramework>$(WasmHeadTargetFramework.Split(';')[0])</TargetFramework>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uno.props" />
@@ -36,6 +36,11 @@
     <WasmShellEnableJiterpreter Condition="'$(WasmShellMonoRuntimeExecutionMode)' == 'Interpreter'">true</WasmShellEnableJiterpreter>
   </PropertyGroup>
 
+  <!-- .NET 9.0 SDK automatically includes wwwroot\index.html, conflicting with Uno bootstrapper's generated index.html. -->
+  <ItemGroup>
+    <Content Remove="wwwroot\index.html" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(Configuration)'=='Release'">
     <WasmShellEnableAotProfile Condition="Exists('aot.profile')" Include="aot.profile" />
 
@@ -59,13 +64,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.31.0" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.8.0-dev.1" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.2.132" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="8.0.14" />
-    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.14" />
+    <PackageReference Include="Markdig" Version="0.38.0" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.9.0-dev.2" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.5.66" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="9.0.8" />
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,17 @@
 <Project>
+    <PropertyGroup>
+        <!--
+            Normally this is defined by the MultiTargetIdentifiers.props file,
+            but the heads do not use this part of the MultiTarget system since deployable heads don't really multi-target.
+            Non-sdk style UWP heads usually define TargetPlatformIdentifier manually.
+        -->
+        <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+        <MultiTargetPlatformIdentifier>$(TargetPlatformIdentifier)</MultiTargetPlatformIdentifier>
+    </PropertyGroup>
+
+    <!-- These are parts of the MultiTarget system which need to be extracted into a common dependency between both ./tooling/MultiTarget and ./tooling/ProjectHeads. -->
     <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\PackageReferences\Uwp.props" />
+    <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\NoWarn.props" />
     <Import Project="$(MSBuildThisFileDirectory)\..\MultiTarget\WinUI.Extra.props" />
 
     <PropertyGroup>
@@ -12,7 +24,6 @@
         <OutputType>AppContainerExe</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <DefaultLanguage>en-US</DefaultLanguage>
-        <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
         <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
         <FileAlignment>512</FileAlignment>
         <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

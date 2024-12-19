@@ -8,13 +8,13 @@
 
   <!-- Shared project dependencies -->
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <!-- Source generators -->
   <ItemGroup Condition="'$(IsWinAppSdk)' != 'true'">
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +29,7 @@
   <Choose>
     <When Condition="'$(ToolkitConvertersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.0.230907"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.2.241219-pull-584.1339"/>
       </ItemGroup>
     </When>
     <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference 
@@ -46,7 +46,7 @@
   <Choose>
     <When Condition="'$(ToolkitSettingsControlsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.0.230907"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.2.241219-pull-584.1339"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('SettingsControls')) == 'false'">
@@ -58,7 +58,7 @@
   <Choose>
     <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230907"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.2.241219-pull-584.1339"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
@@ -70,7 +70,7 @@
   <Choose>
     <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.0.230907"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.2.241219-pull-584.1339"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Triggers')) == 'false'">
