@@ -1,5 +1,4 @@
 <Project>
-  <ItemGroup>
-    <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.UI.Xaml" Version="2.7.0" />
-  </ItemGroup>
+	<!-- The inner imports in these props are conditional, and must be in a <When> statement in their own file to work in Visual Studio. https://stackoverflow.com/a/16557059 -->
+	<Import Project="$(MSBuildThisFileDirectory)/Uwp/*.props" />
 </Project>

@@ -1,5 +1,10 @@
 <Project>
   <ItemGroup>
+    <!-- Workaround for WebView2 on uap pulling in Microsoft.VCLibs.Desktop when it shouldn't -->
+    <SDKReference Remove="Microsoft.VCLibs.Desktop, Version=14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <SlnGenSolutionItem Include="$(MSBuildThisFileDirectory).editorconfig" />
     <SlnGenSolutionItem Include="$(MSBuildThisFileDirectory)settings.xamlstyler" />
     <SlnGenSolutionItem Include="$(MSBuildThisFileDirectory)*.md" />
