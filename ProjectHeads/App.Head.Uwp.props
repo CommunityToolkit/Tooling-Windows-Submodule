@@ -2,7 +2,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
 
   <PropertyGroup>
-    <TargetFramework>$(UwpTargetFramework.Split(';')[0])</TargetFramework>
+    <TargetFramework>$(UwpTargetFrameworks.Split(';')[0])</TargetFramework>
     <DependencyVariant>Uwp</DependencyVariant>
   </PropertyGroup>
 

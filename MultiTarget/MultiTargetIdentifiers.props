@@ -19,36 +19,36 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <MultiTargetsWasm Condition="$(MultiTarget.Contains('wasm')) == 'true'">true</MultiTargetsWasm>
-    <MultiTargetsWpf Condition="$(MultiTarget.Contains('wpf')) == 'true'">true</MultiTargetsWpf>
-    <MultiTargetsLinuxGtk Condition="$(MultiTarget.Contains('linuxgtk')) == 'true'">true</MultiTargetsLinuxGtk>
-    <MultiTargetsDroid Condition="$(MultiTarget.Contains('android')) == 'true'">true</MultiTargetsDroid>
-    <MultiTargetsMacOS Condition="$(MultiTarget.Contains('macos')) == 'true'">true</MultiTargetsMacOS>
-    <MultiTargetsiOS Condition="$(MultiTarget.Contains('ios')) == 'true'">true</MultiTargetsiOS>
-    <MultiTargetsUwp Condition="$(MultiTarget.Contains('uwp')) == 'true'">true</MultiTargetsUwp>
-    <MultiTargetsWasdk Condition="$(MultiTarget.Contains('wasdk')) == 'true'">true</MultiTargetsWasdk>
-    <MultiTargetsNetstandard Condition="$(MultiTarget.Contains('netstandard')) == 'true'">true</MultiTargetsNetstandard>
+    <MultiTargetsWasm Condition="$(AvailableMultiTargets.Contains('wasm')) == 'true'">true</MultiTargetsWasm>
+    <MultiTargetsWpf Condition="$(AvailableMultiTargets.Contains('wpf')) == 'true'">true</MultiTargetsWpf>
+    <MultiTargetsLinuxGtk Condition="$(AvailableMultiTargets.Contains('linuxgtk')) == 'true'">true</MultiTargetsLinuxGtk>
+    <MultiTargetsDroid Condition="$(AvailableMultiTargets.Contains('android')) == 'true'">true</MultiTargetsDroid>
+    <MultiTargetsMacOS Condition="$(AvailableMultiTargets.Contains('macos')) == 'true'">true</MultiTargetsMacOS>
+    <MultiTargetsiOS Condition="$(AvailableMultiTargets.Contains('ios')) == 'true'">true</MultiTargetsiOS>
+    <MultiTargetsUwp Condition="$(AvailableMultiTargets.Contains('uwp')) == 'true'">true</MultiTargetsUwp>
+    <MultiTargetsWasdk Condition="$(AvailableMultiTargets.Contains('wasdk')) == 'true'">true</MultiTargetsWasdk>
+    <MultiTargetsNetstandard Condition="$(AvailableMultiTargets.Contains('netstandard')) == 'true'">true</MultiTargetsNetstandard>
 
     <IsWasmHead Condition="$(IsDeployableHead) == 'true' AND '$(IsWasmHead)' == '' AND $(WasmHeadTargetFramework.Contains('$(TargetFramework);')) AND '$(WasmHeadTargetFramework)' != ''">true</IsWasmHead>
-    <IsWasmLib Condition="'$(IsWasmLib)' == '' AND $(WasmHeadTargetFramework.Contains('$(TargetFramework);')) AND '$(MultiTargetsWasm)' == 'true' AND '$(WasmLibTargetFramework)' != ''">true</IsWasmLib>
+    <IsWasmLib Condition="'$(IsWasmLib)' == '' AND $(WasmHeadTargetFramework.Contains('$(TargetFramework);')) AND '$(MultiTargetsWasm)' == 'true' AND '$(WasmLibTargetFrameworks)' != ''">true</IsWasmLib>
     <IsWasm Condition="'$(IsWasm)' == '' AND ('$(IsWasmHead)' == 'true' or '$(IsWasmLib)' == 'true')">true</IsWasm>
 
     <IsWpfHead Condition="$(IsDeployableHead) == 'true' AND '$(IsWpfHead)' == '' AND $(WpfHeadTargetFramework.Contains('$(TargetFramework);')) AND '$(WpfHeadTargetFramework)' != ''">true</IsWpfHead>
-    <IsWpfLib Condition="'$(IsWpfLib)' == '' AND $(WpfLibTargetFramework.Contains('$(TargetFramework);')) AND '$(WpfLibTargetFramework)' != '' AND '$(MultiTargetsWpf)' == 'true'">true</IsWpfLib>
+    <IsWpfLib Condition="'$(IsWpfLib)' == '' AND $(WpfLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(WpfLibTargetFrameworks)' != '' AND '$(MultiTargetsWpf)' == 'true'">true</IsWpfLib>
     <IsWpf Condition="'$(IsWpf)' == '' AND ('$(IsWpfHead)' == 'true' or '$(IsWpfLib)' == 'true')">true</IsWpf>
 
     <IsGtkHead Condition="$(IsDeployableHead) == 'true' AND '$(IsGtkHead)' == '' AND $(LinuxHeadTargetFramework.Contains('$(TargetFramework);')) AND '$(LinuxHeadTargetFramework)' != ''">true</IsGtkHead>
-    <IsGtkLib Condition="'$(IsGtkLib)' == '' AND $(LinuxLibTargetFramework.Contains('$(TargetFramework);')) AND '$(LinuxLibTargetFramework)' != '' AND '$(MultiTargetsLinuxGtk)' == 'true'">true</IsGtkLib>
+    <IsGtkLib Condition="'$(IsGtkLib)' == '' AND $(LinuxLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(LinuxLibTargetFrameworks)' != '' AND '$(MultiTargetsLinuxGtk)' == 'true'">true</IsGtkLib>
     <IsGtk Condition="'$(IsGtk)' == '' AND ('$(IsGtkHead)' == 'true' or '$(IsGtkLib)' == 'true')">true</IsGtk>
 
-    <IsUwp Condition="'$(IsUwp)' == '' AND $(UwpTargetFramework.Contains('$(TargetFramework);')) AND '$(UwpTargetFramework)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
-    <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFramework.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFramework)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
+    <IsUwp Condition="'$(IsUwp)' == '' AND $(UwpTargetFrameworks.Contains('$(TargetFramework);')) AND '$(UwpTargetFrameworks)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
+    <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFrameworks.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFrameworks)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
     
     <MultiTargetPlatformIdentifier Condition="'$(MultiTargetPlatformIdentifier)' == ''">$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</MultiTargetPlatformIdentifier>
 
-    <IsDroid Condition="'$(IsDroid)' == '' AND $(AndroidLibTargetFramework.Contains('$(TargetFramework);')) AND '$(AndroidLibTargetFramework)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
-    <IsMacOS Condition="'$(IsMacOS)' == '' AND $(MacOSLibTargetFramework.Contains('$(TargetFramework);')) AND '$(MacOSLibTargetFramework)' != '' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
-    <IsiOS Condition="'$(IsiOS)' == '' AND $(iOSLibTargetFramework.Contains('$(TargetFramework);')) AND '$(iOSLibTargetFramework)' != '' AND '$(MultiTargetsiOS)' == 'true'">true</IsiOS>
+    <IsDroid Condition="'$(IsDroid)' == '' AND $(AndroidLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(AndroidLibTargetFrameworks)' != '' AND '$(MultiTargetsDroid)' == 'true'">true</IsDroid>
+    <IsMacOS Condition="'$(IsMacOS)' == '' AND $(MacOSLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(MacOSLibTargetFrameworks)' != '' AND '$(MultiTargetsMacOS)' == 'true'">true</IsMacOS>
+    <IsiOS Condition="'$(IsiOS)' == '' AND $(iOSLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(iOSLibTargetFrameworks)' != '' AND '$(MultiTargetsiOS)' == 'true'">true</IsiOS>
     <IsNetstandard Condition="'$(IsNetstandard)' == '' AND $(DotnetStandardCommonTargetFramework.Contains('$(TargetFramework);')) AND '$(MultiTargetsNetstandard)' == 'true'">true</IsNetstandard>
 
     <IsUno Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true' OR '$(IsDroid)' == 'true' OR '$(IsMacOS)' == 'true' OR '$(IsiOS)' == 'true'">true</IsUno>
