@@ -17,15 +17,24 @@
     -->
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion>$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
-    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'">10.0.26100.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition="'$(MultiTargetPlatformIdentifier)' != 'windows'">10.0.19041.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <!-- Workaround, improved error message when consuming from Uno projects with mismatched TFMs -->
   <!-- See https://github.com/CommunityToolkit/Windows/issues/388 -->
   <ItemGroup>
+    <None PackagePath="lib/net9.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
     <None PackagePath="lib/net8.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
     <None PackagePath="lib/net7.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(IsUwp)' == 'true'">
+    <Platforms>x86;x64;arm64</Platforms>
+    
+    <WindowsSdkPackageVersion Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'">10.0.26100.54</WindowsSdkPackageVersion>
+    <RuntimeIdentifiers Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'">win-x86;win-x64;win-arm64</RuntimeIdentifiers> 
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsWinAppSdk)' == 'true'">
     <!-- See https://github.com/microsoft/WindowsAppSDK/issues/3842 -->
@@ -46,6 +55,11 @@
   <PropertyGroup>
     <!-- These suppressions are for references between generated assemblies and that VS can keep in the Error List once resolved -->
     <NoWarn>$(NoWarn);WMC1006;CS8034;</NoWarn>
+  </PropertyGroup>
+  
+  <!-- Disable warnings for 'This call site is reachable on all platforms.' caused by underlying platform. -->
+  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">
+    <NoWarn>$(NoWarn);CA1416;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -5,7 +5,6 @@
       xmlns:behaviors="using:CommunityToolkit.App.Shared.Behaviors"
       xmlns:converters="using:CommunityToolkit.WinUI.Converters"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:interactions="using:Microsoft.Xaml.Interactions.Core"
       xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:local="using:CommunityToolkit.App.Shared"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -216,9 +215,9 @@
                                    Text="API doc" />
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
-                        <interactions:EventTriggerBehavior EventName="Click">
+                        <interactivity:EventTriggerBehavior EventName="Click">
                             <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToGitHubUri('discussions', Metadata.DiscussionId), Mode=OneWay}" />
-                        </interactions:EventTriggerBehavior>
+                        </interactivity:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>-->
                 <Button win:AutomationProperties.Name="Source code">
@@ -230,9 +229,9 @@
                         <TextBlock Text="Source code" />
                     </StackPanel>
                     <interactivity:Interaction.Behaviors>
-                        <interactions:EventTriggerBehavior EventName="Click">
+                        <interactivity:EventTriggerBehavior EventName="Click">
                             <behaviors:NavigateToUriAction NavigateUri="{x:Bind renderer:ToolkitDocumentationRenderer.ToComponentUri(Metadata.ComponentName), Mode=OneWay}" />
-                        </interactions:EventTriggerBehavior>
+                        </interactivity:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </Button>
                 <muxc:DropDownButton win:AutomationProperties.Name="Package info">

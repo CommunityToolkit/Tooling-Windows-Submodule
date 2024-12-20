@@ -16,9 +16,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOTNET_VERSION: ${{ '8.0.x' }}
-  DOTNET_INSTALL_DIR: dotnet-install
-  DOTNET_ROOT: dotnet-install
+  DOTNET_VERSION: ${{ '9.0.x' }}
   ENABLE_DIAGNOSTICS: false
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
@@ -142,6 +140,20 @@ jobs:
   # Test job to build a single experiment to ensure our changes work for both our main types of solutions at the moment
   new-experiment:
     runs-on: windows-latest
+    
+    strategy:
+      fail-fast: false # prevent one matrix pipeline from being cancelled if one fails, we want them all to run to completion.
+      matrix:
+        winui: [2, 3]
+        multitarget: ['uwp', 'wasdk', 'wasm']
+        exclude:
+          # WinUI 2 not supported on wasdk
+          - winui: 2
+            multitarget: wasdk
+          # WinUI 3 not supported on uwp
+          - winui: 3
+            multitarget: uwp
+
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
       PROJECT_DIRECTORY: tooling/ProjectTemplate
@@ -202,7 +214,7 @@ jobs:
 
       - name: Add project heads to ${{ env.TEST_PROJECT_NAME }}
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
-        run: ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1 -componentPath ${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}
+        run: ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1 -MultiTargets ${{ matrix.multitarget }} -winui ${{ matrix.winui }} -componentPath "${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}"
 
       - name: MSBuild
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
@@ -217,18 +229,15 @@ jobs:
         with:
           domain: ${{ github.repository_owner }}
 
-      - name: Run tests in the generated experiment against UWP
-        id: test-uwp
-        run:  vstest.console.exe ./components/${{ env.TEST_PROJECT_NAME }}/**/${{ env.TEST_PROJECT_NAME }}.Tests.UWP.build.appxrecipe /Framework:FrameworkUap10 /logger:"trx;LogFileName=${{ env.TEST_PROJECT_NAME }}UWP.trx"
-
-      - name: Run tests in the generated experiment against WinAppSDK
-        id: test-winappsdk
-        run:  vstest.console.exe ./components/${{ env.TEST_PROJECT_NAME }}/**/${{ env.TEST_PROJECT_NAME }}.Tests.WinAppSdk.build.appxrecipe /Framework:FrameworkUap10 /logger:"trx;LogFileName=${{ env.TEST_PROJECT_NAME }}WinAppSdk.trx"
+      - name: Run tests in the generated experiment against ${{ matrix.multitarget }}
+        if: ${{ matrix.multitarget == 'uwp' || matrix.multitarget == 'wasdk' }}
+        id: test-platform
+        run:  vstest.console.exe ./components/${{ env.TEST_PROJECT_NAME }}/**/${{ env.TEST_PROJECT_NAME }}.Tests.${{ matrix.multitarget }}.build.appxrecipe /Framework:FrameworkUap10 /logger:"trx;LogFileName=${{ env.TEST_PROJECT_NAME }}${{ matrix.multitarget }}.trx" /Blame
 
       - name: Create test reports
         run: |
           testspace '[New Experiment]./TestResults/*.trx'
-        if: ${{ always() && (steps.test-uwp.conclusion == 'success' || steps.test-winappsdk.conclusion == 'success') }}
+        if: ${{ (matrix.multitarget == 'uwp' || matrix.multitarget == 'wasdk') && (steps.test-platform.conclusion == 'success') }}
 
       - name: Artifact - Diagnostic Logs
         uses: actions/upload-artifact@v4

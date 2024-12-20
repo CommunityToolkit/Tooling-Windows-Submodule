@@ -1,13 +1,13 @@
 <Project>
     <PropertyGroup>
-        <CommonUnoPackageVersion>5.2.132</CommonUnoPackageVersion>
+        <CommonUnoPackageVersion>5.5.87</CommonUnoPackageVersion>
     </PropertyGroup>
 
     <!-- This file is modified by UseUnoWinUI.ps1 to switch between WinUI 2 and 3 under Uno Platform -->
     <!-- All Uno-based project heads and MultiTarget-enabled library projects need to reference this file, while native (UWP/WinAppSdk) heads don't. -->
     <ItemGroup Condition="'$(IsUno)' == 'true'">
         <PackageReference Include="Uno.UI" Version="$(CommonUnoPackageVersion)" />
-        <PackageReference Include="Uno.Fonts.Fluent" Version="2.3.0" />
+        <PackageReference Include="Uno.Fonts.Fluent" Version="2.4.5" />    
     </ItemGroup>
 
     <PropertyGroup Condition="'$(IsUno)' == 'true'">

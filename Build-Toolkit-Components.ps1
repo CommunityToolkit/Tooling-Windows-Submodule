@@ -67,7 +67,7 @@ Param (
     [Alias("c")]
     [string[]]$Components = @("all"),
 
-    [string[]]$ExcludeComponents,
+    [string[]]$ExcludeComponents = @(),
 
     [string]$DateForVersion = (Get-Date -UFormat %y%m%d),
 
@@ -102,6 +102,20 @@ if ($MultiTargets -eq 'all') {
 if ($null -eq $ExcludeMultiTargets)
 {
     $ExcludeMultiTargets = @()
+}
+
+# Both uwp and wasdk share a targetframework. Both cannot be enabled at once.
+# If both are supplied, remove one based on WinUIMajorVersion.
+if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
+{
+    if ($WinUIMajorVersion -eq 2)
+    {
+        $ExcludeMultiTargets = $ExcludeMultiTargets + 'wasdk'
+    }
+    else
+    {
+        $ExcludeMultiTargets = $ExcludeMultiTargets + 'uwp'
+    }
 }
 
 $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
@@ -199,9 +213,14 @@ foreach ($ComponentName in $Components) {
     foreach ($componentCsproj in Get-ChildItem -Path "$PSScriptRoot/../components/$ComponentName/$ComponentDir/*.csproj") {
         # Get component name from csproj path
         $componentPath = Get-Item "$componentCsproj/../../"
+        $componentName = $($componentPath.BaseName);
+
+        if ($componenName -in $ExcludeComponents) {
+            continue;
+        }
 
         # Get supported MultiTarget for this component
-        $supportedMultiTargets = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
+        $supportedMultiTargets = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $componentName
 
         # Flag to check if any of the requested targets are supported by the component
         $isTargetSupported = $false

@@ -1,0 +1,14 @@
+<Project>  
+  <!-- Disable warnings for 'This call site is reachable on all platforms.' caused by underlying platform. -->
+  <PropertyGroup Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">
+    <NoWarn>$(NoWarn);CA1416;NETSDK1219;</NoWarn>
+  </PropertyGroup>
+
+  <!--
+     WinUI 2 preview suppression
+    'Microsoft.UI.Xaml.*' is for evaluation purposes only and is subject to change or removal in future updates.
+  -->
+  <PropertyGroup Condition="'$(IsUwp)' == 'true'">
+    <NoWarn>$(NoWarn);CS8305;</NoWarn>
+  </PropertyGroup>
+</Project>
