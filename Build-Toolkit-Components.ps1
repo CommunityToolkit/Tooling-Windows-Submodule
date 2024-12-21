@@ -95,6 +95,10 @@ Param (
     [switch]$Verbose
 )
 
+# Use the specified MultiTarget TFM and WinUI version
+& $PSScriptRoot\MultiTarget\UseUnoWinUI.ps1 $WinUIMajorVersion
+& $PSScriptRoot\MultiTarget\UseTargetFrameworks.ps1 -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets
+
 if ($MultiTargets -eq 'all') {
     $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
 }
@@ -127,10 +131,6 @@ if ($Components -eq @('all')) {
 if ($ExcludeComponents) {
     $Components = $Components | Where-Object { $_ -notin $ExcludeComponents }
 }
-
-# Use the specified MultiTarget TFM and WinUI version
-& $PSScriptRoot\MultiTarget\UseTargetFrameworks.ps1 $MultiTargets
-& $PSScriptRoot\MultiTarget\UseUnoWinUI.ps1 $WinUIMajorVersion
 
 function Invoke-MSBuildWithBinlog {
     param (

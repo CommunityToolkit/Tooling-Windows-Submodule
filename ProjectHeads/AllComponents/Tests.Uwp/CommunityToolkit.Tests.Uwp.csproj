@@ -9,7 +9,10 @@
     <WinUIMajorVersion>2</WinUIMajorVersion>
   </PropertyGroup>
 
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledMultiTargets.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\AvailableTargetFrameworks.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
+  
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
   
   <Import Project="$(ToolingDirectory)\ProjectHeads\Tests.Head.Uwp.props" />
