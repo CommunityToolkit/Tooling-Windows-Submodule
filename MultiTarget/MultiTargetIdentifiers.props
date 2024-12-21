@@ -64,6 +64,11 @@
     <HasWinUI Condition="'$(HasWinUI)' == '' AND '$(WinUIMajorVersion)' == '2' AND '$(HasWinUI2)' == 'false'">false</HasWinUI>
     <HasWinUI Condition="'$(HasWinUI)' == '' AND ('$(IsUwp)' == 'true' OR '$(IsWinAppSdk)' == 'true' OR '$(IsUno)' == 'true')">true</HasWinUI>
 
-    <UseUwp Condition="'$(HasWinUI)' == 'true' AND '$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">true</UseUwp>
+    <!--
+      The 'UseUwp' property tells the .NET SDK to add a framework reference for the 'Microsoft.Windows.UI.Xaml.dll' assembly, which allows
+      .NET projects to access UWP XAML types. This is orthogonal to whether WinUI is being used or not. As such, we always set this for
+      UWP projects that have 'windows' as identifier (i.e. they are not 'UAP' projects, which is legacy UWP), regardless of WinUI.
+    -->
+    <UseUwp Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">true</UseUwp>
   </PropertyGroup>
 </Project>
