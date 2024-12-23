@@ -31,87 +31,31 @@ Param (
     [string[]]$ExcludeMultiTargets = @() # default settings
 )
 
-$UwpTfm = "UwpTargetFramework";
-$WinAppSdkTfm = "WinAppSdkTargetFramework";
-$WasmTfm = "DotnetCommonTargetFramework";
-$WpfTfm = "DotnetCommonTargetFramework";
-$GtkTfm = "DotnetCommonTargetFramework";
-$macOSTfm = "MacOSLibTargetFramework";
-$iOSTfm = "iOSLibTargetFramework";
-$DroidTfm = "AndroidLibTargetFramework";
-$NetstandardTfm = "DotnetStandardCommonTargetFramework";
-
-$fileContents = Get-Content -Path $PSScriptRoot/AvailableTargetFrameworks.props
+$fileContents = Get-Content -Path $PSScriptRoot/EnabledMultiTargets.props
 $newFileContents = $fileContents;
 
-# 'all' represents many '$MultiTargets' values
-if ($MultiTargets.Contains("all")) {
-    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
-}
+$AllMultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
 
 # Exclude as needed
 foreach ($excluded in $ExcludeMultiTargets) {
     $MultiTargets = $MultiTargets.Where({ $_ -ne $excluded });
 }
 
-Write-Output "Setting enabled TargetFrameworks: $MultiTargets"
+Write-Output "Setting enabled MultiTargets: $MultiTargets"
 
-$desiredTfmValues = @();
-
-if ($MultiTargets.Contains("wasm")) {
-    $desiredTfmValues += $WasmTfm;
+# 'all' represents all available '$MultiTargets' values
+if ($MultiTargets.Contains("all")) {
+    $enabledMultiTargets = @('$(AvailableMultiTargets)')
+}
+else {
+    $enabledMultiTargets = $AllMultiTargets.Where({ $MultiTargets.Contains($_) }) -join ";"
 }
 
-if ($MultiTargets.Contains("uwp")) {
-    $desiredTfmValues += $UwpTfm;
-}
-
-if ($MultiTargets.Contains("wasdk")) {
-    $desiredTfmValues += $WinAppSdkTfm;
-}
-
-if ($MultiTargets.Contains("wpf")) {
-    $desiredTfmValues += $WpfTfm;
-}
-
-if ($MultiTargets.Contains("linuxgtk")) {
-    $desiredTfmValues += $GtkTfm;
-}
-
-if ($MultiTargets.Contains("macos")) {
-    $desiredTfmValues += $macOSTfm;
-}
-
-if ($MultiTargets.Contains("ios")) {
-    $desiredTfmValues += $iOSTfm;
-}
-
-if ($MultiTargets.Contains("android")) {
-    $desiredTfmValues += $DroidTfm;
-}
-
-if ($MultiTargets.Contains("netstandard")) {
-    $desiredTfmValues += $NetstandardTfm;
-}
-
-$targetFrameworksToRemove = @(
-    $WasmTfm,
-    $UwpTfm,
-    $WinAppSdkTfm,
-    $WpfTfm,
-    $GtkTfm,
-    $macOSTfm,
-    $iOSTfm,
-    $DroidTfm,
-    $NetstandardTfm
-).Where({ -not $desiredTfmValues.Contains($_) })
-
-# When targetFrameworksToRemoveRegexPartial is empty, the regex will match everything.
+# When enabledMultiTargetsRegexPartial is empty, the regex will match everything.
 # To work around this, check if there's anything to remove before doing it.
-if ($targetFrameworksToRemove.Length -gt 0) {
-    $targetFrameworksToRemoveRegexPartial = "$($targetFrameworksToRemove -join "|")";
-    $newFileContents = $fileContents -replace "<(?:$targetFrameworksToRemoveRegexPartial).+?>.+?>", '';
+if ($enabledMultiTargets.Length -gt 0) {
+    $newFileContents = $fileContents -replace "\<EnabledMultiTargets\>(.+?)\<\/EnabledMultiTargets\>", "<EnabledMultiTargets>$enabledMultiTargets</EnabledMultiTargets>";
 }
 
-Set-Content -Force -Path $PSScriptRoot/EnabledTargetFrameworks.props -Value $newFileContents;
+Set-Content -Force -Path $PSScriptRoot/EnabledMultiTargets.props -Value $newFileContents;
 Write-Output "Done. Please close and regenerate your solution. Do not commit these changes to the tooling repository."
