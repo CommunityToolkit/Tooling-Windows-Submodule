@@ -39,13 +39,14 @@ $AllMultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 
 # Exclude as needed
 foreach ($excluded in $ExcludeMultiTargets) {
     $MultiTargets = $MultiTargets.Where({ $_ -ne $excluded });
+    $AllMultiTargets = $AllMultiTargets.Where({ $_ -ne $excluded });
 }
 
 Write-Output "Setting enabled MultiTargets: $MultiTargets"
 
 # 'all' represents all available '$MultiTargets' values
 if ($MultiTargets.Contains("all")) {
-    $enabledMultiTargets = @('$(AvailableMultiTargets)')
+    $enabledMultiTargets = $AllMultiTargets -join ";"
 }
 else {
     $enabledMultiTargets = $AllMultiTargets.Where({ $MultiTargets.Contains($_) }) -join ";"
