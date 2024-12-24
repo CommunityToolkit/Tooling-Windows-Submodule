@@ -19,7 +19,7 @@
   <Choose>
     <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
       <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.0.230907"/>
+        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.2.241223-build.1367"/>
       </ItemGroup>
     </When>
     <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
