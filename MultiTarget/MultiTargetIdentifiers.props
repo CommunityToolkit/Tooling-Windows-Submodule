@@ -78,10 +78,11 @@
     <Error Condition="'$(IsNetstandard)' == 'true' AND '$(IsUno)' == 'true'" Text="Projects cannot MultiTarget both netstandard and Uno Platform." />
 
     <!--
-      UWP XAML can only be enabled for UWP projects. No need to warn for UWP XAML
-      being disabled when WinUI 2 is used, as that will already fail to build.
+      UWP XAML can only be enabled for UWP projects. No need to warn for UWP XAML being disabled
+      when WinUI 2 is used, as that will already fail to build. Note that we don't emit an error
+      for legacy UWP, as otherwise setting this property would require handling conditions to
+      filter TFMs, which is very clunky. Instead, it'll just be a no-op for legacy UWP projects.
     -->
     <Error Condition="'$(HasWindowsUIXaml)' == 'true' AND '$(IsUwp)' != 'true'" Text="Projects cannot reference Windows UI XAML if they're not targeting UWP." />
-    <Error Condition="'$(HasWindowsUIXaml)' == 'false' AND '$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' != 'windows'" Text="Projects cannot disabl Windows UI XAML if they're targeting legacy UWP." />
   </Target>
 </Project>
