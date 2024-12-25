@@ -6,10 +6,6 @@
     They can be overriden if defined in the consuming project.
 -->
 <Project InitialTargets="MultiTargetCompatabilityCheck">
-  <Target Name="MultiTargetCompatabilityCheck">
-    <!-- netstandard is not compatible with Uno platforms. -->
-    <Error Condition="$(IsNetstandard) == 'true' AND $(IsUno) == 'true'" Text="Projects cannot MultiTarget both netstandard and Uno Platform." />
-  </Target>
 
   <PropertyGroup Condition="$(IsDeployableHead) == 'true'">
     <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
@@ -64,11 +60,28 @@
     <HasWinUI Condition="'$(HasWinUI)' == '' AND '$(WinUIMajorVersion)' == '2' AND '$(HasWinUI2)' == 'false'">false</HasWinUI>
     <HasWinUI Condition="'$(HasWinUI)' == '' AND ('$(IsUwp)' == 'true' OR '$(IsWinAppSdk)' == 'true' OR '$(IsUno)' == 'true')">true</HasWinUI>
 
+    <!-- Can be used to opt-out of the UWP XAML framework reference, if not needed -->
+    <HasWindowsUIXaml Condition="'$(HasWindowsUIXaml)' == '' AND '$(IsUwp)' == 'true'">true</HasWindowsUIXaml>
+    <HasWindowsUIXaml Condition="'$(HasWindowsUIXaml)' == '' AND '$(IsUwp)' != 'true'">false</HasWindowsUIXaml>
+
     <!--
       The 'UseUwp' property tells the .NET SDK to add a framework reference for the 'Microsoft.Windows.UI.Xaml.dll' assembly, which allows
       .NET projects to access UWP XAML types. This is orthogonal to whether WinUI is being used or not. As such, we always set this for
       UWP projects that have 'windows' as identifier (i.e. they are not 'UAP' projects, which is legacy UWP), regardless of WinUI.
     -->
-    <UseUwp Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows'">true</UseUwp>
+    <UseUwp Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' == 'windows' AND '$(HasWindowsUIXaml)' == 'true'">true</UseUwp>
   </PropertyGroup>
+
+  <Target Name="MultiTargetCompatabilityCheck">
+
+    <!-- .NET Standard is not compatible with Uno platforms -->
+    <Error Condition="'$(IsNetstandard)' == 'true' AND '$(IsUno)' == 'true'" Text="Projects cannot MultiTarget both netstandard and Uno Platform." />
+
+    <!--
+      UWP XAML can only be enabled for UWP projects. No need to warn for UWP XAML
+      being disabled when WinUI 2 is used, as that will already fail to build.
+    -->
+    <Error Condition="'$(HasWindowsUIXaml)' == 'true' AND '$(IsUwp)' != 'true'" Text="Projects cannot reference Windows UI XAML if they're not targeting UWP." />
+    <Error Condition="'$(HasWindowsUIXaml)' == 'false' AND '$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' != 'windows'" Text="Projects cannot disabl Windows UI XAML if they're targeting legacy UWP." />
+  </Target>
 </Project>
