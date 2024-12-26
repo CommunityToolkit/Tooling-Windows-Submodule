@@ -14,7 +14,7 @@
 
   <!-- Workaround, improved error message when consuming from Uno projects with mismatched TFMs -->
   <!-- See https://github.com/CommunityToolkit/Windows/issues/388 -->
-  <ItemGroup>
+  <ItemGroup Condition="'$(EnableXamlCompilerMismatchedTfmUnoWorkaround)' == 'true'">
     <None PackagePath="lib/net9.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
     <None PackagePath="lib/net8.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
     <None PackagePath="lib/net7.0-windows10.0.18362" Include="$(MSBuildThisFileDirectory)/_._" Pack="true" />
