@@ -55,7 +55,7 @@ else {
 # When enabledMultiTargetsRegexPartial is empty, the regex will match everything.
 # To work around this, check if there's anything to remove before doing it.
 if ($enabledMultiTargets.Length -gt 0) {
-    $newFileContents = $fileContents -replace "\<EnabledMultiTargets\>(.+?)\<\/EnabledMultiTargets\>", "<EnabledMultiTargets>$enabledMultiTargets</EnabledMultiTargets>";
+    $newFileContents = $fileContents -replace "\<EnabledMultiTargets\>(.+?)\<\/EnabledMultiTargets\>", "<EnabledMultiTargets>$enabledMultiTargets;</EnabledMultiTargets>";
 }
 
 Set-Content -Force -Path $PSScriptRoot/EnabledMultiTargets.props -Value $newFileContents;

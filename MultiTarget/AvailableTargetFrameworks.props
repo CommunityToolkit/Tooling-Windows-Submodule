@@ -26,7 +26,7 @@
         <WpfLibTargetFrameworks Condition="'$(WpfLibTargetFrameworks)' == ''">net9.0;</WpfLibTargetFrameworks>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
-        <DotnetStandardCommonTargetFramework Condition="'$(DotnetStandardCommonTargetFramework)' == ''">netstandard2.0</DotnetStandardCommonTargetFramework>
+        <DotnetStandardCommonTargetFramework Condition="'$(DotnetStandardCommonTargetFramework)' == ''">netstandard2.0;</DotnetStandardCommonTargetFramework>
         <DotnetCommonTargetFramework Condition="'$(DotnetCommonTargetFramework)' == ''">net9.0;</DotnetCommonTargetFramework>
     </PropertyGroup>
 </Project>
