@@ -3,6 +3,11 @@
     <Error Condition="$(ToolkitComponentName) == ''" Message="ToolkitComponentName is not defined. Please check your csproj." />
   </Target>
 
+  <!-- Generate the .xml files for documentation for all source projects (needed for IntelliSense docs) -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <!-- Set up the MultiTarget system -->
   <Import Project="$(ToolingDirectory)\MultiTarget\Library.props" />
 
