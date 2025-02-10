@@ -4,9 +4,7 @@
 
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
