@@ -96,7 +96,11 @@ Param (
 )
 
 # Use the specified MultiTarget TFM and WinUI version
-& $PSScriptRoot\MultiTarget\UseUnoWinUI.ps1 $WinUIMajorVersion
+# WinUI 0 indicates non-WinUI projects (e.g. netstandard) should be built.
+if ($WinUIMajorVersion -ne 0) {
+    & $PSScriptRoot\MultiTarget\UseUnoWinUI.ps1 $WinUIMajorVersion
+}
+
 & $PSScriptRoot\MultiTarget\UseTargetFrameworks.ps1 -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets
 
 if ($MultiTargets -eq 'all') {
@@ -116,7 +120,7 @@ if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
     {
         $ExcludeMultiTargets = $ExcludeMultiTargets + 'wasdk'
     }
-    else
+    elseif ($WinUIMajorVersion -eq 3)
     {
         $ExcludeMultiTargets = $ExcludeMultiTargets + 'uwp'
     }
@@ -207,6 +211,9 @@ function Invoke-MSBuildWithBinlog {
     }
 }
 
+# List of WinUI-0 (non-WinUI) compatible multitargets
+$WinUI0MultiTargets = @('netstandard')
+
 # List of WinUI-2 compatible multitargets
 $WinUI2MultiTargets = @('uwp', 'wasm', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')
 
@@ -228,8 +235,11 @@ foreach ($ComponentName in $Components) {
         # Get supported MultiTarget for this component
         $supportedMultiTargets = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $componentName
         
-        # If the component does not support at least one target that supports the requested WinUI major version, skip the component
-        $isWinUIMajorVersionSupported = $false
+        # If WinUI 0 is requested, the component must not support WinUI 2 or WinUI 3 to be built.
+        # If WinUI 2 or 3 is requested, the component have a target that supports WinUI 2 or 3 to be built.
+        $isWinUI0Supported = $false
+        $isWinUI2Supported = $false
+        $isWinUI3Supported = $false
         
         # Flag to check if any of the requested targets are supported by the component
         $isRequestedTargetSupported = $false
@@ -241,28 +251,43 @@ foreach ($ComponentName in $Components) {
         }
 
         foreach ($supportedMultiTarget in $supportedMultiTargets) {
-            if ($false -eq $isWinUIMajorVersionSupported) {
-                if ($WinUIMajorVersion -eq 2) {
-                    $isWinUIMajorVersionSupported = $supportedMultiTarget -in $WinUI2MultiTargets;
-                }
+            # Only build components that support WinUI 2
+            if ($false -eq $isWinUI2Supported) {
+                $isWinUI2Supported = $supportedMultiTarget -in $WinUI2MultiTargets;
+            }
 
-                if ($WinUIMajorVersion -eq 3) {
-                    $isWinUIMajorVersionSupported = $supportedMultiTarget -in $WinUI3MultiTargets;
-                }
+            # Only build components that support WinUI 3
+            if ($false -eq $isWinUI3Supported) {
+                $isWinUI3Supported = $supportedMultiTarget -in $WinUI3MultiTargets;
+            }
+
+            # Build components that support neither WinUI 2 nor WinUI 3 (e.g. netstandard only)
+            if ($false -eq $isWinUI0Supported) {
+                $isWinUI0Supported = $supportedMultiTarget -in $WinUI0MultiTargets -and -not ($isWinUI2Supported -or $isWinUI3Supported);
             }
         }
 
         # If none of the requested targets are supported by the component, we can skip build to save time and avoid errors.
         if (-not $isRequestedTargetSupported) {
-            Write-Warning "Skipping $($componentPath.BaseName), none of the requested MultiTargets '$MultiTargets' are enabled for this component."
+            Write-Warning "Skipping $componentName, none of the requested MultiTargets '$MultiTargets' are enabled for this component."
             continue
         }
 
-        if (-not $isWinUIMajorVersionSupported) {
-            Write-Warning "Skipping $($componentPath.BaseName), none of the supported MultiTargets '$supportedMultiTargets' support WinUI $WinUIMajorVersion."
+        if (-not $isWinUI0Supported -and $WinUIMajorVersion -eq 0) {
+            Write-Warning "Skipping $componentName. WinUI is disabled and one of the supported MultiTargets '$supportedMultiTargets' supports WinUI."
+            continue;
+        }
+        
+        if ((-not $isWinUI2Supported -and $WinUIMajorVersion -eq 2) -or (-not $isWinUI3Supported -and $WinUIMajorVersion -eq 3)) {
+            Write-Warning "Skipping $componentName. WinUI $WinUIMajorVersion is enabled and not supported by any of the MultiTargets '$supportedMultiTargets'"
             continue
         }
 
+        # Filter ExcludeMultiTargets out of supportedMultiTargets
+        # For display purposes only. The actual build uses the EnabledMultiTargets.props + EnabledTargetFrameworks.props to calculate supported targets at build time.
+        $supportedMultiTargets = $supportedMultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
+
+        Write-Output "Building $componentName for MultiTargets '$supportedMultiTargets'"
         Invoke-MSBuildWithBinlog $componentCsproj.FullName $EnableBinLogs $BinlogOutput
     }
 }
