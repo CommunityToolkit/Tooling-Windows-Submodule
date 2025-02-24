@@ -26,6 +26,9 @@
 .PARAMETER UseDiagnostics
     Add extra diagnostic output to running slngen, such as a binlog, etc...
 
+.PARAMETER Launch
+    Specifies whether to launch the solution after generation. Default is $true.
+
 .EXAMPLE
     C:\PS> .\GenerateAllSolution -MultiTargets wasdk
     Build a solution that doesn't contain UWP projects.
@@ -50,7 +53,9 @@ Param (
 
     [string[]]$ExcludeComponents,
 
-    [switch]$UseDiagnostics = $false
+    [switch]$UseDiagnostics = $false,
+    
+    [bool]$Launch = $true
 )
 
 if ($MultiTargets.Contains('all')) {
@@ -183,6 +188,7 @@ $arguments = @(
     '--platform'
     $platforms
     $projects
+    "--launch $launch"
 )
 
 &$cmd @arguments
