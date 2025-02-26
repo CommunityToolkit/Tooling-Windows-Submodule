@@ -34,7 +34,7 @@ Param (
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
 
-    [string[]]$ExcludeMultiTargets,
+    [string[]]$ExcludeMultiTargets = @(),
 
     [Alias("winui")]
     [int]$WinUIMajorVersion = 3,
@@ -46,4 +46,6 @@ Param (
     [switch]$UseDiagnostics = $false
 )
 
-& $PSScriptRoot/../GenerateSingleSolution.ps1 -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets -WinUIMajorVersion $WinUIMajorVersion -UseDiagnostics $UseDiagnostics -componentPath $componentPath
+# Use & and a separate script path variable to avoid issues with parameter passing
+$scriptPath = "$PSScriptRoot/../GenerateSingleSolution.ps1"
+& $scriptPath -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets -WinUIMajorVersion $WinUIMajorVersion -UseDiagnostics:$UseDiagnostics -componentPath $componentPath

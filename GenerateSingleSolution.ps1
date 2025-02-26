@@ -37,13 +37,13 @@ Param (
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
 
-    [string[]]$ExcludeMultiTargets,
+    [string[]]$ExcludeMultiTargets = @(),
 
     [Alias("winui")]
     [int]$WinUIMajorVersion = 3,
 
     [Alias("c")]
-    [string]$Component = "",
+    [string]$Component,
     
     [Parameter(HelpMessage = "The path to the containing folder for a component where sample heads should be generated.")] 
     [string]$componentPath,
