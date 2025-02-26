@@ -37,7 +37,7 @@ Param (
     [string[]]$ExcludeMultiTargets,
 
     [Alias("winui")]
-    [int]$WinUIMajorVersion = 2,
+    [int]$WinUIMajorVersion = 3,
     
     [Parameter(HelpMessage = "The path to the containing folder for a component where sample heads should be generated.")] 
     [string]$componentPath,
