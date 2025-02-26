@@ -129,7 +129,7 @@ $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
 $headsFolderName = "heads"
 $componentName = (Get-Item $componentPath -ErrorAction Stop).Name
 
-$outputHeadsDir = Get-Item "$componentPath\$headsFolderName";
+$outputHeadsDir = "$componentPath\$headsFolderName";
 
 # Remove existing heads directory to refresh
 Write-Output "Removing existing heads directory: $outputHeadsDir"
