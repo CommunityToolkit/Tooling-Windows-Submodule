@@ -74,6 +74,9 @@ if ($null -eq $componentPath -or $componentPath -eq '')
     $componentPath = $pwd
 }
 
+# Remove trailing slash
+$componentPath = $componentPath.TrimEnd('\').TrimEnd('/')
+
 # Component check
 # -----------------
 
@@ -163,7 +166,7 @@ $projects = [System.Collections.ArrayList]::new()
 # Install slgnen
 dotnet tool restore
 
-$generatedSolutionFilePath = "$componentPath/$componentName.sln"
+$generatedSolutionFilePath = "$componentPath\$componentName.sln"
 $platforms = '"Any CPU;x64;x86;ARM64"'
 $slngenConfig = "--folders true --collapsefolders true --ignoreMainProject"
 
