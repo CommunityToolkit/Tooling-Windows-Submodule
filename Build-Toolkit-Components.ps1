@@ -59,7 +59,7 @@
 Param (
     [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("mt")]
-    [string[]]$MultiTargets = @('uwp', 'wasm'), # default settings
+    [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'), # default settings
     
     [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
     [string[]]$ExcludeMultiTargets = @(), # default settings
@@ -95,13 +95,6 @@ Param (
     [switch]$Verbose
 )
 
-# Use the specified MultiTarget TFM and WinUI version
-# WinUI 0 indicates non-WinUI projects (e.g. netstandard) should be built.
-if ($WinUIMajorVersion -ne 0) {
-    & $PSScriptRoot\MultiTarget\UseUnoWinUI.ps1 $WinUIMajorVersion
-}
-
-& $PSScriptRoot\MultiTarget\UseTargetFrameworks.ps1 -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets
 
 if ($MultiTargets -eq 'all') {
     $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
@@ -114,19 +107,19 @@ if ($null -eq $ExcludeMultiTargets)
 
 # Both uwp and wasdk share a targetframework. Both cannot be enabled at once.
 # If both are supplied, remove one based on WinUIMajorVersion.
-if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
+if ($WinUIMajorVersion -eq 2)
 {
-    if ($WinUIMajorVersion -eq 2)
-    {
-        $ExcludeMultiTargets = $ExcludeMultiTargets + 'wasdk'
-    }
-    elseif ($WinUIMajorVersion -eq 3)
-    {
-        $ExcludeMultiTargets = $ExcludeMultiTargets + 'uwp'
-    }
+    $ExcludeMultiTargets = $ExcludeMultiTargets + 'wasdk'
+}
+
+if ($WinUIMajorVersion -eq 3)
+{
+    $ExcludeMultiTargets = $ExcludeMultiTargets + 'uwp'
 }
 
 $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
+
+Write-Output "Building components '$Components' for MultiTargets: $MultiTargets"
 
 if ($Components -eq @('all')) {
     $Components = @('**')
@@ -135,6 +128,14 @@ if ($Components -eq @('all')) {
 if ($ExcludeComponents) {
     $Components = $Components | Where-Object { $_ -notin $ExcludeComponents }
 }
+
+# Use the specified MultiTarget TFM and WinUI version
+# WinUI 0 indicates non-WinUI projects (e.g. netstandard) should be built.
+if ($WinUIMajorVersion -ne 0) {
+    & $PSScriptRoot\MultiTarget\UseUnoWinUI.ps1 $WinUIMajorVersion
+}
+
+& $PSScriptRoot\MultiTarget\UseTargetFrameworks.ps1 -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets
 
 function Invoke-MSBuildWithBinlog {
     param (
