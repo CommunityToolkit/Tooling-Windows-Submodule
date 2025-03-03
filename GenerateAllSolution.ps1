@@ -46,7 +46,7 @@ Param (
     [string[]]$Components = @('all'),
 
     [Alias("winui")]
-    [int]$WinUIMajorVersion = 2,
+    [int]$WinUIMajorVersion = 3,
 
     [string[]]$ExcludeComponents,
 
