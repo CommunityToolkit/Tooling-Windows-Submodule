@@ -35,7 +35,7 @@
     Date:   April 27, 2022
 #>
 Param (
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
 
@@ -54,7 +54,7 @@ Param (
 )
 
 if ($MultiTargets.Contains('all')) {
-    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
 }
 
 if ($null -eq $ExcludeMultiTargets)
@@ -81,8 +81,12 @@ $MultiTargets = $MultiTargets | Where-Object { $_ -notin $ExcludeMultiTargets }
 # Generate required props for "All" solution preferences.
 & ./tooling/MultiTarget/GenerateAllProjectReferences.ps1 -MultiTargets $MultiTargets -Components $Components -ExcludeComponents $ExcludeComponents
 & ./tooling/MultiTarget/UseTargetFrameworks.ps1 -MultiTargets $MultiTargets
-& ./tooling/MultiTarget/UseUnoWinUI.ps1 $WinUIMajorVersion
 
+# Use the specified MultiTarget TFM and WinUI version
+# WinUI 0 indicates non-WinUI projects (e.g. netstandard) should be built.
+if ($WinUIMajorVersion -ne 0) {
+    & $PSScriptRoot\MultiTarget\UseUnoWinUI.ps1 $WinUIMajorVersion
+}
 # Set up constant values
 $generatedSolutionFilePath = 'CommunityToolkit.AllComponents.sln'
 $platforms = 'Any CPU;x64;x86;ARM64'
