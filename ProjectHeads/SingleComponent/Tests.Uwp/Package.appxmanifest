@@ -13,7 +13,7 @@
   <mp:PhoneIdentity PhoneProductId="FC4ACA4C-2390-44E2-B85C-B7763D87C6AB" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>ProjectTemplateExperiment.Tests.Uwp</DisplayName>
+    <DisplayName>ProjectTemplate.Tests.Uwp</DisplayName>
     <PublisherDisplayName>CommunityToolkit</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>

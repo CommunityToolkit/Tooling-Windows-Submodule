@@ -21,8 +21,8 @@
 
   <PropertyGroup>
     <ProjectGuid>{7134BD2E-0A74-4345-868A-E425FC452A89}</ProjectGuid>
-    <RootNamespace>ProjectTemplateExperiment.Tests</RootNamespace>
-    <AssemblyName>ProjectTemplateExperiment.Tests.Uwp</AssemblyName>
+    <RootNamespace>ProjectTemplate.Tests</RootNamespace>
+    <AssemblyName>ProjectTemplate.Tests.Uwp</AssemblyName>
     <UnitTestPlatformVersion Condition="'$(UnitTestPlatformVersion)' == ''">$(VisualStudioVersion)</UnitTestPlatformVersion>
   </PropertyGroup>
 
