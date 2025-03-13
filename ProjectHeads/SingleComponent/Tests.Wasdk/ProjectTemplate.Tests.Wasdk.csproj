@@ -18,8 +18,8 @@
   <Import Project="$(ToolingDirectory)\ProjectHeads\Tests.Head.WinAppSdk.props" />
 
   <PropertyGroup>
-    <RootNamespace>ProjectTemplateExperiment.Tests</RootNamespace>
-    <AssemblyName>ProjectTemplateExperiment.Tests.WinAppSdk</AssemblyName>
+    <RootNamespace>ProjectTemplate.Tests</RootNamespace>
+    <AssemblyName>ProjectTemplate.Tests.WinAppSdk</AssemblyName>
   </PropertyGroup>
 
   <!-- Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
