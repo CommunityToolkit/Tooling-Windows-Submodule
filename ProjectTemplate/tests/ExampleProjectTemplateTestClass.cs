@@ -6,7 +6,7 @@ using CommunityToolkit.Tooling.TestGen;
 using CommunityToolkit.Tests;
 using CommunityToolkit.WinUI.Controls;
 
-namespace ProjectTemplate.Tests;
+namespace ProjectTemplateTests;
 
 [TestClass]
 public partial class ExampleProjectTemplateTestClass : VisualUITestBase

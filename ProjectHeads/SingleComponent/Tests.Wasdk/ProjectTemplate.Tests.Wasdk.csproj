@@ -18,7 +18,7 @@
   <Import Project="$(ToolingDirectory)\ProjectHeads\Tests.Head.WinAppSdk.props" />
 
   <PropertyGroup>
-    <RootNamespace>ProjectTemplate.Tests</RootNamespace>
+    <RootNamespace>ProjectTemplateTests</RootNamespace>
     <AssemblyName>ProjectTemplate.Tests.WinAppSdk</AssemblyName>
   </PropertyGroup>
 
