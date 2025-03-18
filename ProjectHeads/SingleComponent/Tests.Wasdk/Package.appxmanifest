@@ -12,7 +12,7 @@
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>ProjectTemplateExperiment.Tests.WinAppSdk</DisplayName>
+    <DisplayName>ProjectTemplate.Tests.WinAppSdk</DisplayName>
     <PublisherDisplayName>CommunityToolkit</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
