@@ -216,11 +216,35 @@ public sealed partial class ToolkitDocumentationRenderer : Page
 
     public static Uri? ToGitHubUri(string path, int id) => IsProjectPathValid() ? new Uri($"{ProjectUrl}/{path}/{id}") : null;
 
-    public static Uri? ToComponentUri(string name) => IsProjectPathValid() ? new Uri($"{ProjectUrl}/tree/main/components/{name}") : null;
+    public static Uri? ToComponentUri(string name, bool? isExperimental = null)
+    {
+        if (IsProjectPathValid() is not true)
+        {
+            return null;
+        }
 
-    public static Uri? ToPackageUri(string platform, string projectFileName) => new Uri($"https://www.nuget.org/packages/{RemoveFileExtension(projectFileName).Replace("WinUI", platform)}");
+        string? url = (isExperimental is null || isExperimental is false)
+            ? ProjectUrl
+            : ProjectUrl?.Replace("Windows", "Labs-Windows");
 
-    public static string ToPackageName(string platform, string projectFileName) => RemoveFileExtension(projectFileName).Replace("WinUI", platform);
+        return new Uri($"{url}/tree/main/components/{name}");
+    }
+
+    public static Uri? ToPackageUri(string platform, string projectFileName, bool? isExperimental = null)
+    {
+        if (isExperimental is null || isExperimental is false)
+        {
+            return new Uri($"https://www.nuget.org/packages/{ToPackageName(platform, projectFileName, isExperimental)}");
+        }
+        else
+        {
+            // Labs feed for experimental packages (currently)
+            // See inconsistency for Labs package names/project names https://github.com/CommunityToolkit/Windows/issues/587#issuecomment-2738529086
+            return new Uri($"https://dev.azure.com/dotnet/CommunityToolkit/_artifacts/feed/CommunityToolkit-Labs/NuGet/{ToPackageName(platform, projectFileName, isExperimental)}");
+        }
+    }
+    
+    public static string ToPackageName(string platform, string projectFileName, bool? isExperimental) => RemoveFileExtension(projectFileName).Replace("CommunityToolkit.WinUI", isExperimental == true ? "CommunityToolkit.Labs.WinUI" : "CommunityToolkit.WinUI").Replace("WinUI", platform);
 
     // TODO: Think this is most of the special cases with Controls and the Extensions/Triggers using the base namespace
     // See: https://github.com/CommunityToolkit/Tooling-Windows-Submodule/issues/105#issuecomment-1698306420
