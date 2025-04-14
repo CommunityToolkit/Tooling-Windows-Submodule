@@ -37,7 +37,7 @@ function ProcessMarkdownFile($markdownFile) {
   
   # Insert Header
   $contents = $contents.Substring(0, $endIndex + 5) + "`n# $header`n" + $contents.Substring($endIndex + 5)
-  
+
   # Find Sample Placeholders, replace with code content
   foreach ($sample in ($contents | Select-String -Pattern '>\s*\[!SAMPLE\s*(?<sampleid>.*)\s*\]\s*' -AllMatches).Matches) {
     $sampleid = $sample.Groups[1].Value
@@ -47,8 +47,8 @@ function ProcessMarkdownFile($markdownFile) {
     foreach ($csFile in Get-ChildItem -Recurse -Path ($markdownFile.DirectoryName + '\**\*.xaml.cs').Replace('\', '/') |
       Where-Object { $_.FullName -notlike "*\bin\*" -and $_FullName -notlike "*\obj\*" }) {
       $csSample = Get-Content $csFile -Raw
-          
-      if ($csSample -match '\[ToolkitSample\s?\(\s*id:\s*(?:"|nameof\()\s?' + $sampleid + '\s?(?:"|\))') {
+
+      if ($csSample -match '\[ToolkitSample\s?\(\s*(?:id\:)?\s*(?:"|nameof\()\s?' + $sampleid + '\s?(?:"|\))') {
         # Get Relative Path
         $docPath = $(Join-Path "components" $($csfile.FullName.Replace($componentsRoot.Path, ''))).Replace('\', '/').Trim('/')
   
