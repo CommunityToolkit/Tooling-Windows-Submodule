@@ -32,16 +32,40 @@ if (-not $ToSha) {
 
 git fetch origin main
 
-$changedComponentFiles = Invoke-Expression "git diff --name-only $($FromSha)...$($ToSha) -- components/"
-$otherChanges = Invoke-Expression "git diff --name-only $($FromSha)...$($ToSha) | Select-String -NotMatch '^components/'"
+$changedComponentFiles = Invoke-Expression "git diff --name-only $($FromSha)...$($ToSha) -- components/" -ErrorAction Stop
+$otherChanges = Invoke-Expression "git diff --name-only $($FromSha)...$($ToSha) | Select-String -NotMatch '^components/'" -ErrorAction Stop
 
-if (-not $otherChanges) {
+# If one or more components is changed, return them in a list. 
+$retChangedComponents = -not [string]::IsNullOrWhiteSpace($changedComponentFiles);
+
+# Return 'all' components when either:
+# - One or more files *outside* of a component folder is changed
+# - All files *inside* of component folders are unchanged
+# Both of these:
+#   - Can happen when any non-component file is changed
+#   - May indicate (but not guarantee) a build configuration change.
+#   - Are a fallback to ensure that the script doesn't return an empty list of components.
+$retAllComponents = [string]::IsNullOrWhiteSpace($changedComponentFiles) -or -not [string]::IsNullOrWhiteSpace($otherChanges);
+
+Write-Output "Relevant vars: "
+Write-Output "`$fromSha: $FromSha"
+Write-Output "`$toSha: $ToSha"
+Write-Output "`$changedComponentFiles: $changedComponentFiles"
+Write-Output "`$otherChanges: $otherChanges"
+Write-Output "`$retChangedComponents: $retChangedComponents"
+Write-Output "`$retAllComponents: $retAllComponents"
+
+if ($retAllComponents) {
+    return 'all';
+}
+
+if ($retChangedComponents) {
   $names = $changedComponentFiles | ForEach-Object { ($_ -replace '^components/', '') -replace '/.*$', '' }
   $uniqueNames = $names | Sort-Object -Unique
   $quotedNames = $uniqueNames | ForEach-Object { "'$_'" }
   $changedComponentsList = $quotedNames -join ','
   return $changedComponentsList
 }
-else {
-    return 'all';
-}
+
+Write-Error "Unhandled code path."
+Write-Error "Please report this error to the author of this script."
