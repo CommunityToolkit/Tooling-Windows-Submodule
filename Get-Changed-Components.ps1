@@ -47,14 +47,6 @@ $retChangedComponents = -not [string]::IsNullOrWhiteSpace($changedComponentFiles
 #   - Are a fallback to ensure that the script doesn't return an empty list of components.
 $retAllComponents = [string]::IsNullOrWhiteSpace($changedComponentFiles) -or -not [string]::IsNullOrWhiteSpace($otherChanges);
 
-Write-Output "Relevant vars: "
-Write-Output "`$fromSha: $FromSha"
-Write-Output "`$toSha: $ToSha"
-Write-Output "`$changedComponentFiles: $changedComponentFiles"
-Write-Output "`$otherChanges: $otherChanges"
-Write-Output "`$retChangedComponents: $retChangedComponents"
-Write-Output "`$retAllComponents: $retAllComponents"
-
 if ($retAllComponents) {
     return 'all';
 }
