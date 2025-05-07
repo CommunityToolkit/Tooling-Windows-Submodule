@@ -16,6 +16,7 @@
     <Version Condition="'$(Version)' == ''">$(MajorVersion).$(MinorVersion).$(DateForVersion)</Version>
     <Version Condition="'$(PreviewVersion)' != ''">$(Version)-$(PreviewVersion)</Version>
     <PackageId Condition="'$(PackageId)' == ''">$(PackageIdPrefix).$(PackageIdVariant).$(ToolkitComponentName)</PackageId>
+    <AssemblyName>$(PackageId)</AssemblyName>
   </PropertyGroup>
 
   <Sdk Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' != 'windows'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
