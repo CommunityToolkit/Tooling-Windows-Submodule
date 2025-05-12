@@ -148,7 +148,7 @@ foreach ($componentName in $Components) {
 
             [void]$projects.Add(".\components\$($componentPath.BaseName)\src\*.csproj")
             [void]$projects.Add(".\components\$($componentPath.BaseName)\samples\*.Samples.csproj")
-            [void]$projects.Add(".\components\$($componentPath.BaseName)\tests\*.Tests\*.shproj")
+            [void]$projects.Add(".\components\$($componentPath.BaseName)\tests\*.shproj")
         } else {
             Write-Warning "Component $($componentPath.BaseName) doesn't MultiTarget any of $MultiTargets and won't be added to the solution.";
         }
