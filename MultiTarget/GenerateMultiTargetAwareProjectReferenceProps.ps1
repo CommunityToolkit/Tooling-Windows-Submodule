@@ -1,12 +1,12 @@
 Param (    
-    [Parameter(HelpMessage = "The full path of the csproj to generated references to.", Mandatory = $true)] 
+    [Parameter(HelpMessage = "The full path of the csproj or projitems to generate a reference to.", Mandatory = $true)] 
     [string]$projectPath,
 
-    [Parameter(HelpMessage = "A path to a .props file where generated content should be saved to.", Mandatory = $true)] 
+    [Parameter(HelpMessage = "A path to where the generated .props file containing the reference should be saved to.", Mandatory = $true)] 
     [string]$outputPath,
 
     [Parameter(HelpMessage = "The path to the template used to generate the props file.")]
-    [string]$templatePath = "$PSScriptRoot/MultiTargetAwareProjectReference.props.template",
+    [string]$templatePath,
 
     [Parameter(HelpMessage = "The placeholder text to replace when inserting the project file name into the template.")] 
     [string]$projectFileNamePlaceholder = "[ProjectFileName]",
@@ -20,6 +20,16 @@ Param (
     [string[]] $MultiTargets = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard")
 )
 
+if ($projectPath.EndsWith(".projitems")) {
+    $templatePath = "$PSScriptRoot/MultiTargetAwareSharedProjectImport.props.template"
+} elseif ($projectPath.EndsWith(".csproj")) {
+    $templatePath = "$PSScriptRoot/MultiTargetAwareProjectReference.props.template";
+    
+} else {
+    Write-Error "The specified project path is not a valid csproj or projitems file: $projectPath";
+    exit(-1);
+}
+
 $templateContents = Get-Content -Path $templatePath;
 
 $preWorkingDir = $pwd;
@@ -29,9 +39,9 @@ $relativeProjectPath = Resolve-Path -Relative -Path $projectPath
 
 Set-Location $preWorkingDir;
 
-# Insert csproj file name.
-$csprojFileName = [System.IO.Path]::GetFileName($projectPath);
-$templateContents = $templateContents -replace [regex]::escape($projectFileNamePlaceholder), $csprojFileName;
+# Insert project file name.
+$projectFileName = [System.IO.Path]::GetFileName($projectPath);
+$templateContents = $templateContents -replace [regex]::escape($projectFileNamePlaceholder), $projectFileName;
 
 # Insert component directory
 $componentDirectoryRelativeToRoot = [System.IO.Path]::GetDirectoryName($relativeProjectPath).TrimStart('.').TrimStart('\');
@@ -67,7 +77,7 @@ function ShouldMultiTargetMsBuildValue([string] $target) {
 $targeted = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard").Where({ ShouldMultiTarget $_ })
 
 if ($targeted.Count -gt 0) {
-    Write-Host "Generating project references for $([System.IO.Path]::GetFileNameWithoutExtension($csprojFileName)): $($targeted -Join ', ')"
+    Write-Host "Generating project references for $([System.IO.Path]::GetFileNameWithoutExtension($projectFileName)): $($targeted -Join ', ')"
 }
 
 $templateContents = $templateContents -replace [regex]::escape("[CanTargetWasm]"), "'$(ShouldMultiTargetMsBuildValue "wasm")'";
