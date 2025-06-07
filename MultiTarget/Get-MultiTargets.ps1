@@ -50,4 +50,4 @@ if ($null -eq $regex -or $null -eq $regex.Matches -or $null -eq $regex.Matches.G
 }
 
 $multiTargets = $regex.Matches.Groups[1].Value;
-return $multiTargets.Split(';');
+return $multiTargets.Split(';') | Where-Object { $_ -ne '' };
