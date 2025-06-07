@@ -106,7 +106,7 @@ foreach ($supportedMultiTarget in $supportedMultiTargets) {
 # If none of the requested targets are supported by the component, we can skip build to save time and avoid errors.
 if (-not $isRequestedTargetSupported) {
     $IsSupported = $false
-    $Reason = "None of the requested MultiTargets '$MultiTargets' are enabled for this component."
+    $Reason = "None of the requested MultiTargets '$RequestedMultiTargets' are enabled for this component."
 }
 
 if (-not $isWinUI0Supported -and $WinUIMajorVersion -eq 0) {
