@@ -18,9 +18,14 @@
     Specifies the WinUI major version to use when building for Uno. Also decides the package id and dependency variant.
 
 .EXAMPLE
-    Build-Toolkit-Components -MultiTargets 'uwp', 'wasm' -DateForVersion '220101' -PreviewVersion 'local' -NupkgOutput 'C:\Output' -BinlogOutput 'C:\Logs' -EnableBinLogs -Components 'MyComponent1', 'MyComponent2' -ExcludeComponents 'MyComponent3' -Release -Verbose
+    Test-Component-Support -RequestedMultiTargets 'uwp', 'wasm' -Component 'MarkdownTextBlock' -WinUIMajorVersion 2
 
-    Builds the 'MyComponent1' and 'MyComponent2' components for the 'uwp' and 'wasm' target frameworks with version '220101' and preview version 'local'. The 'MyComponent3' component will be excluded from building. The .nupkg files will be copied to 'C:\Output' and binlogs will be generated in 'C:\Logs'. The components will be built in Release configuration with detailed msbuild verbosity.
+    Tests if the 'MarkdownTextBlock' component supports the 'uwp' and 'wasm' target frameworks with WinUI 2. Returns an object indicating if the component is supported and the reason if not.
+
+.EXAMPLE
+    Test-Component-Support -SupportedMultiTargets 'uwp', 'wasm', 'wasdk' -RequestedMultiTargets 'all' -Component 'DataTable' -WinUIMajorVersion 3
+
+    Tests if the 'DataTable' component supports all target frameworks with WinUI 3, using the explicitly provided supported MultiTargets instead of retrieving them.
 
 .NOTES
     Author: Arlo Godfrey
