@@ -73,7 +73,7 @@ if ($null -ne $SupportedMultiTargets -and $SupportedMultiTargets.Count -gt 0) {
         Write-Error "Component name must be specified to retrieve supported MultiTargets."
         exit 1
     }
-    $supportedMultiTargets = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $Component
+    $supportedMultiTargets = & $PSScriptRoot\Get-MultiTargets.ps1 -component $Component
 }
 
         
