@@ -39,7 +39,8 @@
                              Grid.Row="1"
                              IsBackButtonVisible="Collapsed"
                              IsPaneToggleButtonVisible="False"
-                             ItemInvoked="NavView_ItemInvoked">
+                             ItemInvoked="NavView_ItemInvoked"
+                             PaneDisplayMode="Top">
             <Frame x:Name="NavigationFrame"
                    Navigated="NavigationFrameOnNavigated" />
         </muxc:NavigationView>
