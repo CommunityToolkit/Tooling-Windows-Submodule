@@ -54,8 +54,7 @@ if ($retAllComponents) {
 if ($retChangedComponents) {
   $names = $changedComponentFiles | ForEach-Object { ($_ -replace '^components/', '') -replace '/.*$', '' }
   $uniqueNames = $names | Sort-Object -Unique
-  $quotedNames = $uniqueNames | ForEach-Object { "'$_'" }
-  $changedComponentsList = $quotedNames -join ','
+  $changedComponentsList = $uniqueNames -join ','
   return $changedComponentsList
 }
 
