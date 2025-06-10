@@ -3,8 +3,9 @@
     "version": "9.0.101",
     "rollForward": "latestFeature"
   },
-  "msbuild-sdks": 
+  "msbuild-sdks":
   {
-    "MSBuild.Sdk.Extras":"3.0.23"
+    "MSBuild.Sdk.Extras":"3.0.23",
+    "MSTest.Sdk": "3.7.3"
   }
 }

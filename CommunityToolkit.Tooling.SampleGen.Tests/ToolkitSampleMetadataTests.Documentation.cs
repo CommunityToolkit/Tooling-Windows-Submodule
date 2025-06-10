@@ -300,7 +300,7 @@ Which is valid.
 
         result.AssertNoCompilationErrors();
 
-        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitDocumentRegistry.g.cs"), """
+        Assert.AreEqual("""
         #nullable enable
         namespace CommunityToolkit.Tooling.SampleGen;
 
@@ -311,6 +311,6 @@ Which is valid.
                 yield return new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitFrontMatter() { ComponentName = "Primitives", Title = "Canvas Layout", Author = "mhawker", Description = "A canvas-like VirtualizingLayout for use in an ItemsRepeater", Keywords = "CanvasLayout, ItemsRepeater, VirtualizingLayout, Canvas, Layout, Panel, Arrange", Category = ToolkitSampleCategory.Controls, Subcategory = ToolkitSampleSubcategory.Layout, DiscussionId = 0, IssueId = 0, Icon = @"assets/icon.png", FilePath = @"experiment\samples\documentation.md", SampleIdReferences = new string[] { "Sample" }, IsExperimental = true, CsProjName = @"componentname.csproj" };
             }
         }
-        """, "Unexpected code generated");
+        """, result.Compilation.GetFileContentsByName("ToolkitDocumentRegistry.g.cs"), "Unexpected code generated");
     }
 }
