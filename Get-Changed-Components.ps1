@@ -30,6 +30,8 @@ if (-not $ToSha) {
     $ToSha = $(git rev-parse HEAD)
 }
 
+# Ensure that orphaned commits are available for diffing (e.g. when force-pushed).
+git fetch origin $FromSha
 git fetch origin main
 
 $changedComponentFiles = Invoke-Expression "git diff --name-only $($FromSha)...$($ToSha) -- components/" -ErrorAction Stop
