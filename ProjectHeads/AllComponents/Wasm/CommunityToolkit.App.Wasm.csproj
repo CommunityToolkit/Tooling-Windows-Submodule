@@ -17,7 +17,8 @@
   
   <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.TargetVersion.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
-  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Samples.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Source.props" />
   <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.Wasm.props" />
 
   <ItemGroup>

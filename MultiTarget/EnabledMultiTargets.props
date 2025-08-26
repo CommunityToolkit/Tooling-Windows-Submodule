@@ -2,6 +2,6 @@
     <!--Indicates which MultiTargets are enabled via UseTargetFrameworks script. -->
     <!-- Do not commit changes made to default values by tooling. -->
   <PropertyGroup>
-    <EnabledMultiTargets>wasm;uwp;netstandard;</EnabledMultiTargets>
+    <EnabledMultiTargets>wasm;wasdk;</EnabledMultiTargets>
   </PropertyGroup>
 </Project>

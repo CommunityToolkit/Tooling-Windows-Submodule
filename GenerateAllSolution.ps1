@@ -26,6 +26,9 @@
 .PARAMETER UseDiagnostics
     Add extra diagnostic output to running slngen, such as a binlog, etc...
 
+.PARAMETER Launch
+    Specifies whether to launch the solution after generation. Default is $true.
+
 .EXAMPLE
     C:\PS> .\GenerateAllSolution -MultiTargets wasdk
     Build a solution that doesn't contain UWP projects.
@@ -50,7 +53,9 @@ Param (
 
     [string[]]$ExcludeComponents,
 
-    [switch]$UseDiagnostics = $false
+    [switch]$UseDiagnostics = $false,
+    
+    [bool]$Launch = $true
 )
 
 if ($MultiTargets.Contains('all')) {
@@ -111,10 +116,45 @@ $projects = [System.Collections.ArrayList]::new()
 # Common/Dependencies for shared infrastructure
 [void]$projects.Add(".\tooling\CommunityToolkit*\*.*proj")
 
-# Deployable sample gallery heads 
+# Individual projects
+if ($Components -eq @('all')) {
+    $Components = @('**')
+}
+
+
+$allUsedMultiTargetPrefs = @()
+
+foreach ($componentName in $Components) {
+    if ($ExcludeComponents -contains $componentName) {
+        continue;
+    }
+    
+    foreach ($componentPath in Get-Item "$PSScriptRoot/../components/$componentName/") {
+        $multiTargetPrefs = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
+
+        $usedMultiTargetPrefs = $multiTargetPrefs.Where({ $MultiTargets.Contains($_) });
+        $shouldReferenceInSolution = $usedMultiTargetPrefs.Count -gt 0
+        
+        if ($shouldReferenceInSolution) {
+            Write-Output "Add component $componentPath to solution";
+            $allUsedMultiTargetPrefs += $usedMultiTargetPrefs
+            
+            [void]$projects.Add(".\components\$($componentPath.BaseName)\src\*.csproj")
+            [void]$projects.Add(".\components\$($componentPath.BaseName)\samples\*.Samples.csproj")
+            [void]$projects.Add(".\components\$($componentPath.BaseName)\tests\*.shproj")
+        } else {
+            Write-Warning "Component $($componentPath.BaseName) doesn't MultiTarget any of $MultiTargets and won't be added to the solution.";
+        }
+    }
+}
+
+# Deployable sample gallery heads
+# Only include heads for requested MultiTargets if components were included that use them.
+# ===
 # TODO: this handles separate project heads, but won't directly handle the unified Skia head from Uno.
 # Once we have that, just do a transform on the csproj filename inside this loop to decide the same csproj for those separate MultiTargets.
-foreach ($multitarget in $MultiTargets) {
+# ===
+foreach ($multitarget in $allUsedMultiTargetPrefs) {
     # capitalize first letter, avoid case sensitivity issues on linux
     $csprojFileNamePartForMultiTarget = $multitarget.substring(0,1).ToUpper() + $multitarget.Substring(1).ToLower()
 
@@ -125,33 +165,6 @@ foreach ($multitarget in $MultiTargets) {
     }
     else {
         Write-Warning "No project head could be found at $path for MultiTarget $multitarget. Skipping."
-    }
-}
-
-# Individual projects
-if ($Components -eq @('all')) {
-    $Components = @('**')
-}
-
-foreach ($componentName in $Components) {
-    if ($ExcludeComponents -contains $componentName) {
-        continue;
-    }
-    
-    foreach ($componentPath in Get-Item "$PSScriptRoot/../components/$componentName/") {
-        $multiTargetPrefs = & $PSScriptRoot\MultiTarget\Get-MultiTargets.ps1 -component $($componentPath.BaseName)
-
-        $shouldReferenceInSolution = $multiTargetPrefs.Where({ $MultiTargets.Contains($_) }).Count -gt 0
-
-        if ($shouldReferenceInSolution) {
-            Write-Output "Add component $componentPath to solution";
-
-            [void]$projects.Add(".\components\$($componentPath.BaseName)\src\*.csproj")
-            [void]$projects.Add(".\components\$($componentPath.BaseName)\samples\*.Samples.csproj")
-            [void]$projects.Add(".\components\$($componentPath.BaseName)\tests\*.Tests\*.shproj")
-        } else {
-            Write-Warning "Component $($componentPath.BaseName) doesn't MultiTarget any of $MultiTargets and won't be added to the solution.";
-        }
     }
 }
 
@@ -187,6 +200,7 @@ $arguments = @(
     '--platform'
     $platforms
     $projects
+    "--launch $launch"
 )
 
 &$cmd @arguments
