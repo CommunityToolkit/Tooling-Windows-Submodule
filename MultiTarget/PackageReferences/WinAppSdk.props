@@ -2,6 +2,6 @@
   <ItemGroup>
     <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.250906003" />
     <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.Windows.CsWinRT" Version="2.2.0" PrivateAssets="all" />
-    <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.Web.WebView2" Version="1.0.2903.40" PrivateAssets="all" />
+    <PackageReference Condition="'$(HasWinUI)' == 'true'" Include="Microsoft.Web.WebView2" Version="1.0.3179.45" PrivateAssets="all" />
   </ItemGroup>
 </Project>
