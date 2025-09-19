@@ -95,7 +95,7 @@ jobs:
 
   # Test job to build the project template
   project-template:
-    runs-on: windows-latest
+    runs-on: windows-latest-large
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
       PROJECT_DIRECTORY: tooling/ProjectTemplate
@@ -145,7 +145,7 @@ jobs:
 
   # Test job to build a single experiment to ensure our changes work for both our main types of solutions at the moment
   new-experiment:
-    runs-on: windows-latest
+    runs-on: windows-latest-large
     
     strategy:
       fail-fast: false # prevent one matrix pipeline from being cancelled if one fails, we want them all to run to completion.
