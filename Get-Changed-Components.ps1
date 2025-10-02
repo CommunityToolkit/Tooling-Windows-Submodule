@@ -50,14 +50,13 @@ $retChangedComponents = -not [string]::IsNullOrWhiteSpace($changedComponentFiles
 $retAllComponents = [string]::IsNullOrWhiteSpace($changedComponentFiles) -or -not [string]::IsNullOrWhiteSpace($otherChanges);
 
 if ($retAllComponents) {
-    return 'all';
+    return @('all');
 }
 
 if ($retChangedComponents) {
   $names = $changedComponentFiles | ForEach-Object { ($_ -replace '^components/', '') -replace '/.*$', '' }
   $uniqueNames = $names | Sort-Object -Unique
-  $changedComponentsList = $uniqueNames -join ','
-  return $changedComponentsList
+    return $uniqueNames
 }
 
 Write-Error "Unhandled code path."
