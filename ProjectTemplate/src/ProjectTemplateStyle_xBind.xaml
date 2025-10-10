@@ -33,10 +33,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:ProjectTemplate_xBind">
-                        <ContentControl x:Name="ContentContainer"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch">
-                            <ContentControl.ContentTemplate>
+                        <ContentPresenter x:Name="ContentContainer"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Stretch">
+                            <ContentPresenter.ContentTemplate>
                                 <DataTemplate x:DataType="controls:ProjectTemplate_xBind">
                                     <Grid Padding="{x:Bind ItemPadding}"
                                           PointerEntered="{x:Bind Element_PointerEntered}">
@@ -48,8 +48,8 @@
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
-                            </ContentControl.ContentTemplate>
-                        </ContentControl>
+                            </ContentPresenter.ContentTemplate>
+                        </ContentPresenter>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
