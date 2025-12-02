@@ -8,8 +8,7 @@
     -->
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion>$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
-    <TargetPlatformVersion Condition="'$(MultiTargetPlatformIdentifier)' == 'windows'">10.0.26100.0</TargetPlatformVersion>
-    <TargetPlatformVersion Condition="'$(MultiTargetPlatformIdentifier)' != 'windows'">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.26100.0</TargetPlatformVersion>
     
     <Platforms>x86;x64;arm64</Platforms>
   </PropertyGroup>
