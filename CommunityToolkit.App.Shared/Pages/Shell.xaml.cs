@@ -27,6 +27,8 @@ public sealed partial class Shell : Page
         BackdropMaterial.SetApplyToRootOrPageBackground(this, true);
 #endif
         Current = this;
+
+        Loaded += Shell_Loaded;
     }
 
     /// <summary>
@@ -36,9 +38,13 @@ public sealed partial class Shell : Page
     {
         samplePages = e.Parameter as IEnumerable<ToolkitFrontMatter>;
         SetupNavigationMenu();
-        base.OnNavigatedTo(e); 
+        base.OnNavigatedTo(e);
     }
 
+    private void Shell_Loaded(object sender, RoutedEventArgs e)
+    {
+        searchBox.Focus(FocusState.Programmatic);
+    }
 
     private void SetupNavigationMenu()
     {

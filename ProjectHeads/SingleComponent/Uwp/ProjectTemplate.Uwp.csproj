@@ -19,8 +19,8 @@
   <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.Uwp.props" />
 
   <PropertyGroup>
-    <RootNamespace>ProjectTemplateExperiment.Samples</RootNamespace>
-    <AssemblyName>ProjectTemplateExperiment.Samples.Uwp</AssemblyName>
+    <RootNamespace>ProjectTemplate.Samples</RootNamespace>
+    <AssemblyName>ProjectTemplate.Samples.Uwp</AssemblyName>
     <ProjectGuid>{E25BF6D0-24D6-459C-A180-1E9405D59F87}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>

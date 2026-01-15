@@ -69,7 +69,7 @@ Param (
   [hashtable]$AdditionalProperties,
 
   [Alias("winui")]
-  [int]$WinUIMajorVersion = 2,
+  [int]$WinUIMajorVersion = 3,
 
   [Alias("c")]
   [string[]]$Components = @("all"),

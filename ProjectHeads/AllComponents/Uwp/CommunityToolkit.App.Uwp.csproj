@@ -15,7 +15,8 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
   <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.Uwp.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
-  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Samples.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Source.props" />
 
   <PropertyGroup>
     <RootNamespace>CommunityToolkit.App.Uwp</RootNamespace>
