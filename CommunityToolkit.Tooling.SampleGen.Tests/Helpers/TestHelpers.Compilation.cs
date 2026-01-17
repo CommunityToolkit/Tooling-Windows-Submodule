@@ -12,21 +12,20 @@ public static partial class TestHelpers
 {
     internal static IEnumerable<MetadataReference> GetAllReferencedAssemblies()
     {
-        return from assembly in AppDomain.CurrentDomain.GetAssemblies()
-               where !assembly.IsDynamic
-               let reference = MetadataReference.CreateFromFile(assembly.Location)
-               select reference;
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .Where(assembly => !assembly.IsDynamic)
+            .Select(assembly => MetadataReference.CreateFromFile(assembly.Location));
     }
 
     internal static SyntaxTree ToSyntaxTree(this string source)
     {
         return CSharpSyntaxTree.ParseText(source,
-            CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10));
+            CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp12));
     }
 
     internal static CSharpCompilation CreateCompilation(this SyntaxTree syntaxTree, string assemblyName, IEnumerable<MetadataReference>? references = null)
     {
-        return CSharpCompilation.Create(assemblyName, new[] { syntaxTree }, references ?? GetAllReferencedAssemblies(), new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        return CSharpCompilation.Create(assemblyName, [syntaxTree], references ?? GetAllReferencedAssemblies(), new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
 
     internal static CSharpCompilation CreateCompilation(this IEnumerable<SyntaxTree> syntaxTree, string assemblyName, IEnumerable<MetadataReference>? references = null)
