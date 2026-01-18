@@ -14,25 +14,18 @@ public static class NavigationViewHelper
 
         foreach (var navData in categoryData)
         {
-            // Make subcategories
-            var subcategoryData = GenerateSubcategoryNavItems(navData.SampleMetadata ?? Enumerable.Empty<ToolkitFrontMatter>());
+            var samplesBySubcategory = navData.SampleMetadata!.GroupBy(x => x.Subcategory)
+                                             .OrderBy(g => g.Key.ToString());
 
-            foreach (var subcategoryItemData in subcategoryData)
+            foreach (var subcategoryGroup in samplesBySubcategory)
             {
-                // Make samples
-                var sampleNavigationItems = GenerateSampleNavItems(subcategoryItemData.SampleMetadata ?? Enumerable.Empty<ToolkitFrontMatter>());
-                subcategoryItemData.NavItem.MenuItems.Add(new MUXC.NavigationViewItemSeparator());
-                foreach (var item in sampleNavigationItems)
+                navData.NavItem.MenuItems.Add(new MUXC.NavigationViewItemHeader() { Content = subcategoryGroup.Key.ToString() });
+                foreach (var sampleNavItem in GenerateSampleNavItems(subcategoryGroup))
                 {
-                    // Add sample to subcategory
-                    subcategoryItemData.NavItem.MenuItems.Add(item);
+                    navData.NavItem.MenuItems.Add(sampleNavItem);
                 }
-
-                // Add subcategory to category
-                navData.NavItem.MenuItems.Add(subcategoryItemData.NavItem);
             }
 
-            // Return category
             yield return navData.NavItem;
         }
     }
@@ -61,23 +54,6 @@ public static class NavigationViewHelper
         }
     }
 
-    private static IEnumerable<GroupNavigationItemData> GenerateSubcategoryNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
-    {
-        var samplesBySubcategory = sampleMetadata.GroupBy(x => x.Subcategory)
-                                                 .OrderBy(g => g.Key.ToString());
-
-        foreach (var subcategoryGroup in samplesBySubcategory)
-        {
-            yield return new GroupNavigationItemData(new MUXC.NavigationViewItem
-            {
-                Content = subcategoryGroup.Key,
-                SelectsOnInvoked = false,
-                IsExpanded = false,
-                Style = (Style)App.Current.Resources["SubcategoryNavigationViewItemStyle"],
-            }, subcategoryGroup.ToArray());
-        }
-    }
-
     private static IEnumerable<GroupNavigationItemData> GenerateCategoryNavItems(IEnumerable<ToolkitFrontMatter> sampleMetadata)
     {
         var samplesByCategory = sampleMetadata.GroupBy(x => x.Category)
@@ -97,5 +73,4 @@ public static class NavigationViewHelper
     /// <param name="NavItem">A navigation item to contain items in this group.</param>
     /// <param name="SampleMetadata">The samples that belong under <see cref="NavItem"/>.</param>
     private record GroupNavigationItemData(MUXC.NavigationViewItem NavItem, IEnumerable<ToolkitFrontMatter> SampleMetadata);
-
 }
