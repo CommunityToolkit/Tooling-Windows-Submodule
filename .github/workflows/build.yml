@@ -16,7 +16,6 @@ on:
   workflow_dispatch:
 
 env:
-  DOTNET_VERSION: ${{ '9.0.x' }}
   ENABLE_DIAGNOSTICS: false
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
@@ -29,14 +28,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
@@ -49,18 +48,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
 
       - name: dotnet build
         working-directory: ./
@@ -102,15 +97,6 @@ jobs:
           maximum-size: 32GB
           disk-root: "C:"
 
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
-
       - name: Enable git long paths
         run: git config --system core.longpaths true
 
@@ -119,6 +105,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: 'tooling'
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: tooling/global.json
+
+      - name: .NET Info (if diagnostics)
+        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
+        run: dotnet --info
 
       - name: Copy props files to root
         shell: pwsh
@@ -167,15 +162,6 @@ jobs:
           minimum-size: 32GB
           maximum-size: 32GB
           disk-root: "C:"
-          
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
 
       - name: Enable git long paths
         run: git config --system core.longpaths true
@@ -185,6 +171,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: 'tooling'
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: tooling/global.json
+
+      - name: .NET Info (if diagnostics)
+        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
+        run: dotnet --info
 
       - name: Copy props and config files to root and setup structure
         shell: pwsh
@@ -253,20 +248,20 @@ jobs:
       TEST_PROJECT_NAME: CiTestExp
 
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: 'tooling'
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: tooling/global.json
+
+      - name: .NET Info (if diagnostics)
+        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
+        run: dotnet --info
 
       - name: Copy props and config files to root and setup structure
         shell: pwsh
@@ -309,3 +304,5 @@ jobs:
         with:
           name: linux-logs
           path: ./**/*.*log
+
+
