@@ -5,8 +5,9 @@
       xmlns:controls="using:CommunityToolkit.WinUI.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:wasm="http://uno.ui/wasm"
       xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      mc:Ignorable="d">
+      mc:Ignorable="d wasm">
 
     <Page.Resources>
         <!--  These styles can be referenced to create a consistent SettingsPage layout  -->
@@ -73,7 +74,7 @@
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                                Text="About" />
 
-                    <controls:SettingsExpander Description="© 2024. All rights reserved."
+                    <controls:SettingsExpander Description="© 2026. All rights reserved."
                                                Header="Windows Community Toolkit Gallery"
                                                IsExpanded="True">
                         <controls:SettingsExpander.HeaderIcon>
@@ -116,6 +117,16 @@
                             </controls:SettingsCard>
                         </controls:SettingsExpander.Items>
                     </controls:SettingsExpander>
+
+                    <!--  Only Show Powered By Uno Platform on WASM head  -->
+                    <wasm:Border>
+                        <controls:SettingsCard HorizontalContentAlignment="Center"
+                                               ContentAlignment="Vertical"
+                                               Description="{x:Bind UnoVersion}"
+                                               Header="Powered by Uno Platform">
+                            <Image Source="ms-appx:///Assets/Powered-By-UnoPlatform.png" />
+                        </controls:SettingsCard>
+                    </wasm:Border>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
