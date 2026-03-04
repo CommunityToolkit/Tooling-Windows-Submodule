@@ -53,6 +53,12 @@ public sealed class ToolkitSampleMetadata
     public IGeneratedToolkitSampleOptionViewModel[]? GeneratedSampleOptions { get; set; }
 
     /// <summary>
+    /// Gets or sets the sample buttons that were declared alongside this sample, if any.
+    /// Contains the button title and method name for each button.
+    /// </summary>
+    public ToolkitSampleButtonCommand[]? SampleButtons { get; set; }
+
+    /// <summary>
     /// Contains the metadata needed to identify and display a toolkit sample.
     /// </summary>
     /// <param name="id">A unique identifier for the sample, across all samples.</param>
@@ -66,6 +72,7 @@ public sealed class ToolkitSampleMetadata
     /// </param>
     /// <param name="sampleOptionsPaneFactory">A factory method that returns a new instance of the sample options control.</param>
     /// <param name="generatedSampleOptions">The generated sample options that were declared alongside this sample, if any.</param>
+    /// <param name="sampleButtons">The sample buttons that were declared alongside this sample, if any.</param>
     public ToolkitSampleMetadata(
         string id,
         string displayName,
@@ -74,7 +81,8 @@ public sealed class ToolkitSampleMetadata
         Func<object> sampleControlFactory,
         Type? sampleOptionsPaneType = null,
         Func<object, object>? sampleOptionsPaneFactory = null,
-        IGeneratedToolkitSampleOptionViewModel[]? generatedSampleOptions = null)
+        IGeneratedToolkitSampleOptionViewModel[]? generatedSampleOptions = null,
+        ToolkitSampleButtonCommand[]? sampleButtons = null)
     {
         Id = id;
         DisplayName = displayName;
@@ -84,5 +92,6 @@ public sealed class ToolkitSampleMetadata
         SampleOptionsPaneType = sampleOptionsPaneType;
         SampleOptionsPaneFactory = sampleOptionsPaneFactory;
         GeneratedSampleOptions = generatedSampleOptions;
+        SampleButtons = sampleButtons;
     }
 }

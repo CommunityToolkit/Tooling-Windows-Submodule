@@ -220,4 +220,19 @@ public static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot generate sample as the id is already in use by another sample.");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating a <see cref="Attributes.ToolkitSampleButtonAttribute"/> that was used on a method in a class that does not use <see cref="Attributes.ToolkitSampleAttribute"/>.
+    /// <para>
+    /// Format: <c>"Cannot generate sample button for type {0} as it does not use ToolkitSampleAttribute"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor SampleButtonAttributeOnNonSample = new(
+        id: "TKSMPL0016",
+        title: "Invalid sample button declaration",
+        messageFormat: $"Cannot generate sample button for type {{0}} as it does not use ToolkitSampleAttribute",
+        category: typeof(ToolkitSampleMetadataGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Cannot generate sample button for a type which does not use ToolkitSampleAttribute.");
 }

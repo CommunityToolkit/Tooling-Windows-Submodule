@@ -22,5 +22,6 @@ public partial class ToolkitSampleMetadataGenerator
         string Description,
         string SampleAssemblyQualifiedName,
         string? SampleOptionsAssemblyQualifiedName,
-        IEnumerable<ToolkitSampleOptionBaseAttribute>? GeneratedSampleOptions = null);
+        IEnumerable<ToolkitSampleOptionBaseAttribute>? GeneratedSampleOptions = null,
+        IEnumerable<ToolkitSampleButtonAttribute>? GeneratedSampleButtons = null);
 }

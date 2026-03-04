@@ -181,6 +181,15 @@ public sealed partial class ToolkitSampleRenderer : Page
 
         var sampleControlInstance = (UIElement)Metadata.SampleControlFactory();
 
+        // Bind button commands to the sample instance so they can invoke methods via reflection.
+        if (Metadata.SampleButtons is not null)
+        {
+            foreach (var button in Metadata.SampleButtons)
+            {
+                button.BindToInstance(sampleControlInstance);
+            }
+        }
+
         // Custom control-based sample options.
         if (Metadata.SampleOptionsPaneType is not null && Metadata.SampleOptionsPaneFactory is not null)
         {
