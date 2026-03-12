@@ -3,6 +3,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+      xmlns:ui="using:CommunityToolkit.WinUI"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:wasm="http://uno.ui/wasm"
@@ -123,8 +124,8 @@
                         <controls:SettingsCard HorizontalContentAlignment="Center"
                                                ContentAlignment="Vertical"
                                                Description="{x:Bind UnoVersion}"
+                                               HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/uno-platform-logo-mark.png}"
                                                Header="Powered by Uno Platform">
-                            <Image Source="ms-appx:///Assets/Powered-By-UnoPlatform.png" />
                         </controls:SettingsCard>
                     </wasm:Border>
                 </StackPanel>

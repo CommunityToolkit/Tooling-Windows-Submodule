@@ -189,6 +189,13 @@
       </AssemblyAttributes>
     </ItemGroup>
 
+    <!-- Extra attributes specific to platforms -->
+    <ItemGroup Condition="'$(IsUno)' == 'true'">
+      <AssemblyAttributes Include="CommunityToolkit.Attributes.UnoPackageVersionAttribute">
+        <_Parameter1>$(CommonUnoPackageVersion)</_Parameter1>
+      </AssemblyAttributes>
+    </ItemGroup>
+
     <ItemGroup>
       <Compile Include="$(GeneratedAssemblyInfoPath)" />
     </ItemGroup>

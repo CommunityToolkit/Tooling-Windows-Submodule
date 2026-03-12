@@ -22,6 +22,7 @@
       <DependentUpon>AppLoadingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\PackageProjectUrlAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Attributes\UnoPackageVersionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Behaviors\NavigateToUriAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\NativeMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\TitleBar\TitleBar.cs" />
@@ -129,8 +130,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\LargeTile.scale-400.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\LargeTile.scale-400_altform-colorful_theme-light.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\LockScreenLogo.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Powered-By-UnoPlatform.theme-dark.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Powered-By-UnoPlatform.theme-light.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\uno-platform-logo-mark.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\SmallTile.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\SmallTile.scale-100_altform-colorful_theme-light.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\SmallTile.scale-125.png" />
