@@ -167,8 +167,14 @@ $projects = [System.Collections.ArrayList]::new()
 dotnet tool restore
 
 $generatedSolutionFilePath = "$componentPath\$componentName.sln"
-$platforms = '"Any CPU;x64;x86;ARM64"'
-$slngenConfig = "--folders true --collapsefolders true --ignoreMainProject"
+$platforms = 'Any CPU;x64;x86;ARM64'
+$slngenConfig = @(
+    '--folders'
+    'true'
+    '--collapsefolders'
+    'true'
+    '--ignoreMainProject'
+)
 
 # Remove previous file if it exists
 if (Test-Path -Path $generatedSolutionFilePath)
@@ -225,11 +231,26 @@ else
     $diagnostics = ""
 }
 
-$cmd = "dotnet$sdkoptions tool run slngen -o $generatedSolutionFilePath $slngenConfig $diagnostics--platform $platforms $($projects -Join ' ')"
+$cmd = 'dotnet'
+$arguments = @(
+    $sdkoptions
+    'tool'
+    'run'
+    'slngen'
+    '-o'
+    $generatedSolutionFilePath
+    $slngenConfig
+    $diagnostics
+    '--platform'
+    $platforms
+    $projects
+    "--launch $launch"
+)
 
-Write-Output "Running Command: $cmd"
 
-Invoke-Expression $cmd
+Write-Output "Running Command: $cmd $arguments"
+
+&$cmd @arguments
 
 # go back to main working directory
 Pop-Location
