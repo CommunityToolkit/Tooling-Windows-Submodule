@@ -17,6 +17,7 @@ on:
 
 env:
   ENABLE_DIAGNOSTICS: true
+  MSBUILD_VERBOSITY: normal
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
 
@@ -213,7 +214,7 @@ jobs:
 
       - name: MSBuild
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
-        run: msbuild.exe ${{ env.TEST_PROJECT_NAME }}.sln /restore /nowarn:MSB4011 -p:Configuration=Release
+        run: msbuild.exe ${{ env.TEST_PROJECT_NAME }}.sln /restore /nowarn:MSB4011 -p:Configuration=Release /m ${{ env.ENABLE_DIAGNOSTICS == 'true' && '/bl' || '' }} /v:${{ env.MSBUILD_VERBOSITY }}
 
       # Run tests
       - name: Setup VSTest Path
@@ -238,7 +239,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
-          name: new-experiment-logs-winui${{ matrix.winui }}-multitarget${{ matrix.multitarget }}
+          name: new-experiment-logs-${{ matrix.multitarget }}-winui${{ matrix.winui }}
           path: ./**/*.*log
 
   wasm-linux:
