@@ -247,6 +247,9 @@ $arguments = @(
     "--launch $launch"
 )
 
+# See https://learn.microsoft.com/en-us/powershell/scripting/learn/experimental-features?view=powershell-7.4#psnativecommandargumentpassing
+$PSNativeCommandArgumentPassing = 'Legacy'
+
 
 Write-Output "Running Command: $cmd $arguments"
 
