@@ -17,7 +17,7 @@ on:
 
 env:
   ENABLE_DIAGNOSTICS: true
-  MSBUILD_VERBOSITY: normal
+  MSBUILD_VERBOSITY: diagnostic
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
 
