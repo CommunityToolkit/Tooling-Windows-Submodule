@@ -217,7 +217,7 @@ $projects = $projects + "$PSScriptRoot\CommunityToolkit.Tooling.XamlNamedPropert
 
 if ($UseDiagnostics.IsPresent)
 {
-    $sdkoptions = " -d"
+    $sdkoptions = "-d"
     $diagnostics = @(
         '-bl:slngen.binlog'
         # Console logger + binlog causes exception and failure
