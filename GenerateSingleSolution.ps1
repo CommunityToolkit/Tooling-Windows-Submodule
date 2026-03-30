@@ -212,7 +212,12 @@ $projects = $projects + "$PSScriptRoot\CommunityToolkit.Tooling.XamlNamedPropert
 if ($UseDiagnostics.IsPresent)
 {
     $sdkoptions = " -d"
-    $diagnostics = '-bl:slngen.binlog --consolelogger:"ShowEventId;Summary;Verbosity=Detailed" --filelogger:"LogFile=slngen.log;Append;Verbosity=Diagnostic;Encoding=UTF-8" '
+    $diagnostics = @(
+        '-bl:slngen.binlog'
+        # Console logger + binlog causes exception and failure
+        # Track https://github.com/microsoft/slngen/issues/451
+        #'--consolelogger:ShowEventId;Summary;Verbosity=Detailed'
+    )
 }
 else
 {
