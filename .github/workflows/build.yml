@@ -238,7 +238,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
-          name: new-experiment-logs
+          name: new-experiment-logs-winui${{ matrix.winui }}
           path: ./**/*.*log
 
   wasm-linux:
