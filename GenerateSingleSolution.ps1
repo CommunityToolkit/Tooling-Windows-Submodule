@@ -167,8 +167,14 @@ $projects = [System.Collections.ArrayList]::new()
 dotnet tool restore
 
 $generatedSolutionFilePath = "$componentPath\$componentName.sln"
-$platforms = '"Any CPU;x64;x86;ARM64"'
-$slngenConfig = "--folders true --collapsefolders true --ignoreMainProject"
+$platforms = 'Any CPU;x64;x86;ARM64'
+$slngenConfig = @(
+    '--folders'
+    'true'
+    '--collapsefolders'
+    'true'
+    '--ignoreMainProject'
+)
 
 # Remove previous file if it exists
 if (Test-Path -Path $generatedSolutionFilePath)
@@ -211,8 +217,13 @@ $projects = $projects + "$PSScriptRoot\CommunityToolkit.Tooling.XamlNamedPropert
 
 if ($UseDiagnostics.IsPresent)
 {
-    $sdkoptions = " -d"
-    $diagnostics = '-bl:slngen.binlog --consolelogger:"ShowEventId;Summary;Verbosity=Detailed" --filelogger:"LogFile=slngen.log;Append;Verbosity=Diagnostic;Encoding=UTF-8" '
+    $sdkoptions = "-d"
+    $diagnostics = @(
+        '-bl:slngen.binlog'
+        # Console logger + binlog causes exception and failure
+        # Track https://github.com/microsoft/slngen/issues/451
+        #'--consolelogger:ShowEventId;Summary;Verbosity=Detailed'
+    )
 }
 else
 {
@@ -220,11 +231,29 @@ else
     $diagnostics = ""
 }
 
-$cmd = "dotnet$sdkoptions tool run slngen -o $generatedSolutionFilePath $slngenConfig $diagnostics--platform $platforms $($projects -Join ' ')"
+$cmd = 'dotnet'
+$arguments = @(
+    $sdkoptions
+    'tool'
+    'run'
+    'slngen'
+    '-o'
+    $generatedSolutionFilePath
+    $slngenConfig
+    $diagnostics
+    '--platform'
+    $platforms
+    $projects
+    "--launch $launch"
+)
 
-Write-Output "Running Command: $cmd"
+# See https://learn.microsoft.com/en-us/powershell/scripting/learn/experimental-features?view=powershell-7.4#psnativecommandargumentpassing
+$PSNativeCommandArgumentPassing = 'Legacy'
 
-Invoke-Expression $cmd
+
+Write-Output "Running Command: $cmd $arguments"
+
+&$cmd @arguments
 
 # go back to main working directory
 Pop-Location

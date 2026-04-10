@@ -4,7 +4,7 @@
 		<!-- Explicit WebView2 reference needed to work around WebView2 pulling in Microsoft.VCLibs.Desktop on uap -->
 		<When Condition="'$(HasWinUI)' == 'true' AND '$(MultiTargetPlatformIdentifier)' != 'windows'" >
 			<ItemGroup>
-				<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+				<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3179.45" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
