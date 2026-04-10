@@ -16,8 +16,8 @@ on:
   workflow_dispatch:
 
 env:
-  DOTNET_VERSION: ${{ '9.0.x' }}
-  ENABLE_DIAGNOSTICS: false
+  ENABLE_DIAGNOSTICS: true
+  MSBUILD_VERBOSITY: diagnostic
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
 
@@ -29,14 +29,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
@@ -49,18 +49,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
 
       - name: dotnet build
         working-directory: ./
@@ -102,15 +98,6 @@ jobs:
           maximum-size: 32GB
           disk-root: "C:"
 
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
-
       - name: Enable git long paths
         run: git config --system core.longpaths true
 
@@ -119,6 +106,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: 'tooling'
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: tooling/global.json
+
+      - name: .NET Info (if diagnostics)
+        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
+        run: dotnet --info
 
       - name: Copy props files to root
         shell: pwsh
@@ -167,15 +163,6 @@ jobs:
           minimum-size: 32GB
           maximum-size: 32GB
           disk-root: "C:"
-          
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
 
       - name: Enable git long paths
         run: git config --system core.longpaths true
@@ -185,6 +172,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: 'tooling'
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: tooling/global.json
+
+      - name: .NET Info (if diagnostics)
+        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
+        run: dotnet --info
 
       - name: Copy props and config files to root and setup structure
         shell: pwsh
@@ -214,11 +210,11 @@ jobs:
 
       - name: Add project heads to ${{ env.TEST_PROJECT_NAME }}
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
-        run: ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1 -MultiTargets ${{ matrix.multitarget }} -winui ${{ matrix.winui }} -componentPath "${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}"
+        run: ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1 -MultiTargets ${{ matrix.multitarget }} -winui ${{ matrix.winui }} -componentPath "${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}"${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}
 
       - name: MSBuild
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
-        run: msbuild.exe ${{ env.TEST_PROJECT_NAME }}.sln /restore /nowarn:MSB4011 -p:Configuration=Release
+        run: msbuild.exe ${{ env.TEST_PROJECT_NAME }}.sln /restore /nowarn:MSB4011 -p:Configuration=Release /m ${{ env.ENABLE_DIAGNOSTICS == 'true' && '/bl' || '' }} /v:${{ env.MSBUILD_VERBOSITY }}
 
       # Run tests
       - name: Setup VSTest Path
@@ -243,7 +239,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
-          name: new-experiment-logs
+          name: new-experiment-logs-${{ matrix.multitarget }}-winui${{ matrix.winui }}
           path: ./**/*.*log
 
   wasm-linux:
@@ -253,20 +249,20 @@ jobs:
       TEST_PROJECT_NAME: CiTestExp
 
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: .NET Info (if diagnostics)
-        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
-        run: dotnet --info
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           path: 'tooling'
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: tooling/global.json
+
+      - name: .NET Info (if diagnostics)
+        if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
+        run: dotnet --info
 
       - name: Copy props and config files to root and setup structure
         shell: pwsh
@@ -309,3 +305,5 @@ jobs:
         with:
           name: linux-logs
           path: ./**/*.*log
+
+
