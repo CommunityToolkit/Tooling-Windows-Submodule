@@ -25,7 +25,7 @@ env:
 jobs:
   # This workflow contains a single job called "Xaml-Style-Check"
   Xaml-Style-Check:
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -190,6 +190,10 @@ jobs:
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
+
+      - name: Install Windows SDKs
+        shell: pwsh
+        run: ./tooling/Install-WindowsSdk.ps1
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
