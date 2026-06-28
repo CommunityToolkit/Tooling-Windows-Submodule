@@ -30,9 +30,9 @@ public static class GeneratorExtensions
 
         foreach (var member in namespaceSymbol.GetNamespaceMembers())
         {
-            if (member is INamespaceSymbol nestedNamespace)
+            if (member is not null)
             {
-                foreach (var item in CrawlForAllSymbols(nestedNamespace))
+                foreach (var item in CrawlForAllSymbols(member))
                 {
                     yield return item;
                 }
@@ -95,7 +95,7 @@ public static class GeneratorExtensions
     }
 
     /// <summary>
-    /// Checks whether or not a given type symbol has a specified full name.
+    /// Checks whether a given type symbol has a specified full name.
     /// </summary>
     /// <param name="symbol">The input <see cref="ISymbol"/> instance to check.</param>
     /// <param name="name">The full name to check.</param>
@@ -123,7 +123,7 @@ public static class GeneratorExtensions
 
         // Enums arrive as the underlying integer type, which doesn't work as a param for Activator.CreateInstance()
         if (argType != null && parameterTypedConstant.Kind == TypedConstantKind.Enum)
-            return Enum.Parse(argType, parameterTypedConstant.Value?.ToString());
+            return Enum.Parse(argType, parameterTypedConstant.Value!.ToString());
 
         if (parameterTypedConstant.Kind == TypedConstantKind.Array)
         {
@@ -163,7 +163,7 @@ public static class GeneratorExtensions
     /// <param name="attributeData">The target <see cref="AttributeData"/> instance to check.</param>
     /// <param name="name">The name of the argument to check.</param>
     /// <param name="value">The resulting argument value, if present.</param>
-    /// <returns>Whether or not <paramref name="attributeData"/> contains an argument named <paramref name="name"/> with a valid value.</returns>
+    /// <returns>Whether <paramref name="attributeData"/> contains an argument named <paramref name="name"/> with a valid value.</returns>
     public static bool TryGetNamedArgument<T>(this AttributeData attributeData, string name, out T? value)
     {
         foreach (KeyValuePair<string, TypedConstant> properties in attributeData.NamedArguments)
