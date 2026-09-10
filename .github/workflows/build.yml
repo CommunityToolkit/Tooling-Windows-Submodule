@@ -85,7 +85,7 @@ jobs:
 
   # Test job to build the project template
   project-template:
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
       PROJECT_DIRECTORY: tooling/ProjectTemplate
@@ -116,10 +116,16 @@ jobs:
         if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
         run: dotnet --info
 
-      - name: Copy props files to root
+      - name: Copy props and SDK configuration to root
         shell: pwsh
         working-directory: ./
-        run: copy ./tooling/.github/workflows/config/* ./
+        run: |
+          copy ./tooling/.github/workflows/config/* ./
+          copy ./tooling/global.json ./
+
+      - name: Install Windows SDKs
+        shell: pwsh
+        run: ./tooling/Install-WindowsSdk.ps1
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -135,7 +141,7 @@ jobs:
 
   # Test job to build a single experiment to ensure our changes work for both our main types of solutions at the moment
   new-experiment:
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
     
     strategy:
       fail-fast: false # prevent one matrix pipeline from being cancelled if one fails, we want them all to run to completion.
@@ -187,6 +193,7 @@ jobs:
         working-directory: ./
         run: |
           copy ./tooling/.github/workflows/config/* ./
+          copy ./tooling/global.json ./
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
@@ -273,6 +280,7 @@ jobs:
         working-directory: ./
         run: |
           copy ./tooling/.github/workflows/config/* ./
+          copy ./tooling/global.json ./
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
@@ -309,5 +317,3 @@ jobs:
         with:
           name: linux-logs
           path: ./**/*.*log
-
-
