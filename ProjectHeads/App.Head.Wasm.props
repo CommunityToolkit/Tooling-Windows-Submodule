@@ -4,6 +4,17 @@
     <TargetFramework>$(WasmHeadTargetFramework.Split(';')[0])</TargetFramework>
   </PropertyGroup>
 
+  <!--
+    TargetFramework is set late (above), so NuGet's net9.0-conditional import of
+    Uno.*.Runtime.WebAssembly.props is skipped and UnoRuntimeIdentifier never gets set. Without it
+    Uno deploys the reference Uno.UI.dll (no embedded JS) instead of the WebAssembly runtime build,
+    so the app stalls on the splash. Set it explicitly so the runtime-assembly swap runs.
+  -->
+  <PropertyGroup>
+    <UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
+    <UnoIsWebAssemblyBrowserHead>true</UnoIsWebAssemblyBrowserHead>
+  </PropertyGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uno.props" />
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
