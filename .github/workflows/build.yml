@@ -25,7 +25,7 @@ env:
 jobs:
   # This workflow contains a single job called "Xaml-Style-Check"
   Xaml-Style-Check:
-    runs-on: windows-2025
+    runs-on: windows-2025-large
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -85,7 +85,7 @@ jobs:
 
   # Test job to build the project template
   project-template:
-    runs-on: windows-2025
+    runs-on: windows-2025-large
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
       PROJECT_DIRECTORY: tooling/ProjectTemplate
@@ -137,7 +137,7 @@ jobs:
 
   # Test job to build a single experiment to ensure our changes work for both our main types of solutions at the moment
   new-experiment:
-    runs-on: windows-2025
+    runs-on: windows-2025-large
     
     strategy:
       fail-fast: false # prevent one matrix pipeline from being cancelled if one fails, we want them all to run to completion.
