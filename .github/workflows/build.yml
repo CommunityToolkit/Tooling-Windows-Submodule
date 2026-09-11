@@ -94,8 +94,7 @@ jobs:
       - name: Configure Pagefile
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
-          # Leave room for SDK installation while allowing the pagefile to grow during builds.
-          minimum-size: 8GB
+          minimum-size: 32GB
           maximum-size: 32GB
           disk-root: "C:"
 
@@ -123,10 +122,6 @@ jobs:
         run: |
           copy ./tooling/.github/workflows/config/* ./
           copy ./tooling/global.json ./
-
-      - name: Install Windows SDKs
-        shell: pwsh
-        run: ./tooling/Install-WindowsSdk.ps1
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -167,7 +162,7 @@ jobs:
       - name: Configure Pagefile
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
-          minimum-size: 8GB
+          minimum-size: 32GB
           maximum-size: 32GB
           disk-root: "C:"
 
