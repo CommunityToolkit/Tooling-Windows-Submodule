@@ -7,10 +7,10 @@ This repository contains the tooling infrastructure for other Community Toolkit 
 
 ## Build Requirements
 
-- Visual Studio 2022 (UWP & Desktop Workloads for .NET)
-- .NET 6 SDK
+- Visual Studio 2026 (UWP & Desktop Workloads for .NET)
+- .NET 9 SDK
 - Windows App SDK
-- Windows SDK 19041
+- Windows SDK 26100
 
 ## 📄 Code of Conduct
 

@@ -37,8 +37,8 @@
     <IsGtkLib Condition="'$(IsGtkLib)' == '' AND $(LinuxLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(LinuxLibTargetFrameworks)' != '' AND '$(MultiTargetsLinuxGtk)' == 'true'">true</IsGtkLib>
     <IsGtk Condition="'$(IsGtk)' == '' AND ('$(IsGtkHead)' == 'true' or '$(IsGtkLib)' == 'true')">true</IsGtk>
 
-    <IsUwp Condition="'$(IsUwp)' == '' AND $(UwpTargetFrameworks.Contains('$(TargetFramework);')) AND '$(UwpTargetFrameworks)' != '' AND '$(MultiTargetsUwp)' == 'true'">true</IsUwp>
-    <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND $(WinAppSdkTargetFrameworks.Contains('$(TargetFramework);')) AND '$(WinAppSdkTargetFrameworks)' != '' AND '$(MultiTargetsWasdk)' == 'true'">true</IsWinAppSdk>
+    <IsUwp Condition="'$(IsUwp)' == '' AND '$(UwpTargetFrameworks)' != '' AND $(UwpTargetFrameworks.Contains('$(TargetFramework);')) AND '$(MultiTargetsUwp)' == 'true' AND $(EnabledMultiTargets.Contains('uwp'))">true</IsUwp>
+    <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND '$(WinAppSdkTargetFrameworks)' != '' AND $(WinAppSdkTargetFrameworks.Contains('$(TargetFramework);')) AND '$(MultiTargetsWasdk)' == 'true' AND $(EnabledMultiTargets.Contains('wasdk'))">true</IsWinAppSdk>
     
     <MultiTargetPlatformIdentifier Condition="'$(MultiTargetPlatformIdentifier)' == ''">$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</MultiTargetPlatformIdentifier>
 
