@@ -191,10 +191,6 @@ jobs:
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
 
-      - name: Install Windows SDKs
-        shell: pwsh
-        run: ./tooling/Install-WindowsSdk.ps1
-
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
 
