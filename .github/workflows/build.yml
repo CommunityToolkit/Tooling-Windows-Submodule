@@ -85,7 +85,7 @@ jobs:
 
   # Test job to build the project template
   project-template:
-    runs-on: windows-2025-vs2026
+    runs-on: windows-2025
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
       PROJECT_DIRECTORY: tooling/ProjectTemplate
@@ -94,7 +94,8 @@ jobs:
       - name: Configure Pagefile
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
-          minimum-size: 32GB
+          # Leave room for SDK installation while allowing the pagefile to grow during builds.
+          minimum-size: 8GB
           maximum-size: 32GB
           disk-root: "C:"
 
@@ -141,7 +142,7 @@ jobs:
 
   # Test job to build a single experiment to ensure our changes work for both our main types of solutions at the moment
   new-experiment:
-    runs-on: windows-2025-vs2026
+    runs-on: windows-2025
     
     strategy:
       fail-fast: false # prevent one matrix pipeline from being cancelled if one fails, we want them all to run to completion.
@@ -166,7 +167,7 @@ jobs:
       - name: Configure Pagefile
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
-          minimum-size: 32GB
+          minimum-size: 8GB
           maximum-size: 32GB
           disk-root: "C:"
 
