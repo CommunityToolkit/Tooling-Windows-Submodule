@@ -22,19 +22,19 @@
 #>
 Param (
     [Parameter(HelpMessage = "The target frameworks to enable.")]
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
 
     [Parameter(HelpMessage = "The target frameworks to disable.")]
-    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [string[]]$ExcludeMultiTargets = @() # default settings
 )
 
 $fileContents = Get-Content -Path $PSScriptRoot/EnabledMultiTargets.props
 $newFileContents = $fileContents;
 
-$AllMultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+$AllMultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')
 
 # Exclude as needed
 foreach ($excluded in $ExcludeMultiTargets) {

@@ -7,7 +7,7 @@
 					($(IsUwp) == 'true' AND 'false' == 'true') OR
 					($(IsWinAppSdk) == 'true' AND 'true' == 'true') OR
 					($(IsWpf) == 'true' AND 'false' == 'true') OR
-					($(IsGtk) == 'true' AND 'false' == 'true') OR
+					($(IsLinux) == 'true' AND 'false' == 'true') OR
 					($(IsMacOS) == 'true' AND 'false' == 'true') OR
 					($(IsiOS) == 'true' AND 'false' == 'true') OR
 					($(IsDroid) == 'true' AND 'false' == 'true') OR

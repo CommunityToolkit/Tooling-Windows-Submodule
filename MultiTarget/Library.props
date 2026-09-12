@@ -7,12 +7,14 @@
 
   <!-- Get this project's declared (available to enable) MultiTargets -->
   <!-- Use <MultiTarget> values to define <TargetFrameworks> -->
+  <!-- WinUI.TargetVersion.props comes first: EnabledTargetFrameworks.props needs WinUIMajorVersion
+       to decide which TFMs a MultiTarget maps to, and this file only defines plain properties. -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.TargetVersion.props" />
+
   <Import Project="$(ToolingDirectory)\MultiTarget\AvailableTargetFrameworks.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\AvailableMultiTargets.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledMultiTargets.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
-
-  <Import Project="$(ToolingDirectory)\MultiTarget\WinUI.TargetVersion.props" />
 
   <!-- Enable project identifiers -->
   <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetIdentifiers.props" />

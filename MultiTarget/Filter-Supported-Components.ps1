@@ -17,7 +17,7 @@
     Date:   6/6/2025
 #>
 Param (
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("mt")]
     [Parameter(Mandatory=$true)]
     [string[]]$MultiTargets,
@@ -32,7 +32,7 @@ Param (
 )
 
 if ($MultiTargets -eq 'all') {
-    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')
 }
 
 $supportedComponents = @();

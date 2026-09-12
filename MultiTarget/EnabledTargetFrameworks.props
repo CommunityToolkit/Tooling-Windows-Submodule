@@ -10,14 +10,20 @@
     <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('wasdk')) == 'true' AND $(AvailableMultiTargets.Contains('wasdk')) == 'true'">$(TargetFrameworks);$(WinAppSdkTargetFrameworks)</TargetFrameworks>
 
     <!--
-      TargetFrameworks for WasmLibTargetFrameworks, WpfLibTargetFrameworks, and LinuxLibTargetFrameworks all use the same value.
+      TargetFrameworks for WasmLibTargetFrameworks, WpfLibTargetFrameworks, Win32LibTargetFrameworks and LinuxLibTargetFrameworks all use the same value.
       Duplicate values can't be removed during the evaluation phase without breaking things, so we use a single value for all that need it.
+      macos joins them because the Uno 6 desktop head (which covers win32, linux and macos) consumes this same shared net9.0 component build.
     -->
-    <IsNetCommonMultiTargetEnabled Condition="$(EnabledMultiTargets.Contains('wasm')) == 'true' OR $(EnabledMultiTargets.Contains('wpf')) == 'true' OR $(EnabledMultiTargets.Contains('linuxgtk')) == 'true'">true</IsNetCommonMultiTargetEnabled>
-    <IsNetCommonMultiTargetAvailable Condition="$(AvailableMultiTargets.Contains('wasm')) == 'true' OR $(AvailableMultiTargets.Contains('wpf')) == 'true' OR $(AvailableMultiTargets.Contains('linuxgtk')) == 'true'">true</IsNetCommonMultiTargetAvailable>
+    <IsNetCommonMultiTargetEnabled Condition="$(EnabledMultiTargets.Contains('wasm')) == 'true' OR $(EnabledMultiTargets.Contains('wpf')) == 'true' OR $(EnabledMultiTargets.Contains('win32')) == 'true' OR $(EnabledMultiTargets.Contains('linux')) == 'true' OR $(EnabledMultiTargets.Contains('macos')) == 'true'">true</IsNetCommonMultiTargetEnabled>
+    <IsNetCommonMultiTargetAvailable Condition="$(AvailableMultiTargets.Contains('wasm')) == 'true' OR $(AvailableMultiTargets.Contains('wpf')) == 'true' OR $(AvailableMultiTargets.Contains('win32')) == 'true' OR $(AvailableMultiTargets.Contains('linux')) == 'true' OR $(AvailableMultiTargets.Contains('macos')) == 'true'">true</IsNetCommonMultiTargetAvailable>
     <TargetFrameworks Condition="$(IsNetCommonMultiTargetEnabled) == 'true' AND $(IsNetCommonMultiTargetAvailable) == 'true'">$(TargetFrameworks);$(DotnetCommonTargetFramework)</TargetFrameworks>
 
-    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('macos')) == 'true' AND $(AvailableMultiTargets.Contains('macos')) == 'true'">$(TargetFrameworks);$(MacOSLibTargetFrameworks)</TargetFrameworks>
+    <!--
+      macos means Mac Catalyst on WinUI 2 (Uno 5.x) and the Skia desktop head on WinUI 3 (Uno 6.x),
+      which consumes the shared net9.0 build above. Uno 7 removes Mac Catalyst support entirely, so
+      the Catalyst TFM is deliberately not carried into the WinUI 3 package surface.
+    -->
+    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('macos')) == 'true' AND $(AvailableMultiTargets.Contains('macos')) == 'true' AND '$(WinUIMajorVersion)' != '3'">$(TargetFrameworks);$(MacOSLibTargetFrameworks)</TargetFrameworks>
     <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('ios')) == 'true' AND $(AvailableMultiTargets.Contains('ios')) == 'true'">$(TargetFrameworks);$(iOSLibTargetFrameworks)</TargetFrameworks>
     <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('android')) == 'true' AND $(AvailableMultiTargets.Contains('android')) == 'true'">$(TargetFrameworks);$(AndroidLibTargetFrameworks)</TargetFrameworks>
 

@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <DependencyVariant>WinUI</DependencyVariant>
+    <DependencyVariant Condition="'$(WinUIMajorVersion)' != '2'">WinUI</DependencyVariant>
+    <DependencyVariant Condition="'$(WinUIMajorVersion)' == '2'">Uwp</DependencyVariant>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)\App.Head.props" />
@@ -25,8 +26,9 @@
   
   <!--
       Import Uno dependencies for all deployable Uno-based Labs project heads.
-      This import must be inside THIS file to allow swapping between Uno.​UI and Uno.​WinUI via pwsh.
+      This import must be inside THIS file to allow swapping between Uno.UI and Uno.WinUI via pwsh.
       Changes to this file are suppressed by git when switching to avoid changing the default for all users.
   -->
-  <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uno.WinUI.Dependencies.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uno.WinUI.Dependencies.props" Condition="'$(WinUIMajorVersion)' != '2'" />
+  <Import Project="$(MSBuildThisFileDirectory)\App.Head.Uno.UI.Dependencies.props" Condition="'$(WinUIMajorVersion)' == '2'" />
 </Project>

@@ -1,0 +1,10 @@
+{
+  "name": "CommunityToolkit",
+  "description": "CommunityToolkit",
+  "short_name": "CommunityToolkit",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "scope": "/"
+}

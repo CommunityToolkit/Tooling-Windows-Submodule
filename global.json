@@ -3,8 +3,9 @@
     "version": "9.0.310",
     "rollForward": "latestFeature"
   },
-  "msbuild-sdks": 
+  "msbuild-sdks":
   {
-    "MSBuild.Sdk.Extras":"3.0.23"
+    "MSBuild.Sdk.Extras":"3.0.23",
+    "Uno.Sdk": "6.4.58"
   }
 }

@@ -9,7 +9,7 @@
     Specifies the MultiTarget TFM(s) to include for building the components. The default value is 'all'.
 
 .PARAMETER ExcludeMultiTargets
-    Specifies the MultiTarget TFM(s) to exclude for building the components. The default value excludes targets that require additional tooling or workloads to build: 'wpf', 'linuxgtk', 'macos', 'ios', and 'android'. Run uno-check to install the required workloads.
+    Specifies the MultiTarget TFM(s) to exclude for building the components. The default value excludes targets that require additional tooling or workloads to build: 'wpf', 'linux', 'macos', 'ios', and 'android'. Run uno-check to install the required workloads.
 
 .PARAMETER Heads
   The heads to include in the build. Default is 'Uwp', 'Wasdk', 'Wasm'.
@@ -46,11 +46,11 @@
   Date:   2/19/2024
 #>
 Param (
-  [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+  [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
   [Alias("mt")]
   [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
-  
-  [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+
+  [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
   [string[]]$ExcludeMultiTargets = @(), # default settings
 
   [ValidateSet('all', 'Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')]
@@ -102,7 +102,7 @@ if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
 }
 
 if ($MultiTargets -eq 'all') {
-  $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+  $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')
 }
 
 if ($ExcludeMultiTargets) {

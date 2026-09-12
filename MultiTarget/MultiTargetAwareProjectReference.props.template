@@ -11,7 +11,9 @@
 							($(IsUwp) == 'true' AND [CanTargetUwp] == 'true') OR
 							($(IsWinAppSdk) == 'true' AND [CanTargetWasdk] == 'true') OR
 							($(IsWpf) == 'true' AND [CanTargetWpf] == 'true') OR
-							($(IsGtk) == 'true' AND [CanTargetLinuxGtk] == 'true') OR
+							($(IsWin32) == 'true' AND [CanTargetWin32] == 'true') OR
+							($(IsLinux) == 'true' AND [CanTargetLinux] == 'true') OR
+							($(IsDesktop) == 'true' AND ([CanTargetWin32] == 'true' OR [CanTargetLinux] == 'true' OR [CanTargetMacOS] == 'true')) OR
 							($(IsMacOS) == 'true' AND [CanTargetMacOS] == 'true') OR
 							($(IsiOS) == 'true' AND [CanTargetiOS] == 'true') OR
 							($(IsDroid) == 'true' AND [CanTargetDroid] == 'true') OR

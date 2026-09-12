@@ -8,10 +8,17 @@
     <MultiTargetIdentifier Condition="'$(IsUwp)' == 'true'">uwp</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsWasm)' == 'true'">wasm</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsWinAppSdk)' == 'true'">wasdk</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsWpf)' == 'true'">wpf</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsWin32)' == 'true'">win32</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsLinux)' == 'true'">linux</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsMacOS)' == 'true'">macos</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsiOS)' == 'true'">ios</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsDroid)' == 'true'">android</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
+
+    <!-- Last wins: the unified Uno 6 desktop head deploys all three desktop MultiTargets at once,
+         so it matches sample docs for any of them. CheckMultiTarget accepts a ';' separated list. -->
+    <MultiTargetIdentifier Condition="'$(IsDesktop)' == 'true'">win32;linux;macos</MultiTargetIdentifier>
   </PropertyGroup>
 
   <Target Name="AddMultiTargetCompatibleSampleDocs" Condition="'$(IsAllExperimentHead)' == 'true'" BeforeTargets="BeforeBuild">

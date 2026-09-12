@@ -1,0 +1,127 @@
+<Project Sdk="Uno.Sdk">
+  <!-- Written by UseTargetFrameworks.ps1 at solution-gen time from the requested -MultiTargets -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\EnabledMultiTargets.props" />
+
+  <PropertyGroup>
+    <!-- Only declare a TFM for the MultiTargets actually requested at solution-gen time, so an
+         unrequested platform never ends up with an orphaned deploy option pointing at a component
+         build that was never produced. -->
+    <!-- win32, linux and macos are all served by Uno 6's single cross-platform Skia desktop TFM,
+         so requesting any of them yields the same net9.0-desktop head. -->
+    <IsDesktopMultiTargetEnabled Condition="$(EnabledMultiTargets.Contains('win32')) == 'true' OR $(EnabledMultiTargets.Contains('linux')) == 'true' OR $(EnabledMultiTargets.Contains('macos')) == 'true'">true</IsDesktopMultiTargetEnabled>
+
+    <!-- Trailing (not leading) semicolons: appending "value;" can never produce an empty/blank
+         entry, whereas "$(TargetFrameworks);value" produces a leading ";" if nothing enabled yet. -->
+    <TargetFrameworks Condition="'$(IsDesktopMultiTargetEnabled)' == 'true'">$(TargetFrameworks)net9.0-desktop;</TargetFrameworks>
+    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('wasm')) == 'true'">$(TargetFrameworks)net9.0-browserwasm;</TargetFrameworks>
+    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('android')) == 'true'">$(TargetFrameworks)net9.0-android;</TargetFrameworks>
+    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('ios')) == 'true'">$(TargetFrameworks)net9.0-ios;</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+
+    <UnoFeatures>
+      SkiaRenderer;
+    </UnoFeatures>
+
+    <IsPackable>false</IsPackable>
+    <UnoSingleProject>true</UnoSingleProject>
+    <RootNamespace>CommunityToolkit.App.Uno</RootNamespace>
+
+    <!-- Platform flags for Generated/*.props project reference conditions. Computed per the head's
+         own $(TargetFramework) (like the Android-AOT check below) rather than hardcoded, so each of
+         the head's TFMs pulls in the component references gated for THAT platform. IsDesktop covers
+         the win32/linux/macos trio at once, since they share this one build output.
+         (Uno.Sdk defines IsDesktop identically; set here too so the head stays self-describing.) -->
+    <IsDeployableHead>true</IsDeployableHead>
+    <IsUno>true</IsUno>
+    <IsWasm Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">true</IsWasm>
+    <IsDesktop Condition="'$(TargetFramework)' == 'net9.0-desktop'">true</IsDesktop>
+    <IsDroid Condition="'$(TargetFramework)' == 'net9.0-android'">true</IsDroid>
+    <IsiOS Condition="'$(TargetFramework)' == 'net9.0-ios'">true</IsiOS>
+    <HasWinUI>true</HasWinUI>
+    <WinUIMajorVersion>3</WinUIMajorVersion>
+    <IsAllExperimentHead>true</IsAllExperimentHead>
+    <DependencyVariant>WinUI</DependencyVariant>
+
+    <DefineConstants>$(DefineConstants);WINUI3</DefineConstants>
+  </PropertyGroup>
+
+  <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\GlobalUsings.props" />
+
+  <!-- Auto-generated project references -->
+  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Samples.props" />
+  <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Source.props" />
+
+  <!-- Force component project references to resolve to net9.0 (not windows-specific), except
+       android/ios which resolve to their own TFM so platform-specific component code is picked up. -->
+  <PropertyGroup>
+    <UnoSdkComponentTargetFramework>net9.0</UnoSdkComponentTargetFramework>
+    <UnoSdkComponentTargetFramework Condition="'$(TargetFramework)' == 'net9.0-android'">net9.0-android</UnoSdkComponentTargetFramework>
+    <UnoSdkComponentTargetFramework Condition="'$(TargetFramework)' == 'net9.0-ios'">net9.0-ios</UnoSdkComponentTargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Update="$(RepositoryDirectory)components\**\*.csproj" SetTargetFramework="TargetFramework=$(UnoSdkComponentTargetFramework)" UndefineProperties="RuntimeIdentifier" />
+  </ItemGroup>
+
+  <!-- Shared app code -->
+  <Import Project="$(ToolingDirectory)\CommunityToolkit.App.Shared\CommunityToolkit.App.Shared.projitems" Label="Shared" />
+  <Import Project="$(ToolingDirectory)\ProjectHeads\Targets\AddMultiTargetCompatibleSampleDocs.targets" />
+
+  <!-- Head dependencies (from App.Head.props) -->
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Markdig" Version="0.38.0" />
+  </ItemGroup>
+
+  <!-- Source generators -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(ToolingDirectory)\CommunityToolkit.Tooling.SampleGen\CommunityToolkit.Tooling.SampleGen.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+  </ItemGroup>
+
+  <!-- Gallery dependencies -->
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Triggers" Version="8.2.250402" />
+  </ItemGroup>
+
+  <!-- Uno app dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Interactivity.WinUI" Version="3.0.3" />
+  </ItemGroup>
+
+  <!-- Sample doc content inclusion -->
+  <ItemGroup>
+    <Content Include="$(RepositoryDirectory)components\**\samples\**\*.md"
+             Exclude="$(RepositoryDirectory)**\**\samples\obj\**\*.md;$(RepositoryDirectory)**\**\samples\bin\**\*.md;$(RepositoryDirectory)**\SourceAssets\**\*.md">
+      <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Content>
+    <Content Include="$(RepositoryDirectory)components\**\samples\**\*.xaml"
+             Exclude="$(RepositoryDirectory)**\**\samples\obj\**\*.xaml;$(RepositoryDirectory)**\**\samples\bin\**\*.xaml;$(RepositoryDirectory)**\SourceAssets\**\*.xaml">
+      <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Content>
+    <Content Include="$(RepositoryDirectory)components\**\samples\**\*.cs"
+             Exclude="$(RepositoryDirectory)**\**\samples\obj\**\*.cs;$(RepositoryDirectory)**\**\samples\bin\**\*.cs">
+      <Link>SourceAssets/%(RecursiveDir)%(FileName)%(Extension).dat</Link>
+    </Content>
+    <AdditionalFiles Include="$(RepositoryDirectory)components\**\src\**\*.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);IL2026;Uno0006</NoWarn>
+  </PropertyGroup>
+
+  <!-- Disable AOT on Android - not needed for test app, avoids issues with source generator assemblies in runtime output -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <RunAOTCompilation>false</RunAOTCompilation>
+  </PropertyGroup>
+</Project>

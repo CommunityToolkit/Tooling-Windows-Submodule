@@ -13,7 +13,10 @@
         <DefineConstants Condition="'$(IsiOS)' == 'true'">$(DefineConstants);__IOS__;</DefineConstants>
         <DefineConstants Condition="'$(IsMacOS)' == 'true'">$(DefineConstants);__MACOS__;</DefineConstants>
         <DefineConstants Condition="'$(IsWpf)' == 'true'">$(DefineConstants);HAS_UNO_SKIA;__SKIA__;WINDOWS_WPF;</DefineConstants>
-        <DefineConstants Condition="'$(IsGtk)' == 'true'">$(DefineConstants);HAS_UNO_SKIA;__SKIA__;__GTK__;</DefineConstants>
+        <DefineConstants Condition="'$(IsLinux)' == 'true'">$(DefineConstants);HAS_UNO_SKIA;__SKIA__;__GTK__;</DefineConstants>
+        <DefineConstants Condition="'$(IsWin32)' == 'true'">$(DefineConstants);HAS_UNO_SKIA;__SKIA__;</DefineConstants>
+        <!-- The unified Uno 6 Skia desktop head: one build output for Windows, Linux and macOS. -->
+        <DefineConstants Condition="'$(IsDesktop)' == 'true'">$(DefineConstants);HAS_UNO_SKIA;__SKIA__;</DefineConstants>
 
         <DefineConstants Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">$(DefineConstants);NET9_0_OR_GREATER</DefineConstants>
         <DefineConstants Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>

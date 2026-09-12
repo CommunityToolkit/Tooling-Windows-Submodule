@@ -15,7 +15,7 @@
         <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">net9.0;</WasmHeadTargetFramework>
         <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">net9.0;</LinuxHeadTargetFramework>
         <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">net9.0;</WpfHeadTargetFramework>
-        
+
         <AndroidLibTargetFrameworks Condition="'$(AndroidLibTargetFrameworks)' == ''">net9.0-android;</AndroidLibTargetFrameworks>
         <MacOSLibTargetFrameworks Condition="'$(MacOSLibTargetFrameworks)' == ''">net9.0-maccatalyst;</MacOSLibTargetFrameworks>
         <iOSLibTargetFrameworks Condition="'$(iOSLibTargetFrameworks)' == ''">net9.0-ios;</iOSLibTargetFrameworks>
@@ -24,6 +24,7 @@
         <LinuxLibTargetFrameworks Condition="'$(LinuxLibTargetFrameworks)' == ''">net9.0;</LinuxLibTargetFrameworks>
         <WasmLibTargetFrameworks Condition="'$(WasmLibTargetFrameworks)' == ''">net9.0;</WasmLibTargetFrameworks>
         <WpfLibTargetFrameworks Condition="'$(WpfLibTargetFrameworks)' == ''">net9.0;</WpfLibTargetFrameworks>
+        <Win32LibTargetFrameworks Condition="'$(Win32LibTargetFrameworks)' == ''">net9.0;</Win32LibTargetFrameworks>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
         <DotnetStandardCommonTargetFramework Condition="'$(DotnetStandardCommonTargetFramework)' == ''">netstandard2.0;</DotnetStandardCommonTargetFramework>

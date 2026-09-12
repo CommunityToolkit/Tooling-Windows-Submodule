@@ -1,29 +1,48 @@
 <Project>
     <PropertyGroup>
-        <CommonUnoPackageVersion>5.5.87</CommonUnoPackageVersion>
+        <!-- Uno 5.x for WinUI 2 (Uno.UI / UWP variant) -->
+        <UnoUIPackageVersion>5.5.87</UnoUIPackageVersion>
+        <!-- Uno 6.x for WinUI 3 (Uno.WinUI variant) -->
+        <UnoWinUIPackageVersion>6.4.229</UnoWinUIPackageVersion>
+        <!-- Select active version based on WinUIMajorVersion -->
+        <CommonUnoPackageVersion Condition="'$(WinUIMajorVersion)' == '2'">$(UnoUIPackageVersion)</CommonUnoPackageVersion>
+        <CommonUnoPackageVersion Condition="'$(WinUIMajorVersion)' != '2'">$(UnoWinUIPackageVersion)</CommonUnoPackageVersion>
     </PropertyGroup>
 
-    <!-- This file is modified by UseUnoWinUI.ps1 to switch between WinUI 2 and 3 under Uno Platform -->
     <!-- All Uno-based project heads and MultiTarget-enabled library projects need to reference this file, while native (UWP/WinAppSdk) heads don't. -->
-    <ItemGroup Condition="'$(IsUno)' == 'true'">
+    <ItemGroup Condition="'$(IsUno)' == 'true' AND '$(WinUIMajorVersion)' != '2'">
         <PackageReference Include="Uno.WinUI" Version="$(CommonUnoPackageVersion)" />
-        <PackageReference Include="Uno.Fonts.Fluent" Version="2.4.5" />    
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsUno)' == 'true' AND '$(WinUIMajorVersion)' == '2'">
+        <PackageReference Include="Uno.UI" Version="$(CommonUnoPackageVersion)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsUno)' == 'true'">
+        <PackageReference Include="Uno.Fonts.Fluent" Version="2.6.1" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(IsUno)' == 'true'">
         <UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true'">
-        <PackageReference Include="Uno.WinUI.RemoteControl" Version="$(CommonUnoPackageVersion)" Condition="'$(Configuration)'=='Debug'" />
+    <!-- WinUI 2: Uno.UI.RemoteControl for wasm/wpf/gtk -->
+    <ItemGroup Condition="'$(WinUIMajorVersion)' == '2' AND ('$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsLinux)' == 'true')">
+        <PackageReference Include="Uno.UI.RemoteControl" Version="$(CommonUnoPackageVersion)" Condition="'$(Configuration)'=='Debug'" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(IsGtkHead)' == 'true'">
-        <PackageReference Include="Uno.WinUI.Skia.Gtk" Version="$(CommonUnoPackageVersion)" />
+    <!-- WinUI 3: Uno.WinUI.DevServer for wasm -->
+    <ItemGroup Condition="'$(WinUIMajorVersion)' != '2' AND '$(IsWasm)' == 'true'">
+        <PackageReference Include="Uno.WinUI.DevServer" Version="$(CommonUnoPackageVersion)" Condition="'$(Configuration)'=='Debug'" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(IsWpfHead)' == 'true'">
-        <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="$(CommonUnoPackageVersion)" />
+    <!-- Skia desktop heads (WinUI 2 only — Uno 6 dropped WPF/GTK) -->
+    <ItemGroup Condition="'$(IsLinuxHead)' == 'true' AND '$(WinUIMajorVersion)' == '2'">
+        <PackageReference Include="Uno.UI.Skia.Gtk" Version="$(CommonUnoPackageVersion)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsWpfHead)' == 'true' AND '$(WinUIMajorVersion)' == '2'">
+        <PackageReference Include="Uno.UI.Skia.Wpf" Version="$(CommonUnoPackageVersion)" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(IsWpfHead)' == 'true'">
@@ -45,7 +64,12 @@
         <NoWarn>$(NoWarn);CS1570;</NoWarn>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(IsWasmHead)' == 'true'">
+    <!-- Conditional WebAssembly packages -->
+    <ItemGroup Condition="'$(IsWasmHead)' == 'true' AND '$(WinUIMajorVersion)' == '2'">
+        <PackageReference Include="Uno.UI.WebAssembly" Version="$(CommonUnoPackageVersion)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsWasmHead)' == 'true' AND '$(WinUIMajorVersion)' != '2'">
         <PackageReference Include="Uno.WinUI.WebAssembly" Version="$(CommonUnoPackageVersion)" />
     </ItemGroup>
 </Project>

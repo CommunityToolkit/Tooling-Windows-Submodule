@@ -1,0 +1,5 @@
+Any raw assets you want to be deployed with your application can be placed in this
+directory (and child directories). Deployment of the asset to your application is done
+using the IDE or by using the following MSBuild property in your .csproj:
+
+<AndroidAsset Include="Assets\filename.ext" />

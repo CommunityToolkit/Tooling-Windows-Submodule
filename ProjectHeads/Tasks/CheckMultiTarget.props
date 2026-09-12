@@ -120,7 +120,22 @@
             multiTargetIdentifier = ExtractMultiTargetIdentifier(multiTargetPropsContent);
         }
 
-        IsSupported = multiTargetIdentifier.Split(';').Contains(MultiTargetIdentifier);
+        // MultiTargetIdentifier may be a ';' separated list: the unified Uno desktop head covers
+        // several MultiTargets with a single build, so a doc matching any one of them is supported.
+        string[] componentMultiTargets = multiTargetIdentifier.Split(';');
+        IsSupported = false;
+
+        foreach (string headMultiTarget in MultiTargetIdentifier.Split(';'))
+        {
+            string trimmedHeadMultiTarget = headMultiTarget.Trim();
+
+            if (trimmedHeadMultiTarget.Length > 0 && componentMultiTargets.Contains(trimmedHeadMultiTarget))
+            {
+                IsSupported = true;
+                break;
+            }
+        }
+
         FilePath.SetMetadata("IsSupported", IsSupported.ToString());
         ]]>
 

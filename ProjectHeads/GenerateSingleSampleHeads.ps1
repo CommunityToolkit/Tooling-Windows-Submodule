@@ -30,7 +30,7 @@
     Date:   Feb 9, 2023
 #>
 Param (
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android')]
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
 
@@ -43,9 +43,11 @@ Param (
     [string]$componentPath,
 
     [Parameter(HelpMessage = "Add extra diagnostic output to slngen generator.")]
-    [switch]$UseDiagnostics = $false
+    [switch]$UseDiagnostics = $false,
+
+    [switch]$IncludeUnoSdkHead = $false
 )
 
 # Use & and a separate script path variable to avoid issues with parameter passing
 $scriptPath = "$PSScriptRoot/../GenerateSingleSolution.ps1"
-& $scriptPath -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets -WinUIMajorVersion $WinUIMajorVersion -UseDiagnostics:$UseDiagnostics -componentPath $componentPath
+& $scriptPath -MultiTargets $MultiTargets -ExcludeMultiTargets $ExcludeMultiTargets -WinUIMajorVersion $WinUIMajorVersion -UseDiagnostics:$UseDiagnostics -IncludeUnoSdkHead:$IncludeUnoSdkHead -componentPath $componentPath
