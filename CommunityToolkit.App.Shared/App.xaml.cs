@@ -2,7 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Windows.UI;
+using CommunityToolkit.App.Shared.Helpers;
+
+#if WINAPPSDK
+using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
+#else
+using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
+#endif
 
 namespace CommunityToolkit.App.Shared;
 
@@ -26,6 +32,13 @@ public sealed partial class App : Application
     public App()
     {
         this.InitializeComponent();
+
+        UnhandledException += this.App_UnhandledException;
+    }
+
+    private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        TrackingManager.TrackException(e.Exception);
     }
 
     /// <summary>

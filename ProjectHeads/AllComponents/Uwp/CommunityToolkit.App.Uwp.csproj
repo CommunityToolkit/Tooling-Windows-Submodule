@@ -10,6 +10,8 @@
     <WinUIMajorVersion>2</WinUIMajorVersion>
     
     <IsAllExperimentHead>true</IsAllExperimentHead>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
   </PropertyGroup>
 
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
