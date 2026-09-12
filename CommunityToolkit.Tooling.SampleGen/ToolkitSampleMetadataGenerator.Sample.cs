@@ -8,6 +8,7 @@ using CommunityToolkit.Tooling.SampleGen.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace CommunityToolkit.Tooling.SampleGen;
@@ -41,6 +42,33 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             .Collect();
 
         var assemblyName = context.CompilationProvider.Select((x, _) => x.Assembly.Name);
+
+                // Read assembly-level button metadata from referenced assemblies.
+                // Button attributes are placed on private methods in sample classes, which are not visible
+                // through PE metadata references. To bridge this gap, the sample project's generator phase
+                // emits assembly-level attributes that encode button data. The head project reads these.
+                var assemblyButtonData = context.CompilationProvider
+                    .Select((compilation, _) =>
+                    {
+                        var buttons = ImmutableArray.CreateBuilder<(string SampleTypeName, string MethodName, string Title)>();
+                        foreach (var asm in compilation.SourceModule.ReferencedAssemblySymbols)
+                        {
+                            foreach (var attr in asm.GetAttributes())
+                            {
+                                if (attr.AttributeClass?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ==
+                                    $"global::{typeof(ToolkitSampleButtonDataAttribute).FullName}" &&
+                                    attr.ConstructorArguments.Length == 3)
+                                {
+                                    buttons.Add((
+                                        (string)(attr.ConstructorArguments[0].Value ?? ""),
+                                        (string)(attr.ConstructorArguments[1].Value ?? ""),
+                                        (string)(attr.ConstructorArguments[2].Value ?? "")
+                                    ));
+                                }
+                            }
+                        }
+                        return buttons.ToImmutable();
+                    });
 
         // Only generate diagnostics (sample projects)
         // Skip creating the registry for symbols in the executing assembly. This would place an incomplete registry in each sample project and cause compiler errors.
@@ -107,9 +135,35 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                 .Where(static x => x.Item1 is not null)
                 .Collect();
 
+            // Find and reconstruct button attributes from method symbols + the containing type symbol.
+            var buttonAttributes = allAttributeData
+                .Select((x, _) =>
+                {
+                    (ISymbol ContainingType, ISymbol Method, ToolkitSampleButtonAttribute Attribute) item = default;
+
+                    if (x.Item1 is IMethodSymbol methodSymbol &&
+                        x.Item2.TryReconstructAs<ToolkitSampleButtonAttribute>() is ToolkitSampleButtonAttribute buttonAttribute)
+                    {
+                        buttonAttribute.MethodName = methodSymbol.Name;
+
+                        if (x.Item2.TryGetNamedArgument(nameof(ToolkitSampleButtonAttribute.Title), out string? title) && !string.IsNullOrWhiteSpace(title))
+                        {
+                            buttonAttribute.Title = title;
+                        }
+
+                        item = (methodSymbol.ContainingType, x.Item1, buttonAttribute);
+                    }
+
+                    return item;
+                })
+                .Where(static x => x.Attribute is not null)
+                .Collect();
+
             var all = optionsPaneAttributes
                 .Combine(toolkitSampleAttributeData)
                 .Combine(generatedPaneOptions)
+                .Combine(buttonAttributes)
+                .Combine(assemblyButtonData)
                 .Combine(markdownFiles)
                 .Combine(csprojFiles)
                 .Combine(assemblyName);
@@ -117,11 +171,17 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
             // TODO: We can make this static if we could pass in our two boolean values as context, no idea how to do that...
             context.RegisterSourceOutput(all, (ctx, data) =>
             {
-                var (((((optionsPaneAttributes, toolkitSampleAttributes), generatedPaneOptions), markdownFiles), csprojFiles), currentAssembly) = data;
+                var (((((((optionsPaneAttributes, toolkitSampleAttributes), generatedPaneOptions), buttonAttributes), assemblyButtonDataValues), markdownFiles), csprojFiles), currentAssembly) = data;
 
                 var toolkitSampleAttributeData = toolkitSampleAttributes.Where(x => x != default).Distinct();
                 var optionsPaneAttributeData = optionsPaneAttributes.Where(x => x != default).Distinct();
                 var generatedOptionPropertyData = generatedPaneOptions.Where(x => x.Attribute is not null && x.Symbol is not null);
+                var buttonAttributeData = buttonAttributes.Where(x => x.Attribute is not null && x.ContainingType is not null);
+
+                // Assembly-level button metadata from referenced assemblies (bridges the PE visibility gap)
+                var assemblyButtonsByTypeName = assemblyButtonDataValues
+                    .GroupBy(x => x.SampleTypeName)
+                    .ToDictionary(g => g.Key, g => g.Select(x => new ToolkitSampleButtonAttribute { MethodName = x.MethodName, Title = x.Title }));
 
                 var markdownFileData = markdownFiles.Where(x => x != default).Distinct();
                 var csprojFileData = csprojFiles.Where(x => x != default).Distinct();
@@ -150,7 +210,9 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
                                 sample.Attribute.Description,
                                 sample.AttachedQualifiedTypeName,
                                 optionsPaneAttributeData.FirstOrDefault(x => x.Item1?.SampleId == sample.Attribute.Id).Item2?.ToString(),
-                                generatedOptionPropertyData.Where(x => x.Symbol.Equals(sample.Symbol, SymbolEqualityComparer.Default)).Select(x => x.Item2)
+                                generatedOptionPropertyData.Where(x => x.Symbol.Equals(sample.Symbol, SymbolEqualityComparer.Default)).Select(x => x.Item2),
+                                buttonAttributeData.Where(x => x.ContainingType.Equals(sample.Symbol, SymbolEqualityComparer.Default)).Select(x => x.Attribute)
+                                    .Concat(assemblyButtonsByTypeName.TryGetValue(sample.AttachedQualifiedTypeName, out var asmButtons) ? asmButtons : Enumerable.Empty<ToolkitSampleButtonAttribute>())
                             )
                     );
 
@@ -158,8 +220,12 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
 
                 if (isExecutingInSampleProject && !skipDiagnostics)
                 {
-                    ReportSampleDiagnostics(ctx, toolkitSampleAttributeData, optionsPaneAttributeData, generatedOptionPropertyData);
+                    ReportSampleDiagnostics(ctx, toolkitSampleAttributeData, optionsPaneAttributeData, generatedOptionPropertyData, buttonAttributeData);
                     ReportDocumentDiagnostics(ctx, sampleMetadata, markdownFileData, toolkitSampleAttributeData, docFrontMatter);
+
+                    // Emit assembly-level attributes encoding button metadata so the head project
+                    // can read them (private method attributes are invisible through PE references).
+                    GenerateButtonMetadataSource(ctx, buttonAttributeData);
                 }
 
                 if (!isExecutingInSampleProject && !skipRegistry)
@@ -187,11 +253,13 @@ public partial class ToolkitSampleMetadataGenerator : IIncrementalGenerator
     private static void ReportSampleDiagnostics(SourceProductionContext ctx,
                                           IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
                                           IEnumerable<(ToolkitSampleOptionsPaneAttribute?, ISymbol)> optionsPaneAttribute,
-                                          IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData)
+                                          IEnumerable<(ISymbol, ToolkitSampleOptionBaseAttribute)> generatedOptionPropertyData,
+                                          IEnumerable<(ISymbol ContainingType, ISymbol Method, ToolkitSampleButtonAttribute Attribute)> buttonAttributeData)
     {
         ReportDiagnosticsForInvalidAttributeUsage(ctx, toolkitSampleAttributeData, optionsPaneAttribute, generatedOptionPropertyData);
         ReportDiagnosticsForLinkedOptionsPane(ctx, toolkitSampleAttributeData, optionsPaneAttribute);
         ReportDiagnosticsGeneratedOptionsPane(ctx, toolkitSampleAttributeData, generatedOptionPropertyData);
+        ReportDiagnosticsForButtonAttributes(ctx, toolkitSampleAttributeData, buttonAttributeData);
     }
 
     private static void ReportDiagnosticsForInvalidAttributeUsage(SourceProductionContext ctx,
@@ -307,8 +375,11 @@ public static class ToolkitSampleRegistry
         var generatedSampleOptionsParam = $"new {typeof(IGeneratedToolkitSampleOptionViewModel).FullName}[] {{ {string.Join(", ", BuildNewGeneratedSampleOptionMetadataSource(metadata).ToArray())} }}";
         var sampleOptionsParam = metadata.SampleOptionsAssemblyQualifiedName is null ? "null" : $"typeof({metadata.SampleOptionsAssemblyQualifiedName})";
         var sampleOptionsPaneFactoryParam = metadata.SampleOptionsAssemblyQualifiedName is null ? "null" : $"x => new {metadata.SampleOptionsAssemblyQualifiedName}(({metadata.SampleAssemblyQualifiedName})x)";
+        var sampleButtonsParam = metadata.GeneratedSampleButtons?.Any() == true
+            ? $"new {typeof(ToolkitSampleButtonCommand).FullName}[] {{ {string.Join(", ", BuildNewGeneratedSampleButtonSource(metadata).ToArray())} }}"
+            : "null";
 
-        return @$"[""{kvp.Key}""] = new {typeof(ToolkitSampleMetadata).FullName}(""{metadata.Id}"", ""{metadata.DisplayName}"", ""{metadata.Description}"", {sampleControlTypeParam}, {sampleControlFactoryParam}, {sampleOptionsParam}, {sampleOptionsPaneFactoryParam}, {generatedSampleOptionsParam})";
+        return @$"[""{kvp.Key}""] = new {typeof(ToolkitSampleMetadata).FullName}(""{metadata.Id}"", ""{metadata.DisplayName}"", ""{metadata.Description}"", {sampleControlTypeParam}, {sampleControlFactoryParam}, {sampleOptionsParam}, {sampleOptionsPaneFactoryParam}, {generatedSampleOptionsParam}, {sampleButtonsParam})";
     }
 
     private static IEnumerable<string> BuildNewGeneratedSampleOptionMetadataSource(ToolkitSampleRecord sample)
@@ -335,6 +406,47 @@ public static class ToolkitSampleRegistry
             {
                 throw new NotSupportedException($"Unsupported or unhandled type {item.GetType()}.");
             }
+        }
+    }
+
+    private static IEnumerable<string> BuildNewGeneratedSampleButtonSource(ToolkitSampleRecord sample)
+    {
+        foreach (var button in sample.GeneratedSampleButtons ?? Enumerable.Empty<ToolkitSampleButtonAttribute>())
+        {
+            yield return $@"new {typeof(ToolkitSampleButtonCommand).FullName}(""{button.Title}"", ""{button.MethodName}"")";
+        }
+    }
+
+    private static void ReportDiagnosticsForButtonAttributes(SourceProductionContext ctx,
+                                                             IEnumerable<(ToolkitSampleAttribute Attribute, string AttachedQualifiedTypeName, ISymbol Symbol)> toolkitSampleAttributeData,
+                                                             IEnumerable<(ISymbol ContainingType, ISymbol Method, ToolkitSampleButtonAttribute Attribute)> buttonAttributeData)
+    {
+        // Check for button attributes on methods where the containing class doesn't have ToolkitSampleAttribute
+        var buttonsWithMissingSampleAttribute = buttonAttributeData.Where(x =>
+            x.ContainingType is INamedTypeSymbol &&
+            !toolkitSampleAttributeData.Any(sample => sample.Symbol.Equals(x.ContainingType, SymbolEqualityComparer.Default)));
+
+        foreach (var item in buttonsWithMissingSampleAttribute)
+            ctx.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.SampleButtonAttributeOnNonSample, item.Method.Locations.FirstOrDefault(), item.ContainingType.ToString()));
+    }
+
+    /// <summary>
+    /// Generates assembly-level attributes that encode button metadata discovered from
+    /// method-level <see cref="ToolkitSampleButtonAttribute"/>s. These attributes are
+    /// compiled into the sample assembly so the head project's generator can read them,
+    /// since private method attributes are not visible through PE metadata references.
+    /// </summary>
+    private static void GenerateButtonMetadataSource(SourceProductionContext ctx,
+                                                     IEnumerable<(ISymbol ContainingType, ISymbol Method, ToolkitSampleButtonAttribute Attribute)> buttonAttributeData)
+    {
+        var lines = buttonAttributeData
+            .Select(b => $@"[assembly: global::{typeof(ToolkitSampleButtonDataAttribute).FullName}(""{b.ContainingType}"", ""{b.Attribute.MethodName}"", ""{b.Attribute.Title}"")]")
+            .ToList();
+
+        if (lines.Count > 0)
+        {
+            ctx.AddSource("ToolkitSampleButtonMetadata.g.cs",
+                "// <auto-generated/>\n" + string.Join("\n", lines));
         }
     }
 
