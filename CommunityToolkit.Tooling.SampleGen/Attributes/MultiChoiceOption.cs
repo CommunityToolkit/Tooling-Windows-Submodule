@@ -12,8 +12,18 @@ namespace CommunityToolkit.Tooling.SampleGen.Attributes;
 /// </summary>
 /// <param name="Label">A label shown to the user for this option.</param>
 /// <param name="Value">The value passed to XAML when this option is selected.</param>
-public record MultiChoiceOption(string Label, string Value)
+public record MultiChoiceOption(string Label, object Value)
 {
+    public virtual bool Equals(MultiChoiceOption? other)
+    {
+        return other is not null && (ReferenceEquals(this, other) || Value.Equals(other.Value));
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
+
     /// <remarks>
     /// The string has been overriden to display the label only,
     /// especially so the data can be easily displayed in XAML without a custom template, converter or code behind.

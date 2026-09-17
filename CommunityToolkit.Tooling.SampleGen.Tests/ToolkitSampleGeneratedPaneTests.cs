@@ -4,9 +4,7 @@
 
 using CommunityToolkit.Tooling.SampleGen.Diagnostics;
 using CommunityToolkit.Tooling.SampleGen.Tests.Helpers;
-using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace CommunityToolkit.Tooling.SampleGen.Tests;
 
@@ -52,23 +50,53 @@ public partial class ToolkitSampleGeneratedPaneTests
     }
 
     [TestMethod]
-    public void PaneOption_GeneratesTitleProperty()
+    public void PaneOption_GeneratesEnumWithoutDiagnostics()
     {
-        // The sample registry is designed to be declared in the sample project, and generated in the project head where its displayed in the UI as data.
-        // To test the contents of the generated sample registry, we must replicate this setup.
-        var sampleProjectAssembly = """
-            using System.ComponentModel;
+        var source = """
+            using Windows.UI.Xaml;
             using CommunityToolkit.Tooling.SampleGen;
             using CommunityToolkit.Tooling.SampleGen.Attributes;
-
+            
             namespace MyApp
             {
-                [ToolkitSampleNumericOption("TextSize", 12, 8, 48, 2, false, Title = "FontSize")]
+                [ToolkitSampleEnumOption<Windows.UI.Xaml.Controls.Visibility>("MyVisibility", Title = "Visibility")]
+                
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
+                public partial class Sample : Windows.UI.Xaml.Controls.UserControl
+                {
+                }
+            }
+
+            namespace Windows.UI.Xaml.Controls
+            {
+                public class UserControl { }
+                public enum Visibility { Visible = 3, Collapsed = 7 }
+            }
+            """;
+
+        var result = source.RunSourceGenerator<ToolkitSampleOptionGenerator>(SAMPLE_ASM_NAME);
+
+        result.AssertNoCompilationErrors();
+        result.AssertDiagnosticsAre();
+    }
+    
+    [TestMethod]
+    public void PaneOption_GeneratesEnumProperty()
+    {
+        var sampleProjectAssembly = """
+            using Windows.UI.Xaml;
+            using CommunityToolkit.Tooling.SampleGen;
+            using CommunityToolkit.Tooling.SampleGen.Attributes;
+            
+            namespace MyApp
+            {
+                [ToolkitSampleEnumOption<Windows.UI.Xaml.Controls.Visibility>("MyVisibility", Title = "Visibility")]
                 [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
                 public partial class Sample : Windows.UI.Xaml.Controls.UserControl
                 {
                     public Sample()
                     {
+                        var y = this.MyVisibility;
                     }
                 }
             }
@@ -76,8 +104,9 @@ public partial class ToolkitSampleGeneratedPaneTests
             namespace Windows.UI.Xaml.Controls
             {
                 public class UserControl { }
+                public enum Visibility { Visible = 3, Collapsed = 7 }
             }
-        """.ToSyntaxTree()
+            """.ToSyntaxTree()
             .CreateCompilation("MyApp.Samples")
             .ToMetadataReference();
 
@@ -93,18 +122,89 @@ public partial class ToolkitSampleGeneratedPaneTests
         result.AssertDiagnosticsAre();
         result.AssertNoCompilationErrors();
 
-        Assert.AreEqual(result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"), """
-        #nullable enable
-        namespace CommunityToolkit.Tooling.SampleGen;
+        Assert.AreEqual("""
+            #nullable enable
+            namespace CommunityToolkit.Tooling.SampleGen;
+            
+            public static class ToolkitSampleRegistry
+            {
+                public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
+                {
+                   ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null,
+                        new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] 
+                        {
+                            new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMultiChoiceOptionMetadataViewModel(name: "MyVisibility", 
+                                options: new[]
+                                {
+                                    new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Visible", Windows.UI.Xaml.Controls.Visibility.Visible),
+                                    new CommunityToolkit.Tooling.SampleGen.Attributes.MultiChoiceOption("Collapsed", Windows.UI.Xaml.Controls.Visibility.Collapsed)
+                                }, title: "Visibility")
+                        })
+                };
+            }
+            """,
+            result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"),
+            "Unexpected code generated");
+    }
 
-        public static class ToolkitSampleRegistry
-        {
-            public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing
-            { get; } = new() {
-                ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null, new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] { new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize") })
-            };
-        }
-        """, "Unexpected code generated");
+    [TestMethod]
+    public void PaneOption_GeneratesTitleProperty()
+    {
+        // The sample registry is designed to be declared in the sample project, and generated in the project head where it's displayed in the UI as data.
+        // To test the contents of the generated sample registry, we must replicate this setup.
+        var sampleProjectAssembly = """
+            using System.ComponentModel;
+            using CommunityToolkit.Tooling.SampleGen;
+            using CommunityToolkit.Tooling.SampleGen.Attributes;
+
+            namespace MyApp
+            {
+                [ToolkitSampleNumericOption("TextSize", 12, 8, 48, 2, false, Title = "FontSize")]
+                [ToolkitSample(id: nameof(Sample), "Test Sample", description: "")]
+                public partial class Sample : Windows.UI.Xaml.Controls.UserControl
+                {
+                    public Sample() { }
+                }
+            }
+
+            namespace Windows.UI.Xaml.Controls
+            {
+                public class UserControl { }
+            }
+            """.ToSyntaxTree()
+            .CreateCompilation("MyApp.Samples")
+            .ToMetadataReference();
+
+        // Create application head that references generated sample project
+        var headCompilation = string.Empty
+            .ToSyntaxTree()
+            .CreateCompilation("MyApp.Head")
+            .AddReferences(sampleProjectAssembly);
+
+        // Run source generator
+        var result = headCompilation.RunSourceGenerator<ToolkitSampleMetadataGenerator>();
+
+        result.AssertDiagnosticsAre();
+        result.AssertNoCompilationErrors();
+
+        Assert.AreEqual("""
+            #nullable enable
+            namespace CommunityToolkit.Tooling.SampleGen;
+            
+            public static class ToolkitSampleRegistry
+            {
+                public static System.Collections.Generic.Dictionary<string, CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata> Listing { get; } = new()
+                {
+                   ["Sample"] = new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleMetadata("Sample", "Test Sample", "", typeof(MyApp.Sample), () => new MyApp.Sample(), null, null,
+                        new CommunityToolkit.Tooling.SampleGen.Metadata.IGeneratedToolkitSampleOptionViewModel[] 
+                        {
+                            new CommunityToolkit.Tooling.SampleGen.Metadata.ToolkitSampleNumericOptionMetadataViewModel(name: "TextSize", initial: 12, min: 8, max: 48, step: 2, showAsNumberBox: false, title: "FontSize")
+                        })
+                };
+            }
+            """,
+            result.Compilation.GetFileContentsByName("ToolkitSampleRegistry.g.cs"),
+            "Unexpected code generated");
     }
 
     [TestMethod]

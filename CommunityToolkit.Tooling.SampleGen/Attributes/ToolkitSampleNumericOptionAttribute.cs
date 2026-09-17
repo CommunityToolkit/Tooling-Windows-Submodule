@@ -9,7 +9,7 @@ namespace CommunityToolkit.Tooling.SampleGen.Attributes;
 /// </summary>
 /// <remarks>
 /// Using this attribute will automatically generate an <see cref="INotifyPropertyChanged"/>-enabled property
-/// that you can bind to in XAML, and displays an options pane alonside your sample which allows the user to manipulate the property.
+/// that you can bind to in XAML, and displays an options pane alongside your sample which allows the user to manipulate the property.
 /// <para/>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
@@ -19,8 +19,11 @@ public sealed class ToolkitSampleNumericOptionAttribute : ToolkitSampleOptionBas
     /// Creates a new instance of <see cref="ToolkitSampleNumericOptionAttribute"/>.
     /// </summary>
     /// <param name="bindingName">The name of the generated property, which you can bind to in XAML.</param>
-    /// <param name="choices">A list of the choices to display to the user. Can be literal values, or labeled values. Use a " : " separator (single colon surrounded by at least 1 whitespace) to separate a label from a value.</param>
-    /// <param name="title">A title to display on top of this option.</param>
+    /// <param name="initial"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <param name="step"></param>
+    /// <param name="showAsNumberBox"></param>
     public ToolkitSampleNumericOptionAttribute(string bindingName, double initial = 0, double min = 0, double max = 10, double step = 1, bool showAsNumberBox = false)
         : base(bindingName, null)
     {
