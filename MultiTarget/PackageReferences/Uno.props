@@ -23,7 +23,9 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(IsUno)' == 'true'">
-        <PackageReference Include="Uno.Fonts.Fluent" Version="2.6.1" />
+        <PackageReference Include="Uno.Fonts.Fluent" Version="2.6.1" Condition="'$(WinUIMajorVersion)' != '3'" />
+        <!-- Uno.WinUI 7.x depends on 2.9.4 -->
+        <PackageReference Include="Uno.Fonts.Fluent" Version="2.9.4" Condition="'$(WinUIMajorVersion)' == '3'" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(IsUno)' == 'true'">
