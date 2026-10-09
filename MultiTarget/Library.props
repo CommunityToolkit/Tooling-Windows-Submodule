@@ -16,6 +16,11 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledMultiTargets.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\EnabledTargetFrameworks.props" />
 
+  <!-- MSBuild.Sdk.Extras infers net10.0+ as .NETFramework, see https://github.com/novotnyllc/MSBuildSdkExtras/issues/305 -->
+  <PropertyGroup Condition="'$(TargetFramework)' != '' AND $([MSBuild]::GetTargetFrameworkIdentifier('$(TargetFramework)')) == '.NETCoreApp'">
+    <TargetFrameworkIdentifier>.NETCoreApp</TargetFrameworkIdentifier>
+  </PropertyGroup>
+
   <!-- Enable project identifiers -->
   <Import Project="$(ToolingDirectory)\MultiTarget\MultiTargetIdentifiers.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\DefinedConstants.props" />
