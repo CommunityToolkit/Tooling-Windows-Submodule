@@ -27,6 +27,10 @@
 
     <IsPackable>false</IsPackable>
     <UnoSingleProject>true</UnoSingleProject>
+
+    <!-- TODO: Re-enable once Hot Design and App MCP ship builds for Uno 7, the current ones reference pre-7.0 Uno assemblies -->
+    <UnoDisableHotDesign>true</UnoDisableHotDesign>
+    <UnoDisableMCPSupport>true</UnoDisableMCPSupport>
     <RootNamespace>CommunityToolkit.App.Uno</RootNamespace>
 
     <!-- Platform flags for Generated/*.props project reference conditions. Computed per the head's

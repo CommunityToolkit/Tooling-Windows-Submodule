@@ -27,6 +27,10 @@
     <IsPackable>false</IsPackable>
     <UnoSingleProject>true</UnoSingleProject>
 
+    <!-- TODO: Re-enable once Hot Design and App MCP ship builds for Uno 7, the current ones reference pre-7.0 Uno assemblies -->
+    <UnoDisableHotDesign>true</UnoDisableHotDesign>
+    <UnoDisableMCPSupport>true</UnoDisableMCPSupport>
+
     <!-- Platform flags, per the head's own $(TargetFramework). IsDesktop covers the win32/linux/macos
          trio at once, since they share this one build output (Uno.Sdk defines IsDesktop identically;
          set here too so the head stays self-describing). It only says "this is a desktop build" though -
