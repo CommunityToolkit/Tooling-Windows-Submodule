@@ -6,16 +6,16 @@
     <!-- Only declare a TFM for the MultiTargets actually requested at solution-gen time, so an
          unrequested platform never ends up with an orphaned deploy option pointing at a component
          build that was never produced. -->
-    <!-- win32, linux and macos are all served by Uno 6's single cross-platform Skia desktop TFM,
-         so requesting any of them yields the same net9.0-desktop head. -->
+    <!-- win32, linux and macos are all served by Uno's single cross-platform Skia desktop TFM,
+         so requesting any of them yields the same net10.0-desktop head. -->
     <IsDesktopMultiTargetEnabled Condition="$(EnabledMultiTargets.Contains('win32')) == 'true' OR $(EnabledMultiTargets.Contains('linux')) == 'true' OR $(EnabledMultiTargets.Contains('macos')) == 'true'">true</IsDesktopMultiTargetEnabled>
 
     <!-- Trailing (not leading) semicolons: appending "value;" can never produce an empty/blank
          entry, whereas "$(TargetFrameworks);value" produces a leading ";" if nothing enabled yet. -->
-    <TargetFrameworks Condition="'$(IsDesktopMultiTargetEnabled)' == 'true'">$(TargetFrameworks)net9.0-desktop;</TargetFrameworks>
-    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('wasm')) == 'true'">$(TargetFrameworks)net9.0-browserwasm;</TargetFrameworks>
-    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('android')) == 'true'">$(TargetFrameworks)net9.0-android;</TargetFrameworks>
-    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('ios')) == 'true'">$(TargetFrameworks)net9.0-ios;</TargetFrameworks>
+    <TargetFrameworks Condition="'$(IsDesktopMultiTargetEnabled)' == 'true'">$(TargetFrameworks)net10.0-desktop;</TargetFrameworks>
+    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('wasm')) == 'true'">$(TargetFrameworks)net10.0-browserwasm;</TargetFrameworks>
+    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('android')) == 'true'">$(TargetFrameworks)net10.0-android;</TargetFrameworks>
+    <TargetFrameworks Condition="$(EnabledMultiTargets.Contains('ios')) == 'true'">$(TargetFrameworks)net10.0-ios;</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -38,13 +38,13 @@
          (Uno.Sdk defines IsDesktop identically; set here too so the head stays self-describing.) -->
     <IsDeployableHead>true</IsDeployableHead>
     <IsUno>true</IsUno>
-    <IsWasm Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">true</IsWasm>
-    <IsDesktop Condition="'$(TargetFramework)' == 'net9.0-desktop'">true</IsDesktop>
-    <IsWin32 Condition="'$(TargetFramework)' == 'net9.0-desktop' AND $(EnabledMultiTargets.Contains('win32')) == 'true'">true</IsWin32>
-    <IsLinux Condition="'$(TargetFramework)' == 'net9.0-desktop' AND $(EnabledMultiTargets.Contains('linux')) == 'true'">true</IsLinux>
-    <IsMacOS Condition="'$(TargetFramework)' == 'net9.0-desktop' AND $(EnabledMultiTargets.Contains('macos')) == 'true'">true</IsMacOS>
-    <IsDroid Condition="'$(TargetFramework)' == 'net9.0-android'">true</IsDroid>
-    <IsiOS Condition="'$(TargetFramework)' == 'net9.0-ios'">true</IsiOS>
+    <IsWasm Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">true</IsWasm>
+    <IsDesktop Condition="'$(TargetFramework)' == 'net10.0-desktop'">true</IsDesktop>
+    <IsWin32 Condition="'$(TargetFramework)' == 'net10.0-desktop' AND $(EnabledMultiTargets.Contains('win32')) == 'true'">true</IsWin32>
+    <IsLinux Condition="'$(TargetFramework)' == 'net10.0-desktop' AND $(EnabledMultiTargets.Contains('linux')) == 'true'">true</IsLinux>
+    <IsMacOS Condition="'$(TargetFramework)' == 'net10.0-desktop' AND $(EnabledMultiTargets.Contains('macos')) == 'true'">true</IsMacOS>
+    <IsDroid Condition="'$(TargetFramework)' == 'net10.0-android'">true</IsDroid>
+    <IsiOS Condition="'$(TargetFramework)' == 'net10.0-ios'">true</IsiOS>
     <HasWinUI>true</HasWinUI>
     <WinUIMajorVersion>3</WinUIMajorVersion>
     <IsAllExperimentHead>true</IsAllExperimentHead>
@@ -60,12 +60,12 @@
   <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Samples.props" />
   <Import Project="$(ToolingDirectory)\MultiTarget\Generated\*.Source.props" />
 
-  <!-- Force component project references to resolve to net9.0 (not windows-specific), except
+  <!-- Force component project references to resolve to net10.0 (not windows-specific), except
        android/ios which resolve to their own TFM so platform-specific component code is picked up. -->
   <PropertyGroup>
-    <UnoSdkComponentTargetFramework>net9.0</UnoSdkComponentTargetFramework>
-    <UnoSdkComponentTargetFramework Condition="'$(TargetFramework)' == 'net9.0-android'">net9.0-android</UnoSdkComponentTargetFramework>
-    <UnoSdkComponentTargetFramework Condition="'$(TargetFramework)' == 'net9.0-ios'">net9.0-ios</UnoSdkComponentTargetFramework>
+    <UnoSdkComponentTargetFramework>net10.0</UnoSdkComponentTargetFramework>
+    <UnoSdkComponentTargetFramework Condition="'$(TargetFramework)' == 'net10.0-android'">net10.0-android</UnoSdkComponentTargetFramework>
+    <UnoSdkComponentTargetFramework Condition="'$(TargetFramework)' == 'net10.0-ios'">net10.0-ios</UnoSdkComponentTargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Update="$(RepositoryDirectory)components\**\*.csproj" SetTargetFramework="TargetFramework=$(UnoSdkComponentTargetFramework)" UndefineProperties="RuntimeIdentifier" />

@@ -289,8 +289,8 @@ jobs:
 
       # iOS/maccatalyst workloads aren't installable on Linux (Uno.Sdk
       # auto-filters those TFMs there). android + wasm-tools are both
-      # required: even a `-f net9.0-browserwasm` build restores all of the
-      # head's TargetFrameworks, so the net9.0-android TFM's workload is
+      # required: even a `-f net10.0-browserwasm` build restores all of the
+      # head's TargetFrameworks, so the net10.0-android TFM's workload is
       # validated during restore.
       # Run from ./tooling so global.json scopes the install to the pinned
       # SDK feature band; otherwise the workloads land on the runner's newer

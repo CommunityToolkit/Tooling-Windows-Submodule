@@ -16,7 +16,7 @@
     <MultiTargetIdentifier Condition="'$(IsDroid)' == 'true'">android</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
 
-    <!-- Last wins: the unified Uno 6 desktop head build (net9.0-desktop) can back several of
+    <!-- Last wins: the unified Uno 7 desktop head build (net10.0-desktop) can back several of
          win32/linux/macos at once. IsDesktop alone can't tell which were actually requested, so
          match against $(EnabledMultiTargets) instead of assuming all three. CheckMultiTarget
          accepts a ';' separated list; trailing (not leading) semicolons per the usual convention. -->

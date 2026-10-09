@@ -61,8 +61,8 @@ $WinUI0MultiTargets = @('netstandard')
 # 'linux' is the Skia GTK head there; 'wpf' is the Skia WPF head.
 $WinUI2MultiTargets = @('uwp', 'wasm', 'wpf', 'linux', 'macos', 'ios', 'android')
 
-# List of WinUI-3 (Uno 6.x / Uno.WinUI) compatible multitargets.
-# win32, linux and macos are the desktop surface, all served by the single net9.0-desktop head that
+# List of WinUI-3 (Uno 7.x / Uno.WinUI) compatible multitargets.
+# win32, linux and macos are the desktop surface, all served by the single net10.0-desktop head that
 # replaced Uno 5's per-OS Skia heads. 'wpf' stays WinUI 2 only, since Uno 6 dropped Uno.UI.Skia.Wpf.
 $WinUI3MultiTargets = @('wasdk', 'wasm', 'win32', 'linux', 'macos', 'ios', 'android')
 

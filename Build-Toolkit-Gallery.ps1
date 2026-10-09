@@ -208,16 +208,16 @@ function Get-UnoSdkHeadTargetFrameworks {
   $targetFrameworks = [System.Collections.ArrayList]::new()
 
   if (($MultiTargets | Where-Object { @('win32', 'linux', 'macos') -contains $_ }).Count -gt 0) {
-    [void]$targetFrameworks.Add('net9.0-desktop')
+    [void]$targetFrameworks.Add('net10.0-desktop')
   }
   if ($MultiTargets -contains 'wasm') {
-    [void]$targetFrameworks.Add('net9.0-browserwasm')
+    [void]$targetFrameworks.Add('net10.0-browserwasm')
   }
   if ($MultiTargets -contains 'android') {
-    [void]$targetFrameworks.Add('net9.0-android')
+    [void]$targetFrameworks.Add('net10.0-android')
   }
   if ($MultiTargets -contains 'ios') {
-    [void]$targetFrameworks.Add('net9.0-ios')
+    [void]$targetFrameworks.Add('net10.0-ios')
   }
 
   return $targetFrameworks

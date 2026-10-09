@@ -12,22 +12,26 @@
         <UwpTargetFrameworks Condition="'$(UwpTargetFrameworks)' == '' AND '$(BuildingInsideVisualStudio)' != 'true'">uap10.0.17763;net8.0-windows10.0.26100.0;net9.0-windows10.0.26100.0;</UwpTargetFrameworks>
         <WinAppSdkTargetFrameworks Condition="'$(WinAppSdkTargetFrameworks)' == ''">net9.0-windows10.0.26100.0;net8.0-windows10.0.26100.0;</WinAppSdkTargetFrameworks>
         
-        <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">net9.0;</WasmHeadTargetFramework>
-        <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">net9.0;</LinuxHeadTargetFramework>
-        <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">net9.0;</WpfHeadTargetFramework>
+        <!-- Uno 5.x (WinUI 2) targets .NET 9, Uno 7.x (WinUI 3) requires .NET 10 -->
+        <UnoDotNetTargetFramework Condition="'$(UnoDotNetTargetFramework)' == '' AND '$(WinUIMajorVersion)' == '3'">net10.0</UnoDotNetTargetFramework>
+        <UnoDotNetTargetFramework Condition="'$(UnoDotNetTargetFramework)' == ''">net9.0</UnoDotNetTargetFramework>
 
-        <AndroidLibTargetFrameworks Condition="'$(AndroidLibTargetFrameworks)' == ''">net9.0-android;</AndroidLibTargetFrameworks>
-        <MacOSLibTargetFrameworks Condition="'$(MacOSLibTargetFrameworks)' == ''">net9.0-maccatalyst;</MacOSLibTargetFrameworks>
-        <iOSLibTargetFrameworks Condition="'$(iOSLibTargetFrameworks)' == ''">net9.0-ios;</iOSLibTargetFrameworks>
+        <WasmHeadTargetFramework Condition="'$(WasmHeadTargetFramework)' == ''">$(UnoDotNetTargetFramework);</WasmHeadTargetFramework>
+        <LinuxHeadTargetFramework Condition="'$(LinuxHeadTargetFramework)' == ''">$(UnoDotNetTargetFramework);</LinuxHeadTargetFramework>
+        <WpfHeadTargetFramework Condition="'$(WpfHeadTargetFramework)' == ''">$(UnoDotNetTargetFramework);</WpfHeadTargetFramework>
+
+        <AndroidLibTargetFrameworks Condition="'$(AndroidLibTargetFrameworks)' == ''">$(UnoDotNetTargetFramework)-android;</AndroidLibTargetFrameworks>
+        <MacOSLibTargetFrameworks Condition="'$(MacOSLibTargetFrameworks)' == ''">$(UnoDotNetTargetFramework)-maccatalyst;</MacOSLibTargetFrameworks>
+        <iOSLibTargetFrameworks Condition="'$(iOSLibTargetFrameworks)' == ''">$(UnoDotNetTargetFramework)-ios;</iOSLibTargetFrameworks>
 
         <!-- Used for comparison to current TargetFramework -->
-        <LinuxLibTargetFrameworks Condition="'$(LinuxLibTargetFrameworks)' == ''">net9.0;</LinuxLibTargetFrameworks>
-        <WasmLibTargetFrameworks Condition="'$(WasmLibTargetFrameworks)' == ''">net9.0;</WasmLibTargetFrameworks>
-        <WpfLibTargetFrameworks Condition="'$(WpfLibTargetFrameworks)' == ''">net9.0;</WpfLibTargetFrameworks>
-        <Win32LibTargetFrameworks Condition="'$(Win32LibTargetFrameworks)' == ''">net9.0;</Win32LibTargetFrameworks>
+        <LinuxLibTargetFrameworks Condition="'$(LinuxLibTargetFrameworks)' == ''">$(UnoDotNetTargetFramework);</LinuxLibTargetFrameworks>
+        <WasmLibTargetFrameworks Condition="'$(WasmLibTargetFrameworks)' == ''">$(UnoDotNetTargetFramework);</WasmLibTargetFrameworks>
+        <WpfLibTargetFrameworks Condition="'$(WpfLibTargetFrameworks)' == ''">$(UnoDotNetTargetFramework);</WpfLibTargetFrameworks>
+        <Win32LibTargetFrameworks Condition="'$(Win32LibTargetFrameworks)' == ''">$(UnoDotNetTargetFramework);</Win32LibTargetFrameworks>
 
         <!-- Used for defining TargetFramework under platforms that need it -->
         <DotnetStandardCommonTargetFramework Condition="'$(DotnetStandardCommonTargetFramework)' == ''">netstandard2.0;</DotnetStandardCommonTargetFramework>
-        <DotnetCommonTargetFramework Condition="'$(DotnetCommonTargetFramework)' == ''">net9.0;</DotnetCommonTargetFramework>
+        <DotnetCommonTargetFramework Condition="'$(DotnetCommonTargetFramework)' == ''">$(UnoDotNetTargetFramework);</DotnetCommonTargetFramework>
     </PropertyGroup>
 </Project>
