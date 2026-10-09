@@ -103,7 +103,7 @@
         <DataTemplate x:Key="DocumentTemplate"
                       x:DataType="x:String">
             <renderer:MarkdownTextBlock wasm:IsTextSelectionEnabled="True"
-                                        Background="Transparent"
+                                        win:Background="Transparent"
                                         LinkClicked="MarkdownTextBlock_LinkClicked"
                                         Text="{Binding}"
                                         TextWrapping="WrapWholeWords" />
