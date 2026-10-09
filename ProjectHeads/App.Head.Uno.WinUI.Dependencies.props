@@ -8,4 +8,12 @@
     <!-- Powers the gallery source code viewer, ColorCode.WinUI is Windows-only -->
     <PackageReference Include="ColorCode.Core" Version="2.0.15" />
   </ItemGroup>
+
+  <!-- Set once a Labs MarkdownTextBlock build with Uno 7 targets is published, until then docs render as plain text -->
+  <PropertyGroup Condition="'$(LabsMarkdownTextBlockVersion)' != ''">
+    <DefineConstants>$(DefineConstants);HAS_LABS_MARKDOWNTEXTBLOCK</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(LabsMarkdownTextBlockVersion)' != ''">
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.MarkdownTextBlock" Version="$(LabsMarkdownTextBlockVersion)" />
+  </ItemGroup>
 </Project>

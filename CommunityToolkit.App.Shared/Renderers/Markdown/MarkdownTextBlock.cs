@@ -2,7 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if HAS_UNO
+#if HAS_LABS_MARKDOWNTEXTBLOCK
+    using CommunityToolkit.WinUI.Controls;
+    using ToolkitMTB = CommunityToolkit.WinUI.Controls.MarkdownTextBlock;
+#elif HAS_UNO
     #if WINAPPSDK
     using ToolkitMTB = Microsoft.UI.Xaml.Controls.TextBlock;
     #else
@@ -27,7 +30,45 @@ namespace CommunityToolkit.App.Shared.Renderers;
 /// <summary>
 /// Provide an abstraction around the Toolkit MarkdownTextBlock for both UWP and WinUI 3 in the same namespace (until 8.0) as well as a polyfill for WebAssembly/WASM.
 /// </summary>
-#if HAS_UNO_WASM && !WINUI3
+#if HAS_LABS_MARKDOWNTEXTBLOCK
+public partial class MarkdownTextBlock : ToolkitMTB
+{
+    public MarkdownTextBlock()
+    {
+        IsTextSelectionEnabled = true;
+
+        // Matches the Windows typography from ToolkitDocumentationRenderer.xaml
+        Config = new MarkdownConfig
+        {
+            Themes = new MarkdownThemes
+            {
+                H1FontSize = 28,
+                H1Margin = new Thickness(0, 20, 0, 4),
+                H2FontSize = 18,
+                H2Margin = new Thickness(0, 20, 0, 0),
+                H3FontSize = 16,
+                H4FontSize = 14,
+                H5FontSize = 14,
+                H5FontWeight = FontWeights.Normal,
+                H6FontSize = 14,
+                ParagraphMargin = new Thickness(0, 0, 0, 12),
+                ParagraphLineHeight = 20,
+            },
+        };
+
+        OnLinkClicked += (_, e) =>
+        {
+            LinkClicked?.Invoke(this, new LinkClickedEventArgs(e.Uri.ToString()));
+            e.Handled = true;
+        };
+    }
+
+    // RichTextBlock always wraps, kept so the shared XAML can set it
+    public TextWrapping TextWrapping { get; set; }
+
+    public event EventHandler<LinkClickedEventArgs>? LinkClicked;
+}
+#elif HAS_UNO_WASM && !WINUI3
 [HtmlElement("div")]
 public partial class MarkdownTextBlock : TextBlock
 {
@@ -108,6 +149,10 @@ public partial class MarkdownTextBlock : ToolkitMTB
 #endif
 
 #if HAS_UNO
-//// Polyfill dummy for event callback
-public class LinkClickedEventArgs : EventArgs { }
+public class LinkClickedEventArgs : EventArgs
+{
+    public LinkClickedEventArgs(string link) => Link = link;
+
+    public string Link { get; }
+}
 #endif

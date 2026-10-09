@@ -188,13 +188,13 @@ public sealed partial class ToolkitDocumentationRenderer : Page
         }
     }
 
-#if HAS_UNO
+#if HAS_UNO && !HAS_LABS_MARKDOWNTEXTBLOCK
     private void MarkdownTextBlock_LinkClicked(object sender, LinkClickedEventArgs e)
     {
         // No-op - WASM handles via browser 'a' tag, Windows has handler below.
         // TODO: For other platforms
     }
-#elif !HAS_UNO
+#else
     private async void MarkdownTextBlock_LinkClicked(object sender, LinkClickedEventArgs e)
     {
         if (!Uri.IsWellFormedUriString(e.Link, UriKind.Absolute))
