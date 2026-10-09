@@ -32,11 +32,11 @@
     Date:   6/6/2025
 #>
 Param (
-    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("smt")]
     [string[]]$SupportedMultiTargets,
 
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("rmt")]
     [Parameter(Mandatory=$true)]
     [string[]]$RequestedMultiTargets,
@@ -51,17 +51,20 @@ Param (
 )
 
 if ($RequestedMultiTargets -eq 'all') {
-    $RequestedMultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+    $RequestedMultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')
 }
 
 # List of WinUI-0 (non-WinUI) compatible multitargets
 $WinUI0MultiTargets = @('netstandard')
 
-# List of WinUI-2 compatible multitargets
-$WinUI2MultiTargets = @('uwp', 'wasm', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')
+# List of WinUI-2 (Uno 5.x / Uno.UI) compatible multitargets.
+# 'linux' is the Skia GTK head there; 'wpf' is the Skia WPF head.
+$WinUI2MultiTargets = @('uwp', 'wasm', 'wpf', 'linux', 'macos', 'ios', 'android')
 
-# List of WinUI-3 compatible multitargets
-$WinUI3MultiTargets = @('wasdk', 'wasm', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')
+# List of WinUI-3 (Uno 6.x / Uno.WinUI) compatible multitargets.
+# win32, linux and macos are the desktop surface, all served by the single net9.0-desktop head that
+# replaced Uno 5's per-OS Skia heads. 'wpf' stays WinUI 2 only, since Uno 6 dropped Uno.UI.Skia.Wpf.
+$WinUI3MultiTargets = @('wasdk', 'wasm', 'win32', 'linux', 'macos', 'ios', 'android')
 
 # If WinUI 0 is requested, the component must not support WinUI 2 or WinUI 3 to be built.
 # If WinUI 2 or 3 is requested, the component must have a target that supports WinUI 2 or 3 to be built.

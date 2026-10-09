@@ -1,0 +1,7 @@
+<!-- Common props for any deployable Android app project head. -->
+<Project>
+  <!-- Disable AOT on Android - not needed for the sample gallery/experiment app, avoids issues with source generator assemblies in runtime output -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <RunAOTCompilation>false</RunAOTCompilation>
+  </PropertyGroup>
+</Project>

@@ -101,6 +101,12 @@ jobs:
         with:
           global-json-file: tooling/global.json
 
+      # Run from ./tooling so global.json scopes the install to the pinned SDK feature
+      # band; otherwise the workloads land on the runner's newer preinstalled SDK.
+      - name: Install .NET workloads
+        working-directory: tooling
+        run: dotnet workload install wasm-tools
+
       - name: .NET Info (if diagnostics)
         if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
         run: dotnet --info
@@ -140,6 +146,14 @@ jobs:
           # WinUI 3 not supported on uwp
           - winui: 3
             multitarget: uwp
+        include:
+          # The Uno.Sdk head replaces the classic Wasm head on WinUI 3, so it rides on the
+          # existing wasm/winui3 job as a flag rather than a fake entry in the multitarget axis.
+          # GenerateSingleSampleHeads.ps1 derives the same thing itself (wasm + WinUI 3); this flag
+          # only drives which CI steps run below (workloads, build command), not the script's own behavior.
+          - winui: 3
+            multitarget: wasm
+            unoSdkHead: true
 
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
@@ -168,6 +182,13 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: tooling/global.json
+
+      # Run from ./tooling so global.json scopes the install to the pinned SDK feature
+      # band; otherwise the workloads land on the runner's newer preinstalled SDK.
+      - name: Install .NET workloads
+        if: ${{ matrix.multitarget == 'wasm' }}
+        working-directory: tooling
+        run: dotnet workload install wasm-tools ${{ matrix.unoSdkHead && 'android ios maui' || '' }}
 
       - name: .NET Info (if diagnostics)
         if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
@@ -206,8 +227,17 @@ jobs:
 
       - name: Add project heads to ${{ env.TEST_PROJECT_NAME }}
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
-        run: ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1 -MultiTargets ${{ matrix.multitarget }} -winui ${{ matrix.winui }} -componentPath "${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}"${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}
+        run: >-
+          ${{ github.workspace }}/${{ env.HEADS_DIRECTORY }}/GenerateSingleSampleHeads.ps1
+          -MultiTargets ${{ matrix.multitarget }}
+          -winui ${{ matrix.winui }}
+          -componentPath "${{ github.workspace }}/${{ env.TEST_PROJECT_DIRECTORY }}"
+          ${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }}
 
+      # The generated solution already contains only the head(s) for the requested MultiTarget(s)
+      # (GenerateSingleSolution.ps1 swaps in the Uno.Sdk head instead of the classic Wasm one for
+      # WinUI 3 + wasm), so one MSBuild invocation covers the Uno.Sdk head too - msbuild.exe builds
+      # it fine, verified locally against dotnet build with identical results.
       - name: MSBuild
         working-directory: ./${{ env.TEST_PROJECT_DIRECTORY }}
         run: msbuild.exe ${{ env.TEST_PROJECT_NAME }}.sln /restore /nowarn:MSB4011 -p:Configuration=Release /m ${{ env.ENABLE_DIAGNOSTICS == 'true' && '/bl' || '' }} /v:${{ env.MSBUILD_VERBOSITY }}
@@ -238,10 +268,11 @@ jobs:
           name: new-experiment-logs-${{ matrix.multitarget }}-winui${{ matrix.winui }}
           path: ./**/*.*log
 
-  wasm-linux:
+  uno-linux:
     runs-on: ubuntu-latest
     env:
       HEADS_DIRECTORY: tooling/ProjectHeads
+      PROJECT_DIRECTORY: tooling/ProjectTemplate
       TEST_PROJECT_NAME: CiTestExp
 
     steps:
@@ -255,6 +286,18 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: tooling/global.json
+
+      # iOS/maccatalyst workloads aren't installable on Linux (Uno.Sdk
+      # auto-filters those TFMs there). android + wasm-tools are both
+      # required: even a `-f net9.0-browserwasm` build restores all of the
+      # head's TargetFrameworks, so the net9.0-android TFM's workload is
+      # validated during restore.
+      # Run from ./tooling so global.json scopes the install to the pinned
+      # SDK feature band; otherwise the workloads land on the runner's newer
+      # preinstalled SDK and the 9.0.x build can't see them (NETSDK1147).
+      - name: Install .NET workloads
+        working-directory: tooling
+        run: dotnet workload install android wasm-tools
 
       - name: .NET Info (if diagnostics)
         if: ${{ env.ENABLE_DIAGNOSTICS == 'true' }}
@@ -284,21 +327,18 @@ jobs:
         working-directory: ./components
         run: dotnet new ctk-component -n ${{ env.TEST_PROJECT_NAME }}
 
-      - name: Generate solution
+      # Build-Toolkit-Gallery.ps1 sets up TFMs/WinUI/project references and builds the Uno head
+      # directly (components are pulled in transitively as ProjectReferences), so this replaces
+      # the previous solution-gen + component prebuild + two head builds with one step - the old
+      # sequence built every component up to 3x over.
+      - name: Build Uno head (gallery)
         shell: pwsh
         working-directory: ./
-        run: ./tooling/GenerateAllSolution.ps1${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -UseDiagnostics' || '' }} -MultiTargets wasm
-
-      - name: dotnet build
-        shell: pwsh
-        working-directory: ./
-        run: ./tooling/Build-Toolkit-Components.ps1 -Release -MultiTargets wasm ${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -BinlogOutput ./ -EnableBinLogs' || '' }}
-  
-      # TODO: Do we want to run tests here? Can we do that on linux easily?
+        run: ./tooling/Build-Toolkit-Gallery.ps1 -Heads Uno -Release -MultiTargets wasm,linux ${{ env.ENABLE_DIAGNOSTICS == 'true' && ' -BinlogOutput ./ -EnableBinLogs' || '' }}
 
       - name: Artifact - Diagnostic Logs
         uses: actions/upload-artifact@v4
         if: ${{ (env.ENABLE_DIAGNOSTICS == 'true' || env.COREHOST_TRACE != '') && always() }}
         with:
-          name: linux-logs
+          name: uno-linux-logs
           path: ./**/*.*log

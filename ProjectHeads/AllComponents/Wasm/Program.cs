@@ -5,7 +5,7 @@
 using CommunityToolkit.App.Shared;
 
 #if WINAPPSDK
-using Microsoft.UI.Xaml;
+using Uno.UI.Hosting;
 #else
 using Windows.UI.Xaml;
 #endif
@@ -14,6 +14,17 @@ namespace CommunityToolkit.App.Wasm;
 
 public class Program
 {
+#if WINAPPSDK
+	static async Task Main(string[] args)
+	{
+		var host = UnoPlatformHostBuilder.Create()
+			.App(() => new CommunityToolkit.App.Shared.App())
+			.UseWebAssembly()
+			.Build();
+
+		await host.RunAsync();
+	}
+#else
 	private static CommunityToolkit.App.Shared.App? _app;
 
 	static int Main(string[] args)
@@ -22,4 +33,5 @@ public class Program
 
 		return 0;
 	}
+#endif
 }

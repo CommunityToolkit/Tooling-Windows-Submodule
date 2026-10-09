@@ -17,7 +17,8 @@
   <PropertyGroup>
     <MultiTargetsWasm Condition="$(AvailableMultiTargets.Contains('wasm')) == 'true'">true</MultiTargetsWasm>
     <MultiTargetsWpf Condition="$(AvailableMultiTargets.Contains('wpf')) == 'true'">true</MultiTargetsWpf>
-    <MultiTargetsLinuxGtk Condition="$(AvailableMultiTargets.Contains('linuxgtk')) == 'true'">true</MultiTargetsLinuxGtk>
+    <MultiTargetsWin32 Condition="$(AvailableMultiTargets.Contains('win32')) == 'true'">true</MultiTargetsWin32>
+    <MultiTargetsLinux Condition="$(AvailableMultiTargets.Contains('linux')) == 'true'">true</MultiTargetsLinux>
     <MultiTargetsDroid Condition="$(AvailableMultiTargets.Contains('android')) == 'true'">true</MultiTargetsDroid>
     <MultiTargetsMacOS Condition="$(AvailableMultiTargets.Contains('macos')) == 'true'">true</MultiTargetsMacOS>
     <MultiTargetsiOS Condition="$(AvailableMultiTargets.Contains('ios')) == 'true'">true</MultiTargetsiOS>
@@ -33,9 +34,14 @@
     <IsWpfLib Condition="'$(IsWpfLib)' == '' AND $(WpfLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(WpfLibTargetFrameworks)' != '' AND '$(MultiTargetsWpf)' == 'true'">true</IsWpfLib>
     <IsWpf Condition="'$(IsWpf)' == '' AND ('$(IsWpfHead)' == 'true' or '$(IsWpfLib)' == 'true')">true</IsWpf>
 
-    <IsGtkHead Condition="$(IsDeployableHead) == 'true' AND '$(IsGtkHead)' == '' AND $(LinuxHeadTargetFramework.Contains('$(TargetFramework);')) AND '$(LinuxHeadTargetFramework)' != ''">true</IsGtkHead>
-    <IsGtkLib Condition="'$(IsGtkLib)' == '' AND $(LinuxLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(LinuxLibTargetFrameworks)' != '' AND '$(MultiTargetsLinuxGtk)' == 'true'">true</IsGtkLib>
-    <IsGtk Condition="'$(IsGtk)' == '' AND ('$(IsGtkHead)' == 'true' or '$(IsGtkLib)' == 'true')">true</IsGtk>
+    <!-- win32 is the Uno 6 (WinUI 3) Windows desktop surface, served by the unified net9.0-desktop
+         head rather than a head of its own, so only the library half is identified here. -->
+    <IsWin32Lib Condition="'$(IsWin32Lib)' == '' AND $(Win32LibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(Win32LibTargetFrameworks)' != '' AND '$(MultiTargetsWin32)' == 'true'">true</IsWin32Lib>
+    <IsWin32 Condition="'$(IsWin32)' == '' AND '$(IsWin32Lib)' == 'true'">true</IsWin32>
+
+    <IsLinuxHead Condition="$(IsDeployableHead) == 'true' AND '$(IsLinuxHead)' == '' AND $(LinuxHeadTargetFramework.Contains('$(TargetFramework);')) AND '$(LinuxHeadTargetFramework)' != ''">true</IsLinuxHead>
+    <IsLinuxLib Condition="'$(IsLinuxLib)' == '' AND $(LinuxLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(LinuxLibTargetFrameworks)' != '' AND '$(MultiTargetsLinux)' == 'true'">true</IsLinuxLib>
+    <IsLinux Condition="'$(IsLinux)' == '' AND ('$(IsLinuxHead)' == 'true' or '$(IsLinuxLib)' == 'true')">true</IsLinux>
 
     <IsUwp Condition="'$(IsUwp)' == '' AND '$(UwpTargetFrameworks)' != '' AND $(UwpTargetFrameworks.Contains('$(TargetFramework);')) AND '$(MultiTargetsUwp)' == 'true' AND $(EnabledMultiTargets.Contains('uwp'))">true</IsUwp>
     <IsWinAppSdk Condition="'$(IsWinAppSdk)' == '' AND '$(WinAppSdkTargetFrameworks)' != '' AND $(WinAppSdkTargetFrameworks.Contains('$(TargetFramework);')) AND '$(MultiTargetsWasdk)' == 'true' AND $(EnabledMultiTargets.Contains('wasdk'))">true</IsWinAppSdk>
@@ -47,7 +53,7 @@
     <IsiOS Condition="'$(IsiOS)' == '' AND $(iOSLibTargetFrameworks.Contains('$(TargetFramework);')) AND '$(iOSLibTargetFrameworks)' != '' AND '$(MultiTargetsiOS)' == 'true'">true</IsiOS>
     <IsNetstandard Condition="'$(IsNetstandard)' == '' AND $(DotnetStandardCommonTargetFramework.Contains('$(TargetFramework);')) AND '$(MultiTargetsNetstandard)' == 'true'">true</IsNetstandard>
 
-    <IsUno Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsGtk)' == 'true' OR '$(IsDroid)' == 'true' OR '$(IsMacOS)' == 'true' OR '$(IsiOS)' == 'true'">true</IsUno>
+    <IsUno Condition="'$(IsWasm)' == 'true' OR '$(IsWpf)' == 'true' OR '$(IsWin32)' == 'true' OR '$(IsLinux)' == 'true' OR '$(IsDesktop)' == 'true' OR '$(IsDroid)' == 'true' OR '$(IsMacOS)' == 'true' OR '$(IsiOS)' == 'true'">true</IsUno>
 
     <!--
       Provide an opt-out switch for https://github.com/CommunityToolkit/Tooling-Windows-Submodule/issues/185.

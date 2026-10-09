@@ -38,11 +38,11 @@
     Date:   April 27, 2022
 #>
 Param (
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("mt")]
-    [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
+    [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk', 'win32'),
 
-    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [string[]]$ExcludeMultiTargets = @(), # default settings
 
     [Alias("c")]
@@ -54,12 +54,12 @@ Param (
     [string[]]$ExcludeComponents,
 
     [switch]$UseDiagnostics = $false,
-    
+
     [bool]$Launch = $true
 )
 
 if ($MultiTargets.Contains('all')) {
-    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')
 }
 
 if ($null -eq $ExcludeMultiTargets)
@@ -150,11 +150,25 @@ foreach ($componentName in $Components) {
 
 # Deployable sample gallery heads
 # Only include heads for requested MultiTargets if components were included that use them.
-# ===
-# TODO: this handles separate project heads, but won't directly handle the unified Skia head from Uno.
-# Once we have that, just do a transform on the csproj filename inside this loop to decide the same csproj for those separate MultiTargets.
-# ===
+# These have no head project of their own - they're served by the unified Uno.Sdk head added below.
+$unoSdkHeadMultiTargets = @('win32', 'linux', 'macos', 'ios', 'android')
+
+# The Uno.Sdk head is implied by the requested MultiTargets, not a separate switch: it's the only
+# head that can serve win32/linux/macos/ios/android, and for wasm it replaces the classic Wasm head
+# once WinUI 3 is requested (WinUI 2 + wasm keeps using the classic head).
+$includeUnoSdkHead = (($allUsedMultiTargetPrefs | Where-Object { $unoSdkHeadMultiTargets -contains $_ }).Count -gt 0) -or `
+    ($allUsedMultiTargetPrefs.Contains('wasm') -and $WinUIMajorVersion -eq 3)
+
 foreach ($multitarget in $allUsedMultiTargetPrefs) {
+    if ($unoSdkHeadMultiTargets -contains $multitarget) {
+        continue
+    }
+
+    # When using the Uno.Sdk head, skip the traditional Wasm head (Uno.Sdk covers wasm for WinUI 3)
+    if ($multitarget -eq 'wasm' -and $includeUnoSdkHead) {
+        continue
+    }
+
     # capitalize first letter, avoid case sensitivity issues on linux
     $csprojFileNamePartForMultiTarget = $multitarget.substring(0,1).ToUpper() + $multitarget.Substring(1).ToLower()
 
@@ -165,6 +179,15 @@ foreach ($multitarget in $allUsedMultiTargetPrefs) {
     }
     else {
         Write-Warning "No project head could be found at $path for MultiTarget $multitarget. Skipping."
+    }
+}
+
+if ($includeUnoSdkHead) {
+    $unoHeadPath = "./tooling/ProjectHeads/AllComponents/Uno/CommunityToolkit.App.Uno.csproj"
+    if (Test-Path $unoHeadPath) {
+        [void]$projects.Add($unoHeadPath)
+    } else {
+        Write-Warning "Uno.Sdk head project not found at $unoHeadPath."
     }
 }
 

@@ -8,10 +8,22 @@
     <MultiTargetIdentifier Condition="'$(IsUwp)' == 'true'">uwp</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsWasm)' == 'true'">wasm</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsWinAppSdk)' == 'true'">wasdk</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsWpf)' == 'true'">wpf</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsWin32)' == 'true'">win32</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsLinux)' == 'true'">linux</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsMacOS)' == 'true'">macos</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsiOS)' == 'true'">ios</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsDroid)' == 'true'">android</MultiTargetIdentifier>
     <MultiTargetIdentifier Condition="'$(IsNetstandard)' == 'true'">netstandard</MultiTargetIdentifier>
+
+    <!-- Last wins: the unified Uno 6 desktop head build (net9.0-desktop) can back several of
+         win32/linux/macos at once. IsDesktop alone can't tell which were actually requested, so
+         match against $(EnabledMultiTargets) instead of assuming all three. CheckMultiTarget
+         accepts a ';' separated list; trailing (not leading) semicolons per the usual convention. -->
+    <MultiTargetIdentifier Condition="'$(IsDesktop)' == 'true'"></MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsDesktop)' == 'true' AND $(EnabledMultiTargets.Contains('win32')) == 'true'">$(MultiTargetIdentifier)win32;</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsDesktop)' == 'true' AND $(EnabledMultiTargets.Contains('linux')) == 'true'">$(MultiTargetIdentifier)linux;</MultiTargetIdentifier>
+    <MultiTargetIdentifier Condition="'$(IsDesktop)' == 'true' AND $(EnabledMultiTargets.Contains('macos')) == 'true'">$(MultiTargetIdentifier)macos;</MultiTargetIdentifier>
   </PropertyGroup>
 
   <Target Name="AddMultiTargetCompatibleSampleDocs" Condition="'$(IsAllExperimentHead)' == 'true'" BeforeTargets="BeforeBuild">

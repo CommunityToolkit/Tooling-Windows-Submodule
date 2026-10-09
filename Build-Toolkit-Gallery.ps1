@@ -9,7 +9,7 @@
     Specifies the MultiTarget TFM(s) to include for building the components. The default value is 'all'.
 
 .PARAMETER ExcludeMultiTargets
-    Specifies the MultiTarget TFM(s) to exclude for building the components. The default value excludes targets that require additional tooling or workloads to build: 'wpf', 'linuxgtk', 'macos', 'ios', and 'android'. Run uno-check to install the required workloads.
+    Specifies the MultiTarget TFM(s) to exclude for building the components. The default value excludes targets that require additional tooling or workloads to build: 'wpf', 'linux', 'macos', 'ios', and 'android'. Run uno-check to install the required workloads.
 
 .PARAMETER Heads
   The heads to include in the build. Default is 'Uwp', 'Wasdk', 'Wasm'.
@@ -46,17 +46,17 @@
   Date:   2/19/2024
 #>
 Param (
-  [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+  [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
   [Alias("mt")]
   [string[]]$MultiTargets = @('uwp', 'wasdk', 'wasm'), # default settings
-  
-  [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+
+  [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
   [string[]]$ExcludeMultiTargets = @(), # default settings
 
-  [ValidateSet('all', 'Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')]
+  [ValidateSet('all', 'Uwp', 'Wasdk', 'Wasm', 'Uno', 'Tests.Uwp', 'Tests.Wasdk')]
   [string[]]$Heads = @('Uwp', 'Wasdk', 'Wasm'),
 
-  [ValidateSet('Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')]
+  [ValidateSet('Uwp', 'Wasdk', 'Wasm', 'Uno', 'Tests.Uwp', 'Tests.Wasdk')]
   [string[]]$ExcludeHeads,
 
   [Alias("bl")]
@@ -102,7 +102,7 @@ if ($MultiTargets.Contains('uwp') -and $MultiTargets.Contains('wasdk'))
 }
 
 if ($MultiTargets -eq 'all') {
-  $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+  $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')
 }
 
 if ($ExcludeMultiTargets) {
@@ -131,16 +131,30 @@ if ($Components -notcontains 'Converters') {
 & $PSScriptRoot\MultiTarget\GenerateAllProjectReferences.ps1 -MultiTarget $MultiTargets -Components $Components
 
 if ($Heads -eq 'all') {
-  $Heads = @('Uwp', 'Wasdk', 'Wasm', 'Tests.Uwp', 'Tests.Wasdk')
+  $Heads = @('Uwp', 'Wasdk', 'Wasm', 'Uno', 'Tests.Uwp', 'Tests.Wasdk')
 }
 
 function Invoke-MSBuildWithBinlog {
   param (
-    [string]$TargetHeadPath
+    [string]$TargetHeadPath,
+    [string]$TargetFramework
   )
 
   # Reset build args to default
   $msbuildArgs = @("-r", "-m", "-t:Clean,Build")
+
+  if ($TargetFramework) {
+    # dotnet build's "-f" does a scoped inner-build restore for just that TFM; plain
+    # "/p:TargetFramework=" on a multi-targeted project restores the outer project's full TFM
+    # closure first, which fails for components that don't support every TFM the head declares.
+    # msbuild.exe has no "-f" equivalent, so this only reliably supports one TFM at a time there.
+    if ($($PSVersionTable.Platform) -eq "Unix") {
+      $msbuildArgs += "-f:$TargetFramework"
+    }
+    else {
+      $msbuildArgs += "/p:TargetFramework=$TargetFramework"
+    }
+  }
 
   # Add additional properties to the msbuild arguments
   if ($AdditionalProperties) {
@@ -153,12 +167,13 @@ function Invoke-MSBuildWithBinlog {
   if ($EnableBinLogs) {
     # Get binlog filename and output path
     $csprojFileName = [System.IO.Path]::GetFileNameWithoutExtension($TargetHeadPath)
-    $defaultBinlogFilename = "$csprojFileName.msbuild.binlog"
+    $binlogSuffix = $TargetFramework ? ".$TargetFramework" : ""
+    $defaultBinlogFilename = "$csprojFileName$binlogSuffix.msbuild.binlog"
     $finalBinlogPath = $defaultBinlogFilename;
 
     # Set default binlog output location if not provided
     if ($BinlogOutput) {
-      $finalBinlogPath = "$BinlogOutput/$defaultBinlogFilename" 
+      $finalBinlogPath = "$BinlogOutput/$defaultBinlogFilename"
     }
 
     $msbuildArgs += "/bl:$finalBinlogPath"
@@ -172,7 +187,40 @@ function Invoke-MSBuildWithBinlog {
     $msbuildArgs += "/verbosity:detailed"
   }
 
-  msbuild $msbuildArgs $TargetHeadPath
+  # On Linux there's no msbuild.exe on PATH; dotnet build is the only option there anyway.
+  if ($($PSVersionTable.Platform) -eq "Unix") {
+    dotnet build $msbuildArgs $TargetHeadPath
+  }
+  else {
+    msbuild $msbuildArgs $TargetHeadPath
+  }
+}
+
+# The Uno.Sdk head covers several MultiTargets from one multi-TFM csproj (see
+# ProjectHeads/AllComponents/Uno/CommunityToolkit.App.Uno.csproj). Building all of its enabled TFMs
+# in one invocation isn't reliable across every combination, so - matching what CI already does -
+# build it one TFM at a time via `-f`, only for the TFMs the requested $MultiTargets actually enable.
+function Get-UnoSdkHeadTargetFrameworks {
+  param (
+    [string[]]$MultiTargets
+  )
+
+  $targetFrameworks = [System.Collections.ArrayList]::new()
+
+  if (($MultiTargets | Where-Object { @('win32', 'linux', 'macos') -contains $_ }).Count -gt 0) {
+    [void]$targetFrameworks.Add('net9.0-desktop')
+  }
+  if ($MultiTargets -contains 'wasm') {
+    [void]$targetFrameworks.Add('net9.0-browserwasm')
+  }
+  if ($MultiTargets -contains 'android') {
+    [void]$targetFrameworks.Add('net9.0-android')
+  }
+  if ($MultiTargets -contains 'ios') {
+    [void]$targetFrameworks.Add('net9.0-ios')
+  }
+
+  return $targetFrameworks
 }
 
 foreach ($head in $Heads) {
@@ -182,5 +230,19 @@ foreach ($head in $Heads) {
 
   $targetHeadPath = Get-ChildItem "$PSScriptRoot/ProjectHeads/AllComponents/$head/*.csproj"
 
-  Invoke-MSBuildWithBinlog $targetHeadPath $EnableBinLogs $BinlogOutput
+  if ($head -eq 'Uno') {
+    $unoTargetFrameworks = Get-UnoSdkHeadTargetFrameworks -MultiTargets $MultiTargets
+
+    if ($unoTargetFrameworks.Count -eq 0) {
+      Write-Warning "None of the requested MultiTargets ($MultiTargets) are served by the Uno.Sdk head. Skipping."
+      continue
+    }
+
+    foreach ($targetFramework in $unoTargetFrameworks) {
+      Invoke-MSBuildWithBinlog $targetHeadPath $targetFramework
+    }
+  }
+  else {
+    Invoke-MSBuildWithBinlog $targetHeadPath
+  }
 }
