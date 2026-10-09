@@ -4,6 +4,7 @@
 
 #if HAS_LABS_MARKDOWNTEXTBLOCK
     using CommunityToolkit.WinUI.Controls;
+    using Microsoft.UI.Text;
     using ToolkitMTB = CommunityToolkit.WinUI.Controls.MarkdownTextBlock;
 #elif HAS_UNO
     #if WINAPPSDK
@@ -53,6 +54,7 @@ public partial class MarkdownTextBlock : ToolkitMTB
                 H6FontSize = 14,
                 ParagraphMargin = new Thickness(0, 0, 0, 12),
                 ParagraphLineHeight = 20,
+                InlineCodeFontSize = 12,
             },
         };
 
