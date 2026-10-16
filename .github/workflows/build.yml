@@ -62,19 +62,8 @@ jobs:
         working-directory: ./
         run: dotnet build /bl CommunityToolkit.Tooling.sln -p:Configuration=Release
 
-      # Run tests
-      - name: Install Testspace Module
-        uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{ github.repository_owner }}
-
       - name: Run tests against Source Generators
         run: dotnet test --logger "trx;LogFileName=sourceGeneratorTestResults.trx" -p:Configuration=Release
-
-      - name: Create test reports
-        run: |
-          testspace '[Source Generators]./**/TestResults/*.trx'
-        if: ${{ always() }}
 
       - name: Artifact - Diagnostic Logs
         uses: actions/upload-artifact@v4
