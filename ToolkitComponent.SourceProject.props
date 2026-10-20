@@ -18,7 +18,7 @@
     <PackageId Condition="'$(PackageId)' == ''">$(PackageIdPrefix).$(PackageIdVariant).$(ToolkitComponentName)</PackageId>
   </PropertyGroup>
 
-  <Sdk Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' != 'windows'" Name="MSBuild.Sdk.Extras" Version="3.0.23" />
+  <Sdk Condition="'$(IsUwp)' == 'true' AND '$(MultiTargetPlatformIdentifier)' != 'windows'" Name="MSBuild.Sdk.Extras" Version="3.0.44" />
 
   <PropertyGroup>
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
