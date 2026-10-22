@@ -57,11 +57,11 @@
     Date:   2/19/2024
 #>
 Param (
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'), # default settings
-    
-    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
+
+    [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
     [string[]]$ExcludeMultiTargets = @(), # default settings
 
     [Alias("c")]
@@ -97,7 +97,7 @@ Param (
 
 
 if ($MultiTargets -eq 'all') {
-    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')
 }
 
 if ($null -eq $ExcludeMultiTargets)

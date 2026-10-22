@@ -33,7 +33,7 @@
     Date:   Feb 9, 2023
 #>
 Param (
-    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')]
+    [ValidateSet('all', 'wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android')]
     [Alias("mt")]
     [string[]]$MultiTargets = @('uwp', 'wasm', 'wasdk'),
 
@@ -98,7 +98,7 @@ if (-not (Test-Path "$componentPath/src" -PathType Container))
 # -----------------
 
 if ($MultiTargets.Contains('all')) {
-    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android')
+    $MultiTargets = @('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android')
 }
 
 if ($null -eq $ExcludeMultiTargets)
@@ -188,9 +188,25 @@ Write-Output "Generating solution for $componentName in $generatedSolutionFilePa
 
 # All heads are included by default since they reside in the same folder as the component.
 # Remove any heads that are not required for the solution.
-# TODO: this handles separate project heads, but won't directly handle the unified Skia head from Uno.
-# Once we have that, just do a transform on the csproj filename inside this loop to decide the same csproj for those separate MultiTargets.
+# These have no head project of their own - they're served by the unified Uno.Sdk head added below.
+$unoSdkHeadMultiTargets = @('win32', 'linux', 'macos', 'ios', 'android')
+
+# The Uno.Sdk head is implied by the requested MultiTargets, not a separate switch: it's the only
+# head that can serve win32/linux/macos/ios/android, and for wasm it replaces the classic Wasm head
+# once WinUI 3 is requested (WinUI 2 + wasm keeps using the classic head).
+$includeUnoSdkHead = (($MultiTargets | Where-Object { $unoSdkHeadMultiTargets -contains $_ }).Count -gt 0) -or `
+    ($MultiTargets.Contains('wasm') -and $WinUIMajorVersion -eq 3)
+
 foreach ($multitarget in $MultiTargets) {
+    if ($unoSdkHeadMultiTargets -contains $multitarget) {
+        continue
+    }
+
+    # When using the Uno.Sdk head, skip the traditional Wasm head (Uno.Sdk covers wasm for WinUI 3)
+    if ($multitarget -eq 'wasm' -and $includeUnoSdkHead) {
+        continue
+    }
+
     # capitalize first letter, avoid case sensitivity issues on linux
     $csprojFileNamePartForMultiTarget = $multitarget.substring(0,1).ToUpper() + $multitarget.Substring(1).ToLower()
 
@@ -205,6 +221,17 @@ foreach ($multitarget in $MultiTargets) {
     }
     else {
         Write-Warning "No project head could be found at $path for MultiTarget $multitarget. Skipping."
+    }
+}
+
+if ($includeUnoSdkHead) {
+    $unoHeadPath = "$outputHeadsDir\Uno\*Uno.csproj"
+    if (Test-Path $unoHeadPath) {
+        foreach ($foundItem in Get-ChildItem $unoHeadPath) {
+            $projects = $projects + $foundItem.FullName
+        }
+    } else {
+        Write-Warning "Uno.Sdk head project not found at $unoHeadPath."
     }
 }
 

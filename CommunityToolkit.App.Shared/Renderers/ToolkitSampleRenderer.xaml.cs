@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if !HAS_UNO
+#if !HAS_UNO || WINUI3
 using ColorCode;
 #endif
 using CommunityToolkit.Tooling.SampleGen.Metadata;
@@ -39,7 +39,39 @@ public sealed partial class ToolkitSampleRenderer : Page
     public ToolkitSampleRenderer()
     {
         this.InitializeComponent();
+
+#if HAS_UNO
+        XAMLCodeHost.Content = XAMLCodeRenderer;
+        CSharpCodeHost.Content = CSharpCodeRenderer;
+#endif
     }
+
+#if HAS_UNO
+    // XAML can't tell Uno's WinUI flavors apart, and only WinUI 3 (Uno 7+) supports RichTextBlock.
+#if WINUI3
+    private readonly RichTextBlock XAMLCodeRenderer = CreateCodeRenderer();
+    private readonly RichTextBlock CSharpCodeRenderer = CreateCodeRenderer();
+
+    private static RichTextBlock CreateCodeRenderer() => new()
+    {
+        FontFamily = new FontFamily("Consolas"),
+        FontSize = 12,
+        IsTextSelectionEnabled = true,
+    };
+#else
+    private readonly TextBlock XAMLCodeRenderer = CreateCodeRenderer();
+    private readonly TextBlock CSharpCodeRenderer = CreateCodeRenderer();
+
+    private static TextBlock CreateCodeRenderer() => new()
+    {
+        Margin = new Thickness(0, 12, 0, 12),
+        FontFamily = new FontFamily("Consolas"),
+        FontSize = 12,
+        IsTextSelectionEnabled = true,
+        TextWrapping = TextWrapping.WrapWholeWords,
+    };
+#endif
+#endif
 
     /// <summary>
     /// The backing <see cref="DependencyProperty"/> for the <see cref="Metadata"/> property.
@@ -337,13 +369,12 @@ public sealed partial class ToolkitSampleRenderer : Page
 
     private void RenderCode()
     {
-        // Uno doesn't support RichTextBlock, so we are using a normal TextBlock instead on WASM
-#if !HAS_UNO
+#if !HAS_UNO || WINUI3
         RichTextBlockFormatter codeFormatter = new RichTextBlockFormatter(ActualTheme);
 #endif
         if (XamlCode is not null)
         {
-#if HAS_UNO
+#if HAS_UNO && !WINUI3
             XAMLCodeRenderer.Text = XamlCode;
 #else
             XAMLCodeRenderer.Blocks?.Clear();
@@ -353,7 +384,7 @@ public sealed partial class ToolkitSampleRenderer : Page
 
         if (CSharpCode is not null)
         {
-#if HAS_UNO
+#if HAS_UNO && !WINUI3
             CSharpCodeRenderer.Text = CSharpCode;
 #else
             CSharpCodeRenderer.Blocks?.Clear();

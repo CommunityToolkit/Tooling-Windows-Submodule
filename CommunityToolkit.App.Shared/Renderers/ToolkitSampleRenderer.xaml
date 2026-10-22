@@ -225,12 +225,7 @@
                         <PivotItem Header="XAML">
                             <ScrollViewer>
                                 <StackPanel Orientation="Vertical">
-                                    <not_win:TextBlock x:Name="XAMLCodeRenderer"
-                                                       Margin="0,12,0,12"
-                                                       wasm:IsTextSelectionEnabled="True"
-                                                       FontFamily="Consolas"
-                                                       FontSize="12"
-                                                       TextWrapping="WrapWholeWords" />
+                                    <not_win:ContentPresenter x:Name="XAMLCodeHost" />
                                     <win:RichTextBlock x:Name="XAMLCodeRenderer"
                                                        FontFamily="Consolas"
                                                        FontSize="12"
@@ -241,12 +236,7 @@
                         <PivotItem Header="C#">
                             <ScrollViewer>
                                 <StackPanel Orientation="Vertical">
-                                    <not_win:TextBlock x:Name="CSharpCodeRenderer"
-                                                       Margin="0,12,0,12"
-                                                       wasm:IsTextSelectionEnabled="True"
-                                                       FontFamily="Consolas"
-                                                       FontSize="12"
-                                                       TextWrapping="WrapWholeWords" />
+                                    <not_win:ContentPresenter x:Name="CSharpCodeHost" />
                                     <win:RichTextBlock x:Name="CSharpCodeRenderer"
                                                        wasm:IsTextSelectionEnabled="True"
                                                        win:IsTextSelectionEnabled="True" />
