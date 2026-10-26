@@ -8,7 +8,7 @@ This repository contains the tooling infrastructure for other Community Toolkit 
 ## Build Requirements
 
 - Visual Studio 2026 (UWP & Desktop Workloads for .NET)
-- .NET 9 SDK
+- .NET 10 SDK (version specified in `global.json`)
 - Windows App SDK
 - Windows SDK 26100
 
