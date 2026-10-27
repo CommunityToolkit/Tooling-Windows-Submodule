@@ -89,12 +89,7 @@
   </ItemGroup>
 
   <!-- Gallery dependencies -->
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Triggers" Version="8.2.250402" />
-  </ItemGroup>
+  <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.ToolkitDependencies.props" />
 
   <!-- Uno app dependencies -->
   <Import Project="$(ToolingDirectory)\ProjectHeads\App.Head.Uno.WinUI.Dependencies.props" />
