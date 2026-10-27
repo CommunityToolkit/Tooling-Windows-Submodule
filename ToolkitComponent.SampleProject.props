@@ -11,7 +11,8 @@
   <!-- Import this component's source project -->
   <ItemGroup>
     <ProjectReference Include="$(MSBuildProjectDirectory)\..\src\*.csproj" />
-    <PackageReference Condition="'$(IsMacOS)' != 'true'" Include="System.Collections.Immutable" Version="9.0.0" />
+    <!-- Part of the shared framework from .NET 10, where referencing it explicitly fails with NU1510 -->
+    <PackageReference Condition="'$(IsMacOS)' != 'true' AND ('$(TargetFramework)' == '' OR !$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0')))" Include="System.Collections.Immutable" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
