@@ -20,6 +20,12 @@ env:
   MSBUILD_VERBOSITY: diagnostic
   #COREHOST_TRACE: 1
   COREHOST_TRACEFILE: corehosttrace.log
+  # The Uno.Sdk heads depend on the Converters, SettingsControls, Extensions and Triggers components
+  # (and Helpers, used by Triggers). Their published packages are built against Uno 5 and don't compile
+  # on Uno 7 (CS0012), so the Uno.Sdk jobs build them from source at this CommunityToolkit/Windows
+  # commit, which ports them to Uno 7 (CommunityToolkit/Windows#880).
+  # TODO: Remove once Uno 7 builds of those packages are published.
+  TOOLKIT_COMPONENTS_REF: 6bf8e8280f5d126c043002e9af08e6a39cce72ff
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -204,6 +210,25 @@ jobs:
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
 
+      - name: Checkout Toolkit components the gallery depends on
+        if: ${{ matrix.unoSdkHead }}
+        uses: actions/checkout@v4
+        with:
+          repository: CommunityToolkit/Windows
+          ref: ${{ env.TOOLKIT_COMPONENTS_REF }}
+          path: windows
+          sparse-checkout: |
+            components/Converters
+            components/Extensions
+            components/Helpers
+            components/SettingsControls
+            components/Triggers
+
+      - name: Copy Toolkit components next to the experiment
+        if: ${{ matrix.unoSdkHead }}
+        shell: pwsh
+        run: Move-Item ./windows/components/* ./components/
+
       - name: Install Windows SDKs
         shell: pwsh
         run: ./tooling/Install-WindowsSdk.ps1
@@ -312,6 +337,23 @@ jobs:
           mkdir ./.config
           copy ./tooling/.config/dotnet-tools.json ./.config/dotnet-tools.json
           mkdir ./components
+
+      - name: Checkout Toolkit components the gallery depends on
+        uses: actions/checkout@v4
+        with:
+          repository: CommunityToolkit/Windows
+          ref: ${{ env.TOOLKIT_COMPONENTS_REF }}
+          path: windows
+          sparse-checkout: |
+            components/Converters
+            components/Extensions
+            components/Helpers
+            components/SettingsControls
+            components/Triggers
+
+      - name: Copy Toolkit components next to the experiment
+        shell: pwsh
+        run: Move-Item ./windows/components/* ./components/
 
       # Restore Tools from Manifest list in the Repository
       - name: Restore dotnet tools
