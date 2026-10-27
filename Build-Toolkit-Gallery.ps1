@@ -141,7 +141,12 @@ function Invoke-MSBuildWithBinlog {
   )
 
   # Reset build args to default
-  $msbuildArgs = @("-r", "-m", "-t:Clean,Build")
+  $msbuildArgs = @("-m", "-t:Clean,Build")
+
+  # dotnet build restores implicitly (scoped to "-f" below) and reads "-r" as --runtime
+  if ($($PSVersionTable.Platform) -ne "Unix") {
+    $msbuildArgs = @("-r") + $msbuildArgs
+  }
 
   if ($TargetFramework) {
     # dotnet build's "-f" does a scoped inner-build restore for just that TFM; plain
