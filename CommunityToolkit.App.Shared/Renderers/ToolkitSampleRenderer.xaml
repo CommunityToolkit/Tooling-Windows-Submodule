@@ -189,6 +189,7 @@
                               VerticalAlignment="Stretch">
                     <ContentControl x:Name="PageControl"
                                     Margin="16"
+                                    IsTabStop="False"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"
                                     Content="{x:Bind SampleControlInstance, Mode=OneWay}" />
