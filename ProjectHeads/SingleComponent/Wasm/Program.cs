@@ -4,10 +4,25 @@
 
 using CommunityToolkit.App.Shared;
 
+#if WINAPPSDK
+using Uno.UI.Hosting;
+#endif
+
 namespace ProjectTemplateExperiment.Samples.Wasm;
 
 public class Program
 {
+#if WINAPPSDK
+    static async Task Main(string[] args)
+    {
+        var host = UnoPlatformHostBuilder.Create()
+            .App(() => new App())
+            .UseWebAssembly()
+            .Build();
+
+        await host.RunAsync();
+    }
+#else
     private static App? _app;
 
     static int Main(string[] args)
@@ -16,4 +31,5 @@ public class Program
 
         return 0;
     }
+#endif
 }

@@ -3,6 +3,14 @@
     <RepositoryDirectory>$([MSBuild]::EnsureTrailingSlash('$(MSBuildThisFileDirectory)'))</RepositoryDirectory>
     <ToolingDirectory>$(RepositoryDirectory)tooling</ToolingDirectory>
 
+    <!-- Toolkit components the gallery depends on, when CI checks them out next to the template component.
+         Without them, the gallery uses the published packages instead. -->
+    <ToolkitConvertersSourceProject Condition="Exists('$(RepositoryDirectory)components\Converters\src\CommunityToolkit.WinUI.Converters.csproj')">$(RepositoryDirectory)components\Converters\src\CommunityToolkit.WinUI.Converters.csproj</ToolkitConvertersSourceProject>
+    <ToolkitExtensionsSourceProject Condition="Exists('$(RepositoryDirectory)components\Extensions\src\CommunityToolkit.WinUI.Extensions.csproj')">$(RepositoryDirectory)components\Extensions\src\CommunityToolkit.WinUI.Extensions.csproj</ToolkitExtensionsSourceProject>
+    <ToolkitTriggersSourceProject Condition="Exists('$(RepositoryDirectory)components\Triggers\src\CommunityToolkit.WinUI.Triggers.csproj')">$(RepositoryDirectory)components\Triggers\src\CommunityToolkit.WinUI.Triggers.csproj</ToolkitTriggersSourceProject>
+    <ToolkitHelpersSourceProject Condition="Exists('$(RepositoryDirectory)components\Helpers\src\CommunityToolkit.WinUI.Helpers.csproj')">$(RepositoryDirectory)components\Helpers\src\CommunityToolkit.WinUI.Helpers.csproj</ToolkitHelpersSourceProject>
+    <ToolkitSettingsControlsSourceProject Condition="Exists('$(RepositoryDirectory)components\SettingsControls\src\CommunityToolkit.WinUI.Controls.SettingsControls.csproj')">$(RepositoryDirectory)components\SettingsControls\src\CommunityToolkit.WinUI.Controls.SettingsControls.csproj</ToolkitSettingsControlsSourceProject>
+
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
   </PropertyGroup>

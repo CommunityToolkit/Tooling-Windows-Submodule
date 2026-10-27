@@ -4,8 +4,8 @@ Param (
 
   [Parameter(HelpMessage = "Only projects that support these targets will have references generated for use by deployable heads.")]
   [Alias("mt")]
-  [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'linuxgtk', 'macos', 'ios', 'android', 'netstandard')]
-  [string[]]$MultiTargets = @("uwp", "wasdk", "wpf", "wasm", "linuxgtk", "macos", "ios", "android", "netstandard"),
+  [ValidateSet('wasm', 'uwp', 'wasdk', 'wpf', 'win32', 'linux', 'macos', 'ios', 'android', 'netstandard')]
+  [string[]]$MultiTargets = @("uwp", "wasdk", "wpf", "win32", "wasm", "linux", "macos", "ios", "android", "netstandard"),
 
   [Parameter(HelpMessage = "The names of the components to generate references for. Defaults to all components.")]
   [string[]]$Components = @("all"),

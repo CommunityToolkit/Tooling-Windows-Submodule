@@ -9,7 +9,7 @@ function CreateVsCodeLaunchConfigJson {
   )
 
   return "{
-    `"name`": `"$projectName`",
+    `"name`": `"$projectName (Wasm)`",
     `"type`": `"coreclr`",
     `"request`": `"launch`",
     `"program`": `"dotnet`",
@@ -26,6 +26,32 @@ function CreateVsCodeLaunchConfigJson {
       `"group`": `"2`"
     },
     `"cwd`": `"`$`{workspaceFolder`}/components/$projectName/heads/Wasm`"
+  }";
+}
+
+function CreateUnoVsCodeLaunchConfigJson {
+  param (
+    [string]$projectName
+  )
+
+  return "{
+    `"name`": `"$projectName (Uno)`",
+    `"type`": `"coreclr`",
+    `"request`": `"launch`",
+    `"program`": `"dotnet`",
+    `"args`": [
+      `"run`",
+      `"build`",
+      `"/r`",
+      `"/p:UnoSourceGeneratorUseGenerationHost=true`",
+      `"/p:UnoSourceGeneratorUseGenerationController=false`",
+      `"/p:UnoRemoteControlPort=443`",
+      `"--project=`$`{workspaceFolder`}/components/$projectName/heads/Uno/$projectName.Uno.csproj`"
+    ],
+    `"presentation`": {
+      `"group`": `"2`"
+    },
+    `"cwd`": `"`$`{workspaceFolder`}/components/$projectName/heads/Uno`"
   }";
 }
 
@@ -46,8 +72,11 @@ foreach ($projectPath in Get-ChildItem -Directory -Depth 0 -Path "$PSScriptRoot/
 
   $configJson = CreateVsCodeLaunchConfigJson $projectName;
   $config = $configJson | ConvertFrom-Json;
-
   $launchConfig.configurations += $config;
+
+  $unoConfigJson = CreateUnoVsCodeLaunchConfigJson $projectName;
+  $unoConfig = $unoConfigJson | ConvertFrom-Json;
+  $launchConfig.configurations += $unoConfig;
 }
 
 if ($allowGitChanges.IsPresent) {

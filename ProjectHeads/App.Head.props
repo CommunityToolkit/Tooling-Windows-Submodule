@@ -29,59 +29,7 @@
   </PropertyGroup>
 
   <!-- Sample App Toolkit Dependencies -->
-  <Choose>
-    <When Condition="'$(ToolkitConvertersSourceProject)' == ''">
-      <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Converters" Version="8.3.260402-preview2"/>
-      </ItemGroup>
-    </When>
-    <!-- This is tripping up the linux build using dotnet build as we have a duplicate reference 
-        auto-generated in tooling/MultiTarget/Generated when building the all-up sample app -->
-    <!-- See: https://github.com/dotnet/msbuild/issues/2688 -->
-    <!-- TODO: We need to handle a case where a component itself references the converter package... -->
-    <!-- Only add Converters reference if we're in a single experiment that's not the Converters project itself -->
-    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Converters')) == 'false'">
-      <ItemGroup>
-        <ProjectReference Include="$(ToolkitConvertersSourceProject)"/>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(ToolkitSettingsControlsSourceProject)' == ''">
-      <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Controls.SettingsControls" Version="8.3.260402-preview2"/>
-      </ItemGroup>
-    </When>
-    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('SettingsControls')) == 'false'">
-      <ItemGroup>
-        <ProjectReference Include="$(ToolkitSettingsControlsSourceProject)"/>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(ToolkitExtensionsSourceProject)' == ''">
-      <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Extensions" Version="8.3.260402-preview2"/>
-      </ItemGroup>
-    </When>
-    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Extensions')) == 'false'">
-      <ItemGroup>
-        <ProjectReference Include="$(ToolkitExtensionsSourceProject)"/>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(ToolkitTriggersSourceProject)' == ''">
-      <ItemGroup>
-        <PackageReference Include="CommunityToolkit.$(DependencyVariant).Triggers" Version="8.3.260402-preview2"/>
-      </ItemGroup>
-    </When>
-    <When Condition="'$(IsSingleExperimentHead)' == 'true' and $(MSBuildProjectName.StartsWith('Triggers')) == 'false'">
-      <ItemGroup>
-        <ProjectReference Include="$(ToolkitTriggersSourceProject)"/>
-      </ItemGroup>
-    </When>
-  </Choose>
+  <Import Project="$(MSBuildThisFileDirectory)App.Head.ToolkitDependencies.props" />
 
   <!-- Content inclusion -->
   <!-- See https://github.com/CommunityToolkit/Labs-Windows/issues/142 -->
